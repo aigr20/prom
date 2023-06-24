@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "path": "client",
+      "name": "Web",
+    },
+    {
+      "path": "server",
+      "name": "API",
+    },
+    {
+      "path": "db",
+      "name": "Database"
+    }
+  ],
+  "settings": {}
+}
