@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type ResponseData = map[string]interface{}
+
 type API struct {
 	Router      *gin.Engine
 	ProjectRepo database.ProjectRepository

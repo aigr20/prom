@@ -19,8 +19,8 @@ func getTestAPI(t *testing.T) *API {
 	return NewAPI(db)
 }
 
-func projectsFromBody(t *testing.T, body []byte) []models.Project {
-	projects := make([]models.Project, 0)
+func projectsFromBody(t *testing.T, body []byte) map[string][]models.Project {
+	projects := make(map[string][]models.Project, 0)
 	reader := bytes.NewReader(body)
 	decoder := json.NewDecoder(reader)
 	err := decoder.Decode(&projects)
@@ -46,7 +46,7 @@ func TestProjectsRoute(t *testing.T) {
 	})
 	t.Run("content", func(t *testing.T) {
 		projects := projectsFromBody(t, w.Body.Bytes())
-		if len(projects) != 3 {
+		if len(projects["data"]) != 3 {
 			t.Fail()
 		}
 	})

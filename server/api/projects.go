@@ -16,5 +16,5 @@ func (api *API) GetProjectsHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, projects)
+	ctx.JSON(200, ResponseData{"data": projects})
 }
