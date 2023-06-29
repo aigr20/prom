@@ -14,7 +14,7 @@ func CreateConnection(dbName string, dbUser string, dbPassword string) (*sql.DB,
 		log.Printf("Database user or password unset. Received user: %s & password: %s. Set them using the --user and --password flags.\n", dbUser, dbPassword)
 		return nil, ErrConnectionFailed
 	}
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@/%s", dbUser, dbPassword, dbName))
+	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@/%s?parseTime=true&loc=%s", dbUser, dbPassword, dbName, time.Local))
 	if err != nil {
 		log.Printf("Connecting to database failed with error: %s\n", err.Error())
 		return nil, ErrConnectionFailed
