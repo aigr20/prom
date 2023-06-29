@@ -21,7 +21,7 @@ func main() {
 	router := gin.Default()
 	db, err := database.CreateConnection("prom", *dbUser, *dbPassword)
 	if err != nil {
-		log.Fatal("Database connection failed")
+		log.Fatalf("Database connection failed: %s", err.Error())
 	}
 	defer db.Close()
 
