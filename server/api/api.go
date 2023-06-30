@@ -38,5 +38,6 @@ func (api *API) Routes() {
 	projectsGroup := api.Router.Group("/projects")
 	{
 		projectsGroup.GET("/all", api.GetProjectsHandler)
+		projectsGroup.GET("/:projectId", api.GetProjectHandler)
 	}
 }

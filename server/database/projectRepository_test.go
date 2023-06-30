@@ -6,6 +6,27 @@ import (
 	"time"
 )
 
+var sampleProjects = []models.Project{
+	{
+		ID:      1,
+		Name:    "Glada Schemat",
+		Created: time.Date(2023, time.June, 24, 10, 0, 0, 0, time.Local),
+		Updated: time.Date(2023, time.June, 24, 10, 15, 0, 0, time.Local),
+	},
+	{
+		ID:      2,
+		Name:    "Max Power",
+		Created: time.Date(2023, time.June, 24, 9, 10, 0, 0, time.Local),
+		Updated: time.Date(2023, time.June, 24, 16, 13, 12, 0, time.Local),
+	},
+	{
+		ID:      3,
+		Name:    "Mina Recept",
+		Created: time.Date(2023, time.June, 25, 15, 22, 35, 0, time.Local),
+		Updated: time.Date(2023, time.June, 26, 12, 0, 14, 0, time.Local),
+	},
+}
+
 func getProjectRepository(t *testing.T) *ProjectRepository {
 	db, err := CreateConnection("prom_test", "prom_tester", "tester")
 	if err != nil {
@@ -36,30 +57,15 @@ func TestGetAllContent(t *testing.T) {
 	}{
 		{
 			name: "project_1",
-			want: models.Project{
-				ID:      1,
-				Name:    "Glada Schemat",
-				Created: time.Date(2023, time.June, 24, 10, 0, 0, 0, time.Local),
-				Updated: time.Date(2023, time.June, 24, 10, 15, 0, 0, time.Local),
-			},
+			want: sampleProjects[0],
 		},
 		{
 			name: "project_2",
-			want: models.Project{
-				ID:      2,
-				Name:    "Max Power",
-				Created: time.Date(2023, time.June, 24, 9, 10, 0, 0, time.Local),
-				Updated: time.Date(2023, time.June, 24, 16, 13, 12, 0, time.Local),
-			},
+			want: sampleProjects[1],
 		},
 		{
 			name: "project_3",
-			want: models.Project{
-				ID:      3,
-				Name:    "Mina Recept",
-				Created: time.Date(2023, time.June, 25, 15, 22, 35, 0, time.Local),
-				Updated: time.Date(2023, time.June, 26, 12, 0, 14, 0, time.Local),
-			},
+			want: sampleProjects[2],
 		},
 	}
 
@@ -72,6 +78,44 @@ func TestGetAllContent(t *testing.T) {
 	for i, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			if projects[i] != test.want {
+				t.Fail()
+			}
+		})
+	}
+}
+
+func TestGetOneContent(t *testing.T) {
+	tests := []struct {
+		name string
+		id   int
+		want models.Project
+	}{
+		{
+			name: "project_1",
+			id:   1,
+			want: sampleProjects[0],
+		},
+		{
+			name: "project_2",
+			id:   2,
+			want: sampleProjects[1],
+		},
+		{
+			name: "project_3",
+			id:   3,
+			want: sampleProjects[2],
+		},
+	}
+
+	repository := getProjectRepository(t)
+	defer repository.Close()
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			project, err := repository.GetOne(test.id)
+			if err != nil {
+				t.Error(err)
+			}
+			if project != test.want {
 				t.Fail()
 			}
 		})

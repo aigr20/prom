@@ -3,6 +3,7 @@ package database
 import (
 	"aigr20/prom/models"
 	"database/sql"
+	"log"
 )
 
 type ProjectRepository struct {
@@ -29,10 +30,25 @@ func (rep *ProjectRepository) GetAll() ([]models.Project, error) {
 		var project models.Project
 		err = rows.Scan(&project.ID, &project.Name, &project.Created, &project.Updated)
 		if err != nil {
-			return nil, err
+			log.Println(err)
+			return nil, ErrProjectScan
 		}
 		projects = append(projects, project)
 	}
 
 	return projects, nil
+}
+
+func (rep *ProjectRepository) GetOne(id int) (models.Project, error) {
+	row := rep.db.QueryRow("SELECT * FROM projects WHERE project_id = ?", id)
+	if row == nil {
+		return models.Project{}, ErrProjectNotFound
+	}
+	var project models.Project
+	err := row.Scan(&project.ID, &project.Name, &project.Created, &project.Updated)
+	if err != nil {
+		log.Println(err)
+		return models.Project{}, ErrProjectScan
+	}
+	return project, nil
 }
