@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useProjects } from "../../hooks/projectHooks";
 import "./Sidebar.css";
 
@@ -6,7 +7,7 @@ export default function Sidebar() {
   const projectElements = projects.map((project, idx) => {
     return (
       <li className="sidebar--list-item" key={idx}>
-        <a href={`/project/${project.id}`}>{project.name}</a>
+        <Link to={`project/${project.id}`}>{project.name}</Link>
       </li>
     );
   });
