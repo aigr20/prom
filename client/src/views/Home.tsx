@@ -10,9 +10,9 @@ function Home() {
 
   return (
     <div className="layout--wrapper-sidebar">
-      <Topbar projects={projects} />
+      <Topbar />
       <Sidebar projects={projects} />
-      <main className="content--wrapper">
+      <main className="layout--content-sidebar">
         <Outlet />
       </main>
     </div>

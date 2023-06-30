@@ -16,7 +16,7 @@ export default function Sidebar({ projects }: Props) {
   });
 
   return (
-    <aside className="sidebar--wrapper">
+    <aside className="layout--sidebar sidebar--home">
       <ul className="sidebar--list">{...projectElements}</ul>
     </aside>
   );

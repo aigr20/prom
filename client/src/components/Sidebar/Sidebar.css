@@ -1,15 +1,11 @@
-.sidebar--wrapper {
-  display: inline-block;
-  grid-area: 2 / 1 / 3 / 2;
-  width: 100%;
-  height: 100vh;
+.sidebar--home {
   border-right: 1px solid black;
 }
 
-.sidebar--wrapper .sidebar--list {
-  padding: 0 0 0 1rem;
+.sidebar--home .sidebar--list {
+  padding-left: 1rem;
 }
 
-.sidebar--wrapper .sidebar--list-item {
+.sidebar--home .sidebar--list-item {
   list-style: none;
 }

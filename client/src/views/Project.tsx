@@ -1,4 +1,6 @@
 import { useLoaderData, type Params } from "react-router-dom";
+import Topbar from "../components/Topbar/Topbar";
+import "../layout/HasSidebar.css";
 import { getProject } from "../services/projects";
 import { IProject } from "../types/project";
 
@@ -20,11 +22,10 @@ export default function Project() {
   }
 
   return (
-    <>
-      <p>{project.id}</p>
-      <p>{project.name}</p>
-      <p>{project.createdAt.toString()}</p>
-      <p>{project.updatedAt.toString()}</p>
-    </>
+    <div className="layout--wrapper-sidebar">
+      <Topbar />
+      <div className="layout--sidebar"></div>
+      <main className="layout--content-sidebar"></main>
+    </div>
   );
 }

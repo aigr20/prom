@@ -1,14 +1,12 @@
-import { IProject } from "../../types/project";
+import { Link } from "react-router-dom";
 import "./Topbar.css";
 
-type Props = {
-  projects: IProject[];
-};
-
-export default function Topbar({ projects }: Props) {
+export default function Topbar() {
   return (
     <nav className="topbar--wrapper">
-      <h1 className="topbar--logo">Prom</h1>
+      <h1 className="topbar--logo">
+        <Link to="/">Prom</Link>
+      </h1>
     </nav>
   );
 }
