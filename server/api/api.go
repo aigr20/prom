@@ -23,11 +23,18 @@ func NewAPI(db *sql.DB) *API {
 	return api
 }
 
+func CorsMiddleware() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		ctx.Header("Access-Control-Allow-Origin", "http://localhost:5173")
+	}
+}
+
 func (api *API) Serve() error {
 	return api.Router.Run(":8080")
 }
 
 func (api *API) Routes() {
+	api.Router.Use(CorsMiddleware())
 	projectsGroup := api.Router.Group("/projects")
 	{
 		projectsGroup.GET("/all", api.GetProjectsHandler)
