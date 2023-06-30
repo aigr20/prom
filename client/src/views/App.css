@@ -5,6 +5,12 @@
   width: 100vw;
   overflow: hidden;
   margin: 0 auto;
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 12.5% 1fr;
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.content--wrapper {
+  grid-area: 2 / 2 / 3 / 3;
+  width: 100%;
 }

@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
-import { useProjects } from "../../hooks/projectHooks";
+import { IProject } from "../../types/project";
 import "./Sidebar.css";
 
-export default function Sidebar() {
-  const projects = useProjects();
+type Props = {
+  projects: IProject[];
+};
+
+export default function Sidebar({ projects }: Props) {
   const projectElements = projects.map((project, idx) => {
     return (
       <li className="sidebar--list-item" key={idx}>
