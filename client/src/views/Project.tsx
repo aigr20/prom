@@ -1,6 +1,6 @@
 import { useLoaderData, type Params } from "react-router-dom";
-import { getProject } from "../../services/projects";
-import { IProject } from "../../types/project";
+import { getProject } from "../services/projects";
+import { IProject } from "../types/project";
 
 type LoaderProps = {
   params: Params<"projectId">;

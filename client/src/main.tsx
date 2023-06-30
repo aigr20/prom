@@ -1,23 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import App from "./App.tsx";
-import Project, {
-  loader as projectLoader,
-} from "./components/Project/Project.tsx";
 import "./index.css";
+import App from "./views/App";
+import Project, { loader as projectLoader } from "./views/Project";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [
-      {
-        path: "project/:projectId",
-        loader: projectLoader,
-        element: <Project />,
-      },
-    ],
+  },
+  {
+    path: "project/:projectId",
+    loader: projectLoader,
+    element: <Project />,
   },
 ]);
 
