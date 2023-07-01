@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { IProject } from "../../types/project";
-import "./Sidebar.css";
+import "./HomeViewBar.css";
 
 type Props = {
   projects: IProject[];
 };
 
-export default function Sidebar({ projects }: Props) {
+export default function HomeViewBar({ projects }: Props) {
   const projectElements = projects.map((project, idx) => {
     return (
       <li className="sidebar--list-item" key={idx}>
