@@ -19,12 +19,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "backlog",
-        loader: projectLoader,
         element: <Backlog />,
       },
       {
         path: "board",
-        loader: projectLoader,
         element: <Board />,
       },
     ],

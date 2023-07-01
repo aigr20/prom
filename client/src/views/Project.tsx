@@ -27,7 +27,7 @@ export default function Project() {
       <Topbar />
       <ProjectViewBar title={project.name} />
       <main className="layout--content-sidebar">
-        <Outlet />
+        <Outlet context={project} />
       </main>
     </div>
   );
