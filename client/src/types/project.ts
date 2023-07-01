@@ -4,3 +4,11 @@ export type IProject = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type ITask = {
+  id: number;
+  title: string;
+  desciption: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
