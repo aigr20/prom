@@ -1,5 +1,6 @@
 import { useLoaderData, type Params } from "react-router-dom";
 import Topbar from "../components/Topbar/Topbar";
+import ProjectViewBar from "../components/sidebars/ProjectViewBar";
 import "../layout/HasSidebar.css";
 import { getProject } from "../services/projects";
 import { IProject } from "../types/project";
@@ -24,7 +25,7 @@ export default function Project() {
   return (
     <div className="layout--wrapper-sidebar">
       <Topbar />
-      <div className="layout--sidebar"></div>
+      <ProjectViewBar title={project.name} />
       <main className="layout--content-sidebar"></main>
     </div>
   );

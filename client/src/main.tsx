@@ -14,6 +14,18 @@ const router = createBrowserRouter([
     path: "project/:projectId",
     loader: projectLoader,
     element: <Project />,
+    children: [
+      {
+        path: "backlog",
+        loader: projectLoader,
+        element: <Project />,
+      },
+      {
+        path: "board",
+        loader: projectLoader,
+        element: <Project />,
+      },
+    ],
   },
 ]);
 
