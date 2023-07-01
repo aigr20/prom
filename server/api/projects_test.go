@@ -45,6 +45,19 @@ func projectFromBody(t *testing.T, body []byte) models.Project {
 	return data["data"]
 }
 
+func issuesFromBody(t *testing.T, body []byte) []models.Issue {
+	data := make(map[string][]models.Issue)
+	reader := bytes.NewReader(body)
+	decoder := json.NewDecoder(reader)
+	err := decoder.Decode(&data)
+	if err != nil {
+		t.Fail()
+		return []models.Issue{}
+	}
+
+	return data["data"]
+}
+
 func TestAllProjectsRoute(t *testing.T) {
 	api := getTestAPI(t)
 
@@ -81,6 +94,31 @@ func TestOneProjectRoute(t *testing.T) {
 		project := projectFromBody(t, w.Body.Bytes())
 		if project.ID != 2 {
 			t.Fail()
+		}
+	})
+}
+
+func TestProjectIssuesRoute(t *testing.T) {
+	api := getTestAPI(t)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/projects/1/issues", nil)
+	api.Router.ServeHTTP(w, req)
+
+	t.Run("statuscode", func(t *testing.T) {
+		if w.Code != 200 {
+			t.Fail()
+		}
+	})
+	t.Run("content", func(t *testing.T) {
+		issues := issuesFromBody(t, w.Body.Bytes())
+		if len(issues) != 2 {
+			t.Fail()
+		}
+		for i, issue := range issues {
+			if issue.ID != i+1 {
+				t.Fail()
+			}
 		}
 	})
 }

@@ -12,12 +12,14 @@ type ResponseData = map[string]interface{}
 type API struct {
 	Router      *gin.Engine
 	ProjectRepo database.ProjectRepository
+	IssueRepo   database.IssueRepository
 }
 
 func NewAPI(db *sql.DB) *API {
 	api := &API{
 		Router:      gin.Default(),
 		ProjectRepo: *database.NewProjectRepository(db),
+		IssueRepo:   *database.NewIssueRepository(db),
 	}
 	api.Routes()
 	return api
@@ -39,5 +41,6 @@ func (api *API) Routes() {
 	{
 		projectsGroup.GET("/all", api.GetProjectsHandler)
 		projectsGroup.GET("/:projectId", api.GetProjectHandler)
+		projectsGroup.GET("/:projectId/issues", api.GetProjectIssuesHandler)
 	}
 }

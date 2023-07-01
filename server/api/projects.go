@@ -36,3 +36,19 @@ func (api *API) GetProjectHandler(ctx *gin.Context) {
 
 	ctx.JSON(200, ResponseData{"data": project})
 }
+
+func (api *API) GetProjectIssuesHandler(ctx *gin.Context) {
+	projectId, err := strconv.Atoi(ctx.Param("projectId"))
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, ErrBadRequest)
+		return
+	}
+
+	issues, err := api.IssueRepo.GetIssuesFromProject(projectId)
+	if err != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	ctx.JSON(200, ResponseData{"data": issues})
+}
