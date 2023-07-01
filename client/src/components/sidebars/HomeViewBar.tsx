@@ -10,7 +10,7 @@ export default function HomeViewBar({ projects }: Props) {
   const projectElements = projects.map((project, idx) => {
     return (
       <li className="sidebar--list-item" key={idx}>
-        <Link to={`project/${project.id}`}>{project.name}</Link>
+        <Link to={`project/${project.id}/backlog`}>{project.name}</Link>
       </li>
     );
   });

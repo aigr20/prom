@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import Backlog from "./components/Backlog/Backlog";
+import Board from "./components/Board/Board";
 import "./index.css";
 import Home from "./views/Home";
 import Project, { loader as projectLoader } from "./views/Project";
@@ -18,12 +20,12 @@ const router = createBrowserRouter([
       {
         path: "backlog",
         loader: projectLoader,
-        element: <Project />,
+        element: <Backlog />,
       },
       {
         path: "board",
         loader: projectLoader,
-        element: <Project />,
+        element: <Board />,
       },
     ],
   },

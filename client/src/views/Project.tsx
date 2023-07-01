@@ -1,4 +1,4 @@
-import { useLoaderData, type Params } from "react-router-dom";
+import { Outlet, useLoaderData, type Params } from "react-router-dom";
 import Topbar from "../components/Topbar/Topbar";
 import ProjectViewBar from "../components/sidebars/ProjectViewBar";
 import "../layout/HasSidebar.css";
@@ -26,7 +26,9 @@ export default function Project() {
     <div className="layout--wrapper-sidebar">
       <Topbar />
       <ProjectViewBar title={project.name} />
-      <main className="layout--content-sidebar"></main>
+      <main className="layout--content-sidebar">
+        <Outlet />
+      </main>
     </div>
   );
 }
