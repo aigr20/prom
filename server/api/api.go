@@ -42,5 +42,6 @@ func (api *API) Routes() {
 		projectsGroup.GET("/all", api.GetProjectsHandler)
 		projectsGroup.GET("/:projectId", api.GetProjectHandler)
 		projectsGroup.GET("/:projectId/issues", api.GetProjectIssuesHandler)
+		projectsGroup.POST("/create", api.CreateProjectHandler)
 	}
 }

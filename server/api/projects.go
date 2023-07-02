@@ -1,15 +1,13 @@
 package api
 
 import (
-	"errors"
+	"aigr20/prom/models"
+	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
-
-var ErrGetProjects = errors.New("failed retrieving projects")
-var ErrBadRequest = errors.New("bad request")
 
 func (api *API) GetProjectsHandler(ctx *gin.Context) {
 	projects, err := api.ProjectRepo.GetAll()
@@ -51,4 +49,23 @@ func (api *API) GetProjectIssuesHandler(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, ResponseData{"data": issues})
+}
+
+func (api *API) CreateProjectHandler(ctx *gin.Context) {
+	var body models.ProjectCreateForm
+	err := ctx.ShouldBindJSON(&body)
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithError(http.StatusBadRequest, ErrBadRequest)
+		return
+	}
+
+	project, err := api.ProjectRepo.CreateProject(body)
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, ResponseData{"data": project})
 }

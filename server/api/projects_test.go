@@ -122,3 +122,55 @@ func TestProjectIssuesRoute(t *testing.T) {
 		}
 	})
 }
+
+func TestCreateProjectRoute(t *testing.T) {
+	api := getTestAPI(t)
+
+	tests := []struct {
+		name       string
+		body       models.ProjectCreateForm
+		wantedCode int
+		wantedName string
+	}{
+		{
+			name:       "valid request",
+			body:       models.ProjectCreateForm{Name: "test project"},
+			wantedCode: http.StatusCreated,
+			wantedName: "test project",
+		},
+		{
+			name:       "invalid request",
+			body:       models.ProjectCreateForm{},
+			wantedCode: http.StatusBadRequest,
+			wantedName: "",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Cleanup(func() {
+				api.ProjectRepo.CustomQuery("DELETE FROM projects WHERE project_id > 3")
+				api.ProjectRepo.CustomQuery("ALTER TABLE projects AUTO_INCREMENT = 4")
+			})
+
+			w := httptest.NewRecorder()
+			bodyMarshal, err := json.Marshal(test.body)
+			if err != nil {
+				t.Error(err)
+			}
+			reader := bytes.NewReader(bodyMarshal)
+			req, _ := http.NewRequest("POST", "/projects/create", reader)
+			api.Router.ServeHTTP(w, req)
+
+			if w.Code != test.wantedCode {
+				t.FailNow()
+			}
+			if w.Code == http.StatusCreated {
+				project := projectFromBody(t, w.Body.Bytes())
+				if project.Name != test.wantedName {
+					t.FailNow()
+				}
+			}
+		})
+	}
+}
