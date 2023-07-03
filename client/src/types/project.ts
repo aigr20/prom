@@ -5,6 +5,11 @@ export type IProject = {
   updatedAt: Date;
 };
 
+export type IProjectsAndSetter = {
+  projects: IProject[];
+  setProjects: React.Dispatch<React.SetStateAction<IProject[]>>;
+};
+
 export type ITask = {
   id: number;
   title: string;

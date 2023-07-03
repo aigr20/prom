@@ -1,21 +1,24 @@
 import { Outlet } from "react-router-dom";
 import Topbar from "../components/Topbar/Topbar";
 import HomeViewBar from "../components/sidebars/HomeViewBar";
+import { ProjectContext } from "../context/ProjectContext";
 import { useProjects } from "../hooks/projectHooks";
 import "../layout/HasSidebar.css";
 import "./Home.css";
 
 function Home() {
-  const projects = useProjects();
+  const projectContext = useProjects();
 
   return (
-    <div className="layout--wrapper-sidebar">
-      <Topbar />
-      <HomeViewBar projects={projects} />
-      <main className="layout--content-sidebar">
-        <Outlet />
-      </main>
-    </div>
+    <ProjectContext.Provider value={projectContext}>
+      <div className="layout--wrapper-sidebar">
+        <Topbar />
+        <HomeViewBar />
+        <main className="layout--content-sidebar">
+          <Outlet />
+        </main>
+      </div>
+    </ProjectContext.Provider>
   );
 }
 

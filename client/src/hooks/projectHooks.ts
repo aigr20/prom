@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { getProjectTasks, getProjects } from "../services/projects";
 import { ProjectIDArg } from "../types/general";
-import { IProject, ITask } from "../types/project";
+import { IProject, IProjectsAndSetter, ITask } from "../types/project";
 
-export function useProjects(): IProject[] {
+export function useProjects(): IProjectsAndSetter {
   const [projects, setProjects] = useState<IProject[]>([]);
   useEffect(() => {
     getProjects().then(({ data }) => setProjects([...data]));
   }, []);
 
-  return projects;
+  return { projects, setProjects };
 }
 
 export function useProjectTasks({ projectId }: ProjectIDArg): ITask[] | null {
