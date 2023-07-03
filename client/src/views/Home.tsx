@@ -14,7 +14,7 @@ function Home() {
       <div className="layout--wrapper-sidebar">
         <Topbar />
         <HomeViewBar />
-        <main className="layout--content-sidebar">
+        <main className="layout--content">
           <Outlet />
         </main>
       </div>

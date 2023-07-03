@@ -4,6 +4,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Backlog from "./components/Backlog/Backlog";
 import Board from "./components/Board/Board";
 import "./index.css";
+import "./layout/base.css";
 import Home from "./views/Home";
 import Project, { loader as projectLoader } from "./views/Project";
 
