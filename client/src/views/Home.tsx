@@ -1,22 +1,29 @@
-import { Outlet } from "react-router-dom";
+import { useMemo, useState } from "react";
+import CreateProjectForm from "../components/CreateProjectForm/CreateProjectForm";
 import Topbar from "../components/Topbar/Topbar";
 import HomeViewBar from "../components/sidebars/HomeViewBar";
 import { ProjectContext } from "../context/ProjectContext";
-import { useProjects } from "../hooks/projectHooks";
-import "../layout/HasSidebar.css";
+import { IProject } from "../types/project";
 import "./Home.css";
 
 function Home() {
-  const projectContext = useProjects();
+  const [projects, setProjects] = useState<IProject[]>([]);
+  const [showCreateProject, setShowCreateProject] = useState(false);
+  const layout = useMemo(() => {
+    return showCreateProject
+      ? "layout--wrapper-leftrightbar"
+      : "layout--wrapper-sidebar";
+  }, [showCreateProject]);
 
   return (
-    <ProjectContext.Provider value={projectContext}>
-      <div className="layout--wrapper-sidebar">
+    <ProjectContext.Provider value={{ projects, setProjects }}>
+      <div className={layout}>
         <Topbar />
-        <HomeViewBar />
-        <main className="layout--content">
-          <Outlet />
-        </main>
+        <HomeViewBar showFormCB={setShowCreateProject} />
+        <main className="layout--content">Some content here soon</main>
+        {showCreateProject && (
+          <CreateProjectForm showFormSetter={setShowCreateProject} />
+        )}
       </div>
     </ProjectContext.Provider>
   );

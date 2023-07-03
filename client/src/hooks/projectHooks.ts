@@ -1,13 +1,22 @@
-import { useEffect, useState } from "react";
-import { getProjectTasks, getProjects } from "../services/projects";
-import { ProjectIDArg } from "../types/general";
-import { IProject, IProjectsAndSetter, ITask } from "../types/project";
+import { useContext, useEffect, useState } from "react";
+import { ProjectContext } from "../context/ProjectContext";
+import {
+  createProject,
+  getProjectTasks,
+  getProjects,
+} from "../services/projects";
+import type { ProjectIDArg, Setter } from "../types/general";
+import type {
+  IProjectCreationReturn,
+  IProjectsAndSetter,
+  ITask,
+} from "../types/project";
 
 export function useProjects(): IProjectsAndSetter {
-  const [projects, setProjects] = useState<IProject[]>([]);
+  const { projects, setProjects } = useContext(ProjectContext);
   useEffect(() => {
     getProjects().then(({ data }) => setProjects([...data]));
-  }, []);
+  }, [setProjects]);
 
   return { projects, setProjects };
 }
@@ -19,4 +28,25 @@ export function useProjectTasks({ projectId }: ProjectIDArg): ITask[] | null {
   }, [projectId]);
 
   return tasks;
+}
+
+export function useProjectCreation({
+  showFormSetter,
+}: Setter<"showFormSetter", boolean>): IProjectCreationReturn {
+  const [projectName, setProjectName] = useState("");
+  const { projects, setProjects } = useContext(ProjectContext);
+
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    createProject({ projectName }).then(({ data }) => {
+      if (data !== null) {
+        showFormSetter(false);
+        setProjects([...projects, data]);
+      } else {
+        alert("error!!!");
+      }
+    });
+  }
+
+  return { projectName, setProjectName, submitCallback: onSubmit };
 }

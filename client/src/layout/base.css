@@ -1,3 +1,6 @@
+@import "HasSidebar.css";
+@import "LeftRightBar.css";
+
 .layout--sidebar {
   grid-area: sidebar;
   width: 100%;

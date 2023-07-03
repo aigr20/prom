@@ -1,4 +1,4 @@
-import { ProjectIDArg, ResponseData } from "../types/general";
+import { CreateProjectArg, ProjectIDArg, ResponseData } from "../types/general";
 import { IProject, ITask } from "../types/project";
 
 const endpoint = "projects";
@@ -20,6 +20,27 @@ export async function getProject({
   return fetch(`http://localhost:8080/${endpoint}/${projectId}`)
     .then((res) => {
       if (res.ok && res.status === 200) return res.json();
+      return { data: null };
+    })
+    .catch(() => {
+      return { data: null };
+    });
+}
+
+export async function createProject({
+  projectName,
+}: CreateProjectArg): Promise<ResponseData<IProject | null>> {
+  const headers = new Headers();
+  headers.set("Content-Type", "application/json");
+  const options: RequestInit = {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ name: projectName }),
+  };
+
+  return fetch(`http://localhost:8080/${endpoint}/create`, options)
+    .then((res) => {
+      if (res.ok && res.status === 201) return res.json();
       return { data: null };
     })
     .catch(() => {
