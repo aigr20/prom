@@ -2,6 +2,7 @@ package api
 
 import (
 	"aigr20/prom/models"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,7 @@ func (api *API) CreateIssueHandler(ctx *gin.Context) {
 	var body models.IssueCreateForm
 	err := ctx.ShouldBindJSON(&body)
 	if err != nil {
+		log.Println(err)
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
