@@ -1,0 +1,11 @@
+.sidebar--home {
+  border-right: 1px solid black;
+}
+
+.sidebar--home .sidebar--list {
+  padding-left: 1rem;
+}
+
+.sidebar--home .sidebar--list-item {
+  list-style: none;
+}

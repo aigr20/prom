@@ -121,3 +121,47 @@ func TestGetOneContent(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateProject(t *testing.T) {
+	tests := []struct {
+		name        string
+		body        models.ProjectCreateForm
+		wantedId    int
+		wantedName  string
+		wantedError error
+	}{
+		{
+			name:        "valid_creation",
+			body:        models.ProjectCreateForm{Name: "testproject"},
+			wantedId:    4,
+			wantedName:  "testproject",
+			wantedError: nil,
+		},
+		{
+			name:        "missing_name",
+			body:        models.ProjectCreateForm{},
+			wantedId:    0,
+			wantedName:  "",
+			wantedError: ErrProjectCreate,
+		},
+	}
+	repo := getProjectRepository(t)
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Cleanup(func() {
+				repo.CustomQuery("DELETE FROM projects WHERE project_id > 3")
+				repo.CustomQuery("ALTER TABLE projects AUTO_INCREMENT = 4")
+			})
+
+			project, err := repo.CreateProject(test.body)
+			if err != test.wantedError {
+				t.Fail()
+				return
+			}
+			if project.ID != test.wantedId || project.Name != test.wantedName {
+				t.Fail()
+			}
+		})
+	}
+}

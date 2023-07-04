@@ -1,21 +1,30 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import App from "./App.tsx";
-import Project, {
-  loader as projectLoader,
-} from "./components/Project/Project.tsx";
+import Backlog from "./components/Backlog/Backlog";
+import Board from "./components/Board/Board";
 import "./index.css";
+import "./layout/base.css";
+import Home from "./views/Home";
+import Project, { loader as projectLoader } from "./views/Project";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Home />,
+  },
+  {
+    path: "project/:projectId",
+    loader: projectLoader,
+    element: <Project />,
     children: [
       {
-        path: "project/:projectId",
-        loader: projectLoader,
-        element: <Project />,
+        path: "backlog",
+        element: <Backlog />,
+      },
+      {
+        path: "board",
+        element: <Board />,
       },
     ],
   },

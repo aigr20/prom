@@ -1,0 +1,7 @@
+.sidebar--project {
+  border-right: 1px solid black;
+}
+
+.sidebar--project .active {
+  color: red;
+}

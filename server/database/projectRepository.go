@@ -52,3 +52,33 @@ func (rep *ProjectRepository) GetOne(id int) (models.Project, error) {
 	}
 	return project, nil
 }
+
+func (rep *ProjectRepository) CreateProject(body models.ProjectCreateForm) (models.Project, error) {
+	if body.Name == "" {
+		return models.Project{}, ErrProjectCreate
+	}
+
+	result, err := rep.db.Exec("INSERT INTO projects (project_name) VALUES (?)", body.Name)
+	if err != nil {
+		log.Println(err)
+		return models.Project{}, ErrProjectCreate
+	}
+	lastId, err := result.LastInsertId()
+	if err != nil {
+		log.Println(err)
+		return models.Project{}, ErrProjectCreate
+	}
+
+	project, err := rep.GetOne(int(lastId))
+	if err != nil {
+		log.Println(err)
+		return models.Project{}, ErrProjectCreate
+	}
+
+	return project, nil
+}
+
+// Should only be used in tests
+func (rep *ProjectRepository) CustomQuery(query string, args ...any) (sql.Result, error) {
+	return rep.db.Exec(query, args...)
+}

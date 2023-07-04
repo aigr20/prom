@@ -1,0 +1,11 @@
+.layout--wrapper-sidebar {
+  display: grid;
+  grid-template-columns: 12.5% 1fr;
+  grid-template-rows: 7vh 1fr;
+  grid-template-areas: "header header"
+    "sidebar content";
+
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
