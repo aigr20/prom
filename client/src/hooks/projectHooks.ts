@@ -5,7 +5,7 @@ import {
   getProjectTasks,
   getProjects,
 } from "../services/projects";
-import type { ProjectIDArg, Setter } from "../types/general";
+import type { Setter } from "../types/general";
 import type { IProjectsAndSetter, ITask } from "../types/project";
 
 export function useProjects(): IProjectsAndSetter {
@@ -17,9 +17,15 @@ export function useProjects(): IProjectsAndSetter {
   return { projects, setProjects };
 }
 
-export function useProjectTasks({ projectId }: ProjectIDArg): ITask[] | null {
+type ProjectTasksArgs = {
+  projectId?: number;
+};
+export function useProjectTasks({
+  projectId,
+}: ProjectTasksArgs): ITask[] | null {
   const [tasks, setTasks] = useState<ITask[] | null>(null);
   useEffect(() => {
+    if (projectId === undefined) return;
     getProjectTasks({ projectId }).then(({ data }) => setTasks([...data]));
   }, [projectId]);
 

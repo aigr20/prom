@@ -1,7 +1,11 @@
-import { CreateProjectArg, ProjectIDArg, ResponseData } from "../types/general";
+import { CreateProjectArg, ResponseData } from "../types/general";
 import { IProject, ITask } from "../types/project";
 
 const endpoint = "projects";
+
+type ProjectIDArg = {
+  projectId: number;
+};
 
 export async function getProjects(): Promise<ResponseData<IProject[]>> {
   return fetch(`http://localhost:8080/${endpoint}/all`)

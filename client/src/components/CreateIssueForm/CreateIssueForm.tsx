@@ -1,13 +1,28 @@
 import { useIssueCreation } from "../../hooks/issueHooks";
+import { Setter } from "../../types/general";
+import { ITask } from "../../types/project";
 import "./CreateIssueForm.css";
 
 type Props = {
   projectId: number;
+  issues: ITask[];
+  setIssues: Setter<ITask[]>;
+  setShowCreateIssue: Setter<boolean>;
 };
 
-export default function CreateIssueForm({ projectId }: Props) {
+export default function CreateIssueForm({
+  projectId,
+  issues,
+  setIssues,
+  setShowCreateIssue,
+}: Props) {
   const { title, setTitle, description, setDescription, onSubmit } =
-    useIssueCreation({ projectId });
+    useIssueCreation({
+      projectId,
+      issues,
+      setIssues,
+      setShowCreateIssue,
+    });
 
   return (
     <form className="rightbar--wrapper create_issue--form" onSubmit={onSubmit}>

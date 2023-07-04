@@ -3,6 +3,7 @@ import { Outlet, useLoaderData, type Params } from "react-router-dom";
 import CreateIssueForm from "../components/CreateIssueForm/CreateIssueForm";
 import Topbar from "../components/Topbar/Topbar";
 import ProjectViewBar from "../components/sidebars/ProjectViewBar";
+import { useProjectTasks } from "../hooks/projectHooks";
 import { getProject } from "../services/projects";
 import { IProject } from "../types/project";
 
@@ -19,6 +20,7 @@ export async function loader({
 
 export default function Project() {
   const { project } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const tasks = useProjectTasks({ projectId: project?.id });
   const [showCreateIssue, setShowCreateIssue] = useState(false);
   const layout = useMemo(() => {
     return showCreateIssue
@@ -35,9 +37,14 @@ export default function Project() {
       <Topbar />
       <ProjectViewBar title={project.name} />
       <main className="layout--content-sidebar">
-        <Outlet context={{ project, setShowCreateIssue }} />
+        <Outlet context={{ project, setShowCreateIssue, tasks }} />
       </main>
-      {showCreateIssue && <CreateIssueForm projectId={project.id} />}
+      {showCreateIssue && (
+        <CreateIssueForm
+          projectId={project.id}
+          setShowCreateIssue={setShowCreateIssue}
+        />
+      )}
     </div>
   );
 }
