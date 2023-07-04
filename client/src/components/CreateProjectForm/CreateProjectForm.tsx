@@ -11,7 +11,10 @@ export default function CreateProjectForm({ showFormSetter }: Props) {
     showFormSetter,
   });
   return (
-    <form className="rightbar--wrapper" onSubmit={submitCallback}>
+    <form
+      className="create_project--form rightbar--wrapper"
+      onSubmit={submitCallback}
+    >
       <h2>Create Project</h2>
       <input
         type="text"
