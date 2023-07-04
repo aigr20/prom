@@ -41,3 +41,12 @@ func (rep *IssueRepository) GetIssuesFromProject(projectId int) ([]models.Issue,
 
 	return issues, nil
 }
+
+func (rep *IssueRepository) CreateIssue(body models.IssueCreateForm) (models.Issue, error) {
+	return models.Issue{}, nil
+}
+
+// Should only be used in tests
+func (rep *IssueRepository) CustomQuery(query string, args ...any) (sql.Result, error) {
+	return rep.db.Exec(query, args...)
+}
