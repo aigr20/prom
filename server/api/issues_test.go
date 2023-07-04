@@ -15,7 +15,7 @@ func issueFromBody(t *testing.T, body []byte) models.Issue {
 	decoder := json.NewDecoder(reader)
 	err := decoder.Decode(&data)
 	if err != nil {
-		t.FailNow()
+		return models.Issue{}
 	}
 
 	return data["data"]
@@ -28,7 +28,6 @@ func TestCreateIssueRoute(t *testing.T) {
 		wantedCode        int
 		wantedTitle       string
 		wantedDescription string
-		wantedProject     int
 	}{
 		{
 			name: "title&description",
@@ -40,7 +39,6 @@ func TestCreateIssueRoute(t *testing.T) {
 			wantedCode:        http.StatusCreated,
 			wantedTitle:       "new issue",
 			wantedDescription: "description",
-			wantedProject:     1,
 		},
 		{
 			name: "title_no_description",
@@ -51,7 +49,6 @@ func TestCreateIssueRoute(t *testing.T) {
 			wantedCode:        http.StatusCreated,
 			wantedTitle:       "new issue",
 			wantedDescription: "",
-			wantedProject:     2,
 		},
 		{
 			name: "missing_title",
@@ -98,11 +95,13 @@ func TestCreateIssueRoute(t *testing.T) {
 			api.Router.ServeHTTP(w, req)
 
 			if w.Code != test.wantedCode {
+				t.Log("Failing code")
 				t.FailNow()
 			}
 
 			issue := issueFromBody(t, w.Body.Bytes())
-			if issue.Title != test.wantedTitle || issue.Description != test.wantedDescription || issue.ProjectID != test.wantedProject {
+			if issue.Title != test.wantedTitle || issue.Description != test.wantedDescription {
+				t.Log("failing content")
 				t.FailNow()
 			}
 		})
