@@ -6,11 +6,7 @@ import {
   getProjects,
 } from "../services/projects";
 import type { ProjectIDArg, Setter } from "../types/general";
-import type {
-  IProjectCreationReturn,
-  IProjectsAndSetter,
-  ITask,
-} from "../types/project";
+import type { IProjectsAndSetter, ITask } from "../types/project";
 
 export function useProjects(): IProjectsAndSetter {
   const { projects, setProjects } = useContext(ProjectContext);
@@ -33,9 +29,14 @@ export function useProjectTasks({ projectId }: ProjectIDArg): ITask[] | null {
 type ProjectCreationArgs = {
   showFormSetter: Setter<boolean>;
 };
+type ProjectCreationReturn = {
+  projectName: string;
+  setProjectName: React.Dispatch<React.SetStateAction<string>>;
+  submitCallback: React.FormEventHandler<HTMLFormElement>;
+};
 export function useProjectCreation({
   showFormSetter,
-}: ProjectCreationArgs): IProjectCreationReturn {
+}: ProjectCreationArgs): ProjectCreationReturn {
   const [projectName, setProjectName] = useState("");
   const { projects, setProjects } = useContext(ProjectContext);
 
