@@ -4,9 +4,11 @@ import { Setter } from "../../types/general";
 import { Icons } from "../util/icons";
 import "./HomeViewBar.css";
 
-export default function HomeViewBar({
-  showFormCB,
-}: Setter<"showFormCB", boolean>) {
+type Props = {
+  showFormCB: Setter<boolean>;
+};
+
+export default function HomeViewBar({ showFormCB }: Props) {
   const { projects } = useProjects();
   const projectElements = projects.map((project, idx) => {
     return (

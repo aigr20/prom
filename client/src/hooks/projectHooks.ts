@@ -30,9 +30,12 @@ export function useProjectTasks({ projectId }: ProjectIDArg): ITask[] | null {
   return tasks;
 }
 
+type ProjectCreationArgs = {
+  showFormSetter: Setter<boolean>;
+};
 export function useProjectCreation({
   showFormSetter,
-}: Setter<"showFormSetter", boolean>): IProjectCreationReturn {
+}: ProjectCreationArgs): IProjectCreationReturn {
   const [projectName, setProjectName] = useState("");
   const { projects, setProjects } = useContext(ProjectContext);
 

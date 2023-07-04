@@ -2,9 +2,11 @@ import { useProjectCreation } from "../../hooks/projectHooks";
 import { Setter } from "../../types/general";
 import "./CreateProjectForm.css";
 
-export default function CreateProjectForm({
-  showFormSetter,
-}: Setter<"showFormSetter", boolean>) {
+type Props = {
+  showFormSetter: Setter<boolean>;
+};
+
+export default function CreateProjectForm({ showFormSetter }: Props) {
   const { projectName, setProjectName, submitCallback } = useProjectCreation({
     showFormSetter,
   });
