@@ -28,6 +28,7 @@ func TestCreateIssueRoute(t *testing.T) {
 		wantedCode        int
 		wantedTitle       string
 		wantedDescription string
+		wantedStatus      string
 	}{
 		{
 			name: "title&description",
@@ -39,6 +40,7 @@ func TestCreateIssueRoute(t *testing.T) {
 			wantedCode:        http.StatusCreated,
 			wantedTitle:       "new issue",
 			wantedDescription: "description",
+			wantedStatus:      "TODO",
 		},
 		{
 			name: "title_no_description",
@@ -49,6 +51,7 @@ func TestCreateIssueRoute(t *testing.T) {
 			wantedCode:        http.StatusCreated,
 			wantedTitle:       "new issue",
 			wantedDescription: "",
+			wantedStatus:      "TODO",
 		},
 		{
 			name: "missing_title",
@@ -100,7 +103,7 @@ func TestCreateIssueRoute(t *testing.T) {
 			}
 
 			issue := issueFromBody(t, w.Body.Bytes())
-			if issue.Title != test.wantedTitle || issue.Description != test.wantedDescription {
+			if issue.Title != test.wantedTitle || issue.Description != test.wantedDescription || issue.Status != test.wantedStatus {
 				t.Log("failing content")
 				t.FailNow()
 			}
