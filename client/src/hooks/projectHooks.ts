@@ -20,16 +20,20 @@ export function useProjects(): IProjectsAndSetter {
 type ProjectTasksArgs = {
   projectId?: number;
 };
+type ProjectTasksReturn = {
+  tasks: ITask[];
+  setTasks: Setter<ITask[]>;
+};
 export function useProjectTasks({
   projectId,
-}: ProjectTasksArgs): ITask[] | null {
-  const [tasks, setTasks] = useState<ITask[] | null>(null);
+}: ProjectTasksArgs): ProjectTasksReturn {
+  const [tasks, setTasks] = useState<ITask[]>([]);
   useEffect(() => {
     if (projectId === undefined) return;
     getProjectTasks({ projectId }).then(({ data }) => setTasks([...data]));
   }, [projectId]);
 
-  return tasks;
+  return { tasks, setTasks };
 }
 
 type ProjectCreationArgs = {

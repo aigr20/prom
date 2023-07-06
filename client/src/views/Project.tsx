@@ -20,7 +20,7 @@ export async function loader({
 
 export default function Project() {
   const { project } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  const tasks = useProjectTasks({ projectId: project?.id });
+  const { tasks, setTasks } = useProjectTasks({ projectId: project?.id });
   const [showCreateIssue, setShowCreateIssue] = useState(false);
   const layout = useMemo(() => {
     return showCreateIssue
@@ -43,6 +43,8 @@ export default function Project() {
         <CreateIssueForm
           projectId={project.id}
           setShowCreateIssue={setShowCreateIssue}
+          issues={tasks}
+          setIssues={setTasks}
         />
       )}
     </div>
