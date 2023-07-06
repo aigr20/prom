@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Outlet, useLoaderData, type Params } from "react-router-dom";
 import CreateIssueForm from "../components/CreateIssueForm/CreateIssueForm";
 import Topbar from "../components/Topbar/Topbar";
 import ProjectViewBar from "../components/sidebars/ProjectViewBar";
+import { useOnRouteChange } from "../hooks/generalHooks";
 import { useProjectTasks } from "../hooks/projectHooks";
 import { getProject } from "../services/projects";
 import { IProject } from "../types/project";
@@ -27,6 +28,8 @@ export default function Project() {
       ? "layout--wrapper-leftrightbar"
       : "layout--wrapper-sidebar";
   }, [showCreateIssue]);
+  const onRouteChange = useCallback(() => setShowCreateIssue(false), []);
+  useOnRouteChange({ callback: onRouteChange });
 
   if (project === null) {
     return <p>No project found!</p>;
