@@ -8,3 +8,7 @@
   width: 100%;
   overflow: hidden;
 }
+
+.layout--wrapper-leftrightbar .rightbar--wrapper {
+  grid-area: rightbar;
+}

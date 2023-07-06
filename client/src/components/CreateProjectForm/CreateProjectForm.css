@@ -1,4 +1,3 @@
-.rightbar--wrapper {
-  grid-area: rightbar;
+.create_project--form {
   border-left: 1px solid black;
 }

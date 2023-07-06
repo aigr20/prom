@@ -10,12 +10,6 @@ export type IProjectsAndSetter = {
   setProjects: React.Dispatch<React.SetStateAction<IProject[]>>;
 };
 
-export type IProjectCreationReturn = {
-  projectName: string;
-  setProjectName: React.Dispatch<React.SetStateAction<string>>;
-  submitCallback: React.FormEventHandler<HTMLFormElement>;
-};
-
 export type ITask = {
   id: number;
   title: string;

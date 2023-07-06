@@ -129,3 +129,90 @@ func TestGetAllForProjectContent(t *testing.T) {
 		})
 	}
 }
+
+func TestCreateIssue(t *testing.T) {
+	tests := []struct {
+		name              string
+		body              models.IssueCreateForm
+		wantedTitle       string
+		wantedDescription string
+		wantedProject     int
+		wantedError       error
+	}{
+		{
+			name: "title&description",
+			body: models.IssueCreateForm{
+				Title:       "new issue",
+				Description: "description",
+				ProjectID:   1,
+			},
+			wantedTitle:       "new issue",
+			wantedDescription: "description",
+			wantedProject:     1,
+			wantedError:       nil,
+		},
+		{
+			name: "title_no_description",
+			body: models.IssueCreateForm{
+				Title:     "new issue",
+				ProjectID: 2,
+			},
+			wantedTitle:       "new issue",
+			wantedDescription: "",
+			wantedProject:     2,
+			wantedError:       nil,
+		},
+		{
+			name: "invalid_project",
+			body: models.IssueCreateForm{
+				Title:     "invalid project",
+				ProjectID: 6,
+			},
+			wantedTitle:       "",
+			wantedDescription: "",
+			wantedProject:     0,
+			wantedError:       ErrIssueCreate,
+		},
+		{
+			name: "missing_title",
+			body: models.IssueCreateForm{
+				Description: "description",
+				ProjectID:   2,
+			},
+			wantedTitle:       "",
+			wantedDescription: "",
+			wantedProject:     0,
+			wantedError:       ErrIssueCreate,
+		},
+		{
+			name: "missing_project",
+			body: models.IssueCreateForm{
+				Title:       "invalid project",
+				Description: "description",
+			},
+			wantedTitle:       "",
+			wantedDescription: "",
+			wantedProject:     0,
+			wantedError:       ErrIssueCreate,
+		},
+	}
+
+	repo := getIssueRepository(t)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Cleanup(func() {
+				repo.CustomQuery("DELETE FROM issues WHERE issue_id > 4")
+				repo.CustomQuery("ALTER TABLE issues AUTO_INCREMENT = 5")
+			})
+
+			issue, err := repo.CreateIssue(test.body)
+			if err != test.wantedError {
+				t.FailNow()
+			}
+
+			if issue.Title != test.wantedTitle || issue.Description != test.wantedDescription || issue.ProjectID != test.wantedProject {
+				t.FailNow()
+			}
+		})
+	}
+}
