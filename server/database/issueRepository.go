@@ -21,39 +21,59 @@ func (rep *IssueRepository) Close() error {
 }
 
 func (rep *IssueRepository) GetIssuesFromProject(projectId int) ([]models.Issue, error) {
-	rows, err := rep.db.Query("SELECT * FROM issues WHERE project = ?", projectId)
+	const query = `
+	SELECT
+		i.issue_id,
+		i.issue_title,
+		i.issue_description,
+		i.creation_date,
+		i.last_changed,
+		i.project,
+		s.status_text
+	FROM issues AS i
+	JOIN issue_statuses AS s
+	ON i.issue_status = s.status_id
+	WHERE project = ?`
+	rows, err := rep.db.Query(query, projectId)
 	if err != nil {
 		log.Println(err)
 		return nil, ErrIssuesNotFound
 	}
 	defer rows.Close()
 
-	issues := make([]models.Issue, 0)
-	for rows.Next() {
-		var issue models.Issue
-		err = rows.Scan(&issue.ID, &issue.Title, &issue.Description, &issue.Created, &issue.Updated, &issue.ProjectID)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		issues = append(issues, issue)
+	issues, err := models.ScanIssues(rows)
+	if err != nil {
+		log.Println(err)
+		return nil, err
 	}
 
 	return issues, nil
 }
 
 func (rep *IssueRepository) GetOne(issueId int) (models.Issue, error) {
-	row := rep.db.QueryRow("SELECT * FROM issues WHERE issue_id = ?", issueId)
+	const query = `
+	SELECT
+		i.issue_id,
+		i.issue_title,
+		i.issue_description,
+		i.creation_date,
+		i.last_changed,
+		i.project,
+		s.status_text
+	FROM issues AS i
+	JOIN issue_statuses AS s
+	ON i.issue_status = s.status_id
+	WHERE i.issue_id = ?`
+	row := rep.db.QueryRow(query, issueId)
 	if row.Err() != nil {
 		log.Println(row.Err())
 		return models.Issue{}, ErrIssueNotFound
 	}
 
-	var issue models.Issue
-	err := row.Scan(&issue.ID, &issue.Title, &issue.Description, &issue.Created, &issue.Updated, &issue.ProjectID)
+	issue, err := models.ScanIssue(row)
 	if err != nil {
 		log.Println(err)
-		return models.Issue{}, ErrIssueCreate
+		return models.Issue{}, ErrIssueNotFound
 	}
 
 	return issue, nil
