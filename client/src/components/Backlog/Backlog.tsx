@@ -1,18 +1,11 @@
 import { useOutletContext } from "react-router-dom";
-import { Setter } from "../../types/general";
-import { IProject, ITask } from "../../types/project";
+import { IProjectViewOutletContext } from "../../types/project";
 import SpinIfNull from "../util/SpinIfNull";
 import { Icons } from "../util/icons";
 
-type BacklogContext = {
-  project: IProject;
-  tasks: ITask[];
-  setShowCreateIssue: Setter<boolean>;
-};
-
 export default function Backlog() {
   const { project, setShowCreateIssue, tasks } =
-    useOutletContext<BacklogContext>();
+    useOutletContext<IProjectViewOutletContext>();
 
   return (
     <>
