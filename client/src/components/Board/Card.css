@@ -1,0 +1,30 @@
+.board--card {
+  min-height: 15%;
+  height: 15%;
+  max-height: 15%;
+  background: red;
+  text-align: left;
+  padding: 0.2rem;
+  border-radius: 8px;
+  position: static;
+  cursor: grab;
+  user-select: none;
+}
+
+.board--card.board--card-dragged {
+  position: absolute;
+  cursor: grabbing;
+}
+
+.board--card .card--title {
+  margin: 0 0 0.4rem;
+}
+
+.board--card .card--tag {
+  background: #f3f3f3;
+  margin: 0 0.2rem;
+  padding: 0.2rem;
+  border-radius: 6px;
+  border: 2px solid #444;
+  color: #777;
+}

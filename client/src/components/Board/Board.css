@@ -3,6 +3,8 @@
   flex-direction: row;
   gap: 1rem;
   margin: 0.5rem;
+  height: 90%;
+  max-height: 90%;
 }
 
 .board--wrapper .board--column {
@@ -11,6 +13,12 @@
   border: 1px solid black;
   border-radius: 4px;
   background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 100%;
+  overflow-y: scroll;
+  padding: 4px;
 }
 
 .board--wrapper .board--column .board--column-title {
