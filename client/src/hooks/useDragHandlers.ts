@@ -19,6 +19,9 @@ export function useDragHandlers<E extends HTMLElement>(
   }
 
   function onMouseDown(event: MouseEvent<E>) {
+    if (event.button !== 0) {
+      return;
+    }
     const target = event.currentTarget;
     const col = Number(target.dataset["colIndex"]);
     const card = Number(target.dataset["index"]);
