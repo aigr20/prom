@@ -15,7 +15,7 @@ export type IProjectsAndSetter = {
 export type ITask = {
   id: number;
   title: string;
-  desciption?: string;
+  description?: string;
   createdAt: Date;
   updatedAt: Date;
   status: string;
