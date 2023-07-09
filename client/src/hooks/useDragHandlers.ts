@@ -13,9 +13,12 @@ export function useDragHandlers<E extends HTMLElement>(
 ): useDragHandlerReturn<E> {
   const dragged = useRef<{ data: ITask; element: E }>();
 
-  function move(element: E, x: number, y: number) {
-    element.style.left = `${x - element.offsetWidth / 2}px`;
-    element.style.top = `${y - element.offsetHeight / 2}px`;
+  function move(x: number, y: number) {
+    if (dragged.current) {
+      const element = dragged.current.element;
+      element.style.left = `${x - element.offsetWidth / 2}px`;
+      element.style.top = `${y - element.offsetHeight / 2}px`;
+    }
   }
 
   function onMouseDown(event: MouseEvent<E>) {
@@ -35,19 +38,15 @@ export function useDragHandlers<E extends HTMLElement>(
     target.classList.add("board--card-dragged");
     target.style.width = `${width}px`;
     target.style.height = `${height}px`;
-    move(target, event.pageX, event.pageY);
+    move(event.pageX, event.pageY);
   }
 
   function onMouseMove(event: MouseEvent<E>) {
-    if (dragged.current) {
-      move(dragged.current.element, event.pageX, event.pageY);
-    }
+    move(event.pageX, event.pageY);
   }
 
   function onMouseLeave(event: MouseEvent<E>) {
-    if (dragged.current) {
-      move(dragged.current.element, event.pageX, event.pageY);
-    }
+    move(event.pageX, event.pageY);
   }
 
   function onMouseUp(event: MouseEvent<E>) {
