@@ -1,7 +1,5 @@
 .board--card {
-  min-height: 15%;
   height: 15%;
-  max-height: 15%;
   background: red;
   text-align: left;
   padding: 0.2rem;

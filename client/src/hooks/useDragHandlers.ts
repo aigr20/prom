@@ -25,8 +25,16 @@ export function useDragHandlers<E extends HTMLElement>(
     const target = event.currentTarget;
     const col = Number(target.dataset["colIndex"]);
     const card = Number(target.dataset["index"]);
-    dragged.current = { data: tasks[card], element: target };
+    const { width, height } = target.getBoundingClientRect();
+
+    dragged.current = {
+      data: tasks[card],
+      element: target,
+    };
+
     target.classList.add("board--card-dragged");
+    target.style.width = `${width}px`;
+    target.style.height = `${height}px`;
     move(target, event.pageX, event.pageY);
   }
 
@@ -45,8 +53,7 @@ export function useDragHandlers<E extends HTMLElement>(
   function onMouseUp(event: MouseEvent<E>) {
     if (dragged.current) {
       dragged.current.element.classList.remove("board--card-dragged");
-      dragged.current.element.style.top = "";
-      dragged.current.element.style.left = "";
+      dragged.current.element.removeAttribute("style");
       dragged.current = undefined;
     }
   }
