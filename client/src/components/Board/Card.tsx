@@ -1,16 +1,25 @@
 import { useDragHandlers } from "../../hooks/useDragHandlers";
+import { IColumn } from "../../types/board";
+import { Setter } from "../../types/general";
 import { ITask } from "../../types/project";
 import "./Card.css";
 
 type Props = {
-  tasks: ITask[];
   task: ITask;
   index: number;
   colIndex: number;
+  columns: IColumn[];
+  setColumns: Setter<IColumn[]>;
 };
 
-export default function Card({ task, index, colIndex, tasks }: Props) {
-  const handlers = useDragHandlers(tasks);
+export default function Card({
+  task,
+  index,
+  colIndex,
+  columns,
+  setColumns,
+}: Props) {
+  const handlers = useDragHandlers(columns, setColumns);
 
   return (
     <div

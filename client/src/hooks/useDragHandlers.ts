@@ -1,4 +1,6 @@
 import { useRef, type MouseEvent } from "react";
+import { IColumn } from "../types/board";
+import { Setter } from "../types/general";
 import { ITask } from "../types/project";
 
 type useDragHandlerReturn<E extends Element> = {
@@ -9,7 +11,8 @@ type useDragHandlerReturn<E extends Element> = {
 };
 
 export function useDragHandlers<E extends HTMLElement>(
-  tasks: ITask[],
+  columns: IColumn[],
+  setColumns: Setter<IColumn[]>,
 ): useDragHandlerReturn<E> {
   const dragged = useRef<{ data: ITask; element: E }>();
 
@@ -31,7 +34,7 @@ export function useDragHandlers<E extends HTMLElement>(
     const { width, height } = target.getBoundingClientRect();
 
     dragged.current = {
-      data: tasks[card],
+      data: columns[col].issues[card],
       element: target,
     };
 
@@ -52,6 +55,22 @@ export function useDragHandlers<E extends HTMLElement>(
   function onMouseUp(event: MouseEvent<E>) {
     if (dragged.current) {
       dragged.current.element.classList.remove("board--card-dragged");
+      const column = document
+        .elementFromPoint(event.clientX, event.clientY)
+        ?.closest(".board--column") as HTMLElement | null;
+
+      if (column) {
+        const oldColIndex = Number(dragged.current.element.dataset["colIndex"]);
+        const colIndex = Number(column.dataset["colIndex"] ?? oldColIndex);
+        console.log({ colIndex, oldColIndex });
+        columns[colIndex].issues.push(dragged.current.data);
+        columns[oldColIndex].issues.splice(
+          Number(dragged.current.element.dataset.index),
+          1,
+        );
+        setColumns([...columns]);
+      }
+
       dragged.current.element.removeAttribute("style");
       dragged.current = undefined;
     }
