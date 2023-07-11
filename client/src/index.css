@@ -34,6 +34,29 @@ body {
   min-height: 100vh;
 }
 
+.form_title--wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form_title--wrapper .form--title {
+  margin: 0;
+}
+
+.form_title--wrapper .form--close {
+  font-size: 1.6rem;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.form_title--wrapper .form--close:hover {
+  color: red;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
