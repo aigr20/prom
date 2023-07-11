@@ -3,16 +3,20 @@ package database
 import (
 	"aigr20/prom/models"
 	"database/sql"
+	"fmt"
 	"log"
+	"strings"
 )
 
 type IssueRepository struct {
-	db *sql.DB
+	db          *sql.DB
+	columnNames []string
 }
 
 func NewIssueRepository(db *sql.DB) *IssueRepository {
 	return &IssueRepository{
-		db: db,
+		db:          db,
+		columnNames: []string{"issue_id", "issue_title", "issue_description", "creation_date", "last_changed", "project", "issue_status"},
 	}
 }
 
@@ -101,6 +105,52 @@ func (rep *IssueRepository) CreateIssue(body models.IssueCreateForm) (models.Iss
 	}
 
 	return createdIssue, nil
+}
+
+func (rep *IssueRepository) isLegalColumnName(toTest string) bool {
+	for _, column := range rep.columnNames {
+		if toTest == column {
+			return true
+		}
+	}
+	return false
+}
+
+func (rep *IssueRepository) UpdateIssue(target int, fields []string, values []any) (models.Issue, error) {
+	if len(fields) != len(values) {
+		return models.Issue{}, ErrUpdateFieldCount
+	} else if len(fields) == 0 || len(values) == 0 {
+		return models.Issue{}, ErrNoFields
+	}
+
+	queryBuilder := strings.Builder{}
+	args := make([]any, 0)
+	for i, fieldName := range fields {
+		if !rep.isLegalColumnName(fieldName) {
+			return models.Issue{}, ErrIllegalFieldName
+		}
+
+		queryBuilder.WriteString(fieldName)
+		queryBuilder.WriteString("=?")
+		if i != len(fields)-1 {
+			queryBuilder.WriteString(",")
+		}
+	}
+	args = append(args, values...)
+	args = append(args, target)
+
+	query := fmt.Sprintf("UPDATE issues SET %s WHERE issue_id = ?", queryBuilder.String())
+	_, err := rep.db.Exec(query, args...)
+	if err != nil {
+		log.Println(err)
+		return models.Issue{}, ErrUpdateFailed
+	}
+
+	updatedIssue, err := rep.GetOne(target)
+	if err != nil {
+		return models.Issue{}, ErrIssueNotFound
+	}
+	return updatedIssue, nil
 }
 
 // Should only be used in tests

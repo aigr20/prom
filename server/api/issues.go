@@ -25,3 +25,28 @@ func (api *API) CreateIssueHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, ResponseData{"data": issue})
 }
+
+func (api *API) UpdateIssueStatusHandler(ctx *gin.Context) {
+	var body models.UpdateIssueStatusBody
+	err := ctx.ShouldBindJSON(&body)
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	statusID, err := api.StatusRepo.GetIDByName(body.NewStatus)
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	_, err = api.IssueRepo.UpdateIssue(body.IssueID, []string{"issue_status"}, []any{statusID})
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+	}
+
+	ctx.JSON(http.StatusNoContent, nil)
+}

@@ -14,6 +14,7 @@ type API struct {
 	Router      *gin.Engine
 	ProjectRepo database.ProjectRepository
 	IssueRepo   database.IssueRepository
+	StatusRepo  database.StatusRepository
 }
 
 func NewAPI(db *sql.DB) *API {
@@ -21,6 +22,7 @@ func NewAPI(db *sql.DB) *API {
 		Router:      gin.Default(),
 		ProjectRepo: *database.NewProjectRepository(db),
 		IssueRepo:   *database.NewIssueRepository(db),
+		StatusRepo:  *database.NewStatusRepository(db),
 	}
 	api.Routes()
 	return api
@@ -55,5 +57,6 @@ func (api *API) Routes() {
 	issuesGroup := api.Router.Group("/issues")
 	{
 		issuesGroup.POST("/create", api.CreateIssueHandler)
+		issuesGroup.PATCH("/status", api.UpdateIssueStatusHandler)
 	}
 }

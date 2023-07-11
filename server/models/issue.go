@@ -16,6 +16,16 @@ type Issue struct {
 	Status      string    `json:"status"`
 }
 
+// Compares issues without comparing the Updated field
+func (issue *Issue) LenientEquals(other Issue) bool {
+	return issue.ID == other.ID &&
+		issue.Title == other.Title &&
+		issue.Description == other.Description &&
+		issue.Created == other.Created &&
+		issue.ProjectID == other.ProjectID &&
+		issue.Status == other.Status
+}
+
 func ScanIssues(rows *sql.Rows) ([]Issue, error) {
 	issues := make([]Issue, 0)
 	for rows.Next() {
@@ -46,4 +56,9 @@ type IssueCreateForm struct {
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description,omitempty"`
 	ProjectID   int    `json:"project" binding:"required"`
+}
+
+type UpdateIssueStatusBody struct {
+	IssueID   int    `json:"issueId" binding:"required"`
+	NewStatus string `json:"newStatus" binding:"required"`
 }
