@@ -1,5 +1,6 @@
 import { useProjectCreation } from "../../hooks/projectHooks";
 import { Setter } from "../../types/general";
+import { Icons } from "../util/icons";
 import "./CreateProjectForm.css";
 
 type Props = {
@@ -15,7 +16,12 @@ export default function CreateProjectForm({ showFormSetter }: Props) {
       className="create_project--form rightbar--wrapper"
       onSubmit={submitCallback}
     >
-      <h2>Create Project</h2>
+      <div className="form_title--wrapper">
+        <h2 className="form--title">Create Project</h2>
+        <button className="form--close" onClick={() => showFormSetter(false)}>
+          {Icons.close}
+        </button>
+      </div>
       <input
         type="text"
         placeholder="Name"
