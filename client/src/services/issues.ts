@@ -6,7 +6,7 @@ type CreateIssueArgs = {
   title: string;
   description: string;
 };
-export function createIssue({
+export async function createIssue({
   projectId,
   title,
   description,
@@ -25,5 +25,31 @@ export function createIssue({
     })
     .catch(() => {
       return { data: null };
+    });
+}
+
+type UpdateStatusArgs = {
+  issueId: number;
+  newStatus: string;
+};
+export async function updateStatus({
+  issueId,
+  newStatus,
+}: UpdateStatusArgs): Promise<void> {
+  const headers = new Headers();
+  headers.set("Content-Type", "application/json");
+  const options: RequestInit = {
+    method: "PATCH",
+    body: JSON.stringify({ issueId, newStatus }),
+    headers,
+  };
+
+  return fetch("http://localhost:8080/issues/status", options)
+    .then((res) => {
+      if (res.ok && res.status === 204) return;
+      throw new Error("Status update failed");
+    })
+    .catch((err: Error) => {
+      console.error(err.message);
     });
 }

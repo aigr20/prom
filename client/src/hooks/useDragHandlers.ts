@@ -1,4 +1,5 @@
 import { useRef, type MouseEvent } from "react";
+import { updateStatus } from "../services/issues";
 import { IColumn } from "../types/board";
 import { Setter } from "../types/general";
 import { ITask } from "../types/project";
@@ -62,12 +63,16 @@ export function useDragHandlers<E extends HTMLElement>(
       if (column) {
         const oldColIndex = Number(dragged.current.element.dataset["colIndex"]);
         const colIndex = Number(column.dataset["colIndex"] ?? oldColIndex);
-        console.log({ colIndex, oldColIndex });
         columns[colIndex].issues.push(dragged.current.data);
         columns[oldColIndex].issues.splice(
           Number(dragged.current.element.dataset.index),
           1,
         );
+
+        updateStatus({
+          issueId: dragged.current.data.id,
+          newStatus: columns[colIndex].heading,
+        });
         setColumns([...columns]);
       }
 
