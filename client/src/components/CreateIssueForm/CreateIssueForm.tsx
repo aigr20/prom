@@ -1,6 +1,7 @@
 import { useIssueCreation } from "../../hooks/issueHooks";
 import { Setter } from "../../types/general";
 import { ITask } from "../../types/project";
+import { Icons } from "../util/icons";
 import "./CreateIssueForm.css";
 
 type Props = {
@@ -26,7 +27,15 @@ export default function CreateIssueForm({
 
   return (
     <form className="rightbar--wrapper create_issue--form" onSubmit={onSubmit}>
-      <h2>Create issue</h2>
+      <div className="form_title--wrapper">
+        <h2 className="form--title">Create issue</h2>
+        <button
+          className="form--close"
+          onClick={() => setShowCreateIssue(false)}
+        >
+          {Icons.close}
+        </button>
+      </div>
       <input
         type="text"
         placeholder="Title"
