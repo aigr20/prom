@@ -24,5 +24,6 @@ export type ITask = {
 export type IProjectViewOutletContext = {
   project: IProject;
   tasks: ITask[];
+  setTasks: Setter<ITask[]>;
   setShowCreateIssue: Setter<boolean>;
 };

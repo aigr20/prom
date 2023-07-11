@@ -6,7 +6,7 @@ import "./Board.css";
 import Card from "./Card";
 
 export default function Board() {
-  const { tasks } = useOutletContext<IProjectViewOutletContext>();
+  const { tasks, setTasks } = useOutletContext<IProjectViewOutletContext>();
   const headings = useMemo(() => ["TODO", "In Progress", "Finished"], []);
   const { columns, setColumns } = useColumns({
     headings,
@@ -32,6 +32,7 @@ export default function Board() {
                 colIndex={colIdx}
                 columns={columns}
                 setColumns={setColumns}
+                setTasks={setTasks}
               />
             ))}
           </div>

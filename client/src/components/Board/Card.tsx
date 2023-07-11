@@ -10,6 +10,7 @@ type Props = {
   colIndex: number;
   columns: IColumn[];
   setColumns: Setter<IColumn[]>;
+  setTasks: Setter<ITask[]>;
 };
 
 export default function Card({
@@ -18,8 +19,9 @@ export default function Card({
   colIndex,
   columns,
   setColumns,
+  setTasks,
 }: Props) {
-  const handlers = useDragHandlers(columns, setColumns);
+  const handlers = useDragHandlers(columns, setColumns, setTasks);
 
   return (
     <div

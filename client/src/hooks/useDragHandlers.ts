@@ -14,6 +14,7 @@ type useDragHandlerReturn<E extends Element> = {
 export function useDragHandlers<E extends HTMLElement>(
   columns: IColumn[],
   setColumns: Setter<IColumn[]>,
+  setTasks: Setter<ITask[]>,
 ): useDragHandlerReturn<E> {
   const dragged = useRef<{ data: ITask; element: E }>();
 
@@ -74,6 +75,13 @@ export function useDragHandlers<E extends HTMLElement>(
           newStatus: columns[colIndex].heading,
         });
         setColumns([...columns]);
+        setTasks((tasks) => {
+          const task = tasks.find(
+            (task) => task.id === dragged.current?.data.id,
+          );
+          if (task) task.status = columns[colIndex].heading;
+          return [...tasks];
+        });
       }
 
       dragged.current.element.removeAttribute("style");
