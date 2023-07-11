@@ -46,6 +46,7 @@ func (api *API) UpdateIssueStatusHandler(ctx *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 
 	ctx.JSON(http.StatusNoContent, nil)
