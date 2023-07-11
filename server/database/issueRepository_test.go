@@ -14,6 +14,7 @@ var sampleIssues = []models.Issue{
 		Created:     time.Date(2023, time.June, 28, 14, 0, 0, 0, time.Local),
 		Updated:     time.Date(2023, time.June, 28, 15, 15, 0, 0, time.Local),
 		ProjectID:   1,
+		Status:      "TODO",
 	},
 	{
 		ID:          2,
@@ -22,6 +23,7 @@ var sampleIssues = []models.Issue{
 		Created:     time.Date(2023, time.June, 28, 14, 3, 0, 0, time.Local),
 		Updated:     time.Date(2023, time.June, 28, 15, 20, 0, 0, time.Local),
 		ProjectID:   1,
+		Status:      "In Progress",
 	},
 	{
 		ID:          3,
@@ -30,6 +32,7 @@ var sampleIssues = []models.Issue{
 		Created:     time.Date(2023, time.June, 29, 13, 12, 3, 0, time.Local),
 		Updated:     time.Date(2023, time.June, 29, 16, 12, 0, 0, time.Local),
 		ProjectID:   2,
+		Status:      "Finished",
 	},
 	{
 		ID:          4,
@@ -38,6 +41,7 @@ var sampleIssues = []models.Issue{
 		Created:     time.Date(2023, time.June, 30, 10, 0, 0, 0, time.Local),
 		Updated:     time.Date(2023, time.June, 30, 15, 0, 34, 0, time.Local),
 		ProjectID:   3,
+		Status:      "TODO",
 	},
 }
 
@@ -137,6 +141,7 @@ func TestCreateIssue(t *testing.T) {
 		wantedTitle       string
 		wantedDescription string
 		wantedProject     int
+		wantedStatus      string
 		wantedError       error
 	}{
 		{
@@ -149,6 +154,7 @@ func TestCreateIssue(t *testing.T) {
 			wantedTitle:       "new issue",
 			wantedDescription: "description",
 			wantedProject:     1,
+			wantedStatus:      "TODO",
 			wantedError:       nil,
 		},
 		{
@@ -160,6 +166,7 @@ func TestCreateIssue(t *testing.T) {
 			wantedTitle:       "new issue",
 			wantedDescription: "",
 			wantedProject:     2,
+			wantedStatus:      "TODO",
 			wantedError:       nil,
 		},
 		{
@@ -171,6 +178,7 @@ func TestCreateIssue(t *testing.T) {
 			wantedTitle:       "",
 			wantedDescription: "",
 			wantedProject:     0,
+			wantedStatus:      "",
 			wantedError:       ErrIssueCreate,
 		},
 		{
@@ -182,6 +190,7 @@ func TestCreateIssue(t *testing.T) {
 			wantedTitle:       "",
 			wantedDescription: "",
 			wantedProject:     0,
+			wantedStatus:      "",
 			wantedError:       ErrIssueCreate,
 		},
 		{
@@ -193,6 +202,7 @@ func TestCreateIssue(t *testing.T) {
 			wantedTitle:       "",
 			wantedDescription: "",
 			wantedProject:     0,
+			wantedStatus:      "",
 			wantedError:       ErrIssueCreate,
 		},
 	}
@@ -210,7 +220,107 @@ func TestCreateIssue(t *testing.T) {
 				t.FailNow()
 			}
 
-			if issue.Title != test.wantedTitle || issue.Description != test.wantedDescription || issue.ProjectID != test.wantedProject {
+			if issue.Title != test.wantedTitle || issue.Description != test.wantedDescription || issue.ProjectID != test.wantedProject || issue.Status != test.wantedStatus {
+				t.FailNow()
+			}
+		})
+	}
+}
+
+func TestUpdateIssue(t *testing.T) {
+	tests := []struct {
+		name          string
+		target        int
+		fields        []string
+		values        []any
+		expectedIssue models.Issue
+		expectedError error
+	}{
+		{
+			name:   "success_multifield",
+			target: 1,
+			fields: []string{"issue_title", "issue_description"},
+			values: []any{"new title", "new description"},
+			expectedIssue: models.Issue{
+				ID:          1,
+				Title:       "new title",
+				Description: "new description",
+				Created:     time.Date(2023, time.June, 28, 14, 0, 0, 0, time.Local),
+				ProjectID:   1,
+				Status:      "TODO",
+			},
+			expectedError: nil,
+		},
+		{
+			name:   "success_onefield",
+			target: 1,
+			fields: []string{"issue_title"},
+			values: []any{"new title"},
+			expectedIssue: models.Issue{
+				ID:          1,
+				Title:       "new title",
+				Description: "Appen måste gå att använda av alla!",
+				Created:     time.Date(2023, time.June, 28, 14, 0, 0, 0, time.Local),
+				ProjectID:   1,
+				Status:      "TODO",
+			},
+			expectedError: nil,
+		},
+		{
+			name:          "fail_mismatched_field_count_gt",
+			target:        1,
+			fields:        []string{"issue_title", "issue_description"},
+			values:        []any{"test"},
+			expectedIssue: models.Issue{},
+			expectedError: ErrUpdateFieldCount,
+		},
+		{
+			name:          "fail_mismatched_field_count_lt",
+			target:        1,
+			fields:        []string{"issue_title"},
+			values:        []any{"new title", "new description"},
+			expectedIssue: models.Issue{},
+			expectedError: ErrUpdateFieldCount,
+		},
+		{
+			name:          "fail_no_fields",
+			target:        1,
+			fields:        []string{},
+			values:        []any{},
+			expectedIssue: models.Issue{},
+			expectedError: ErrNoFields,
+		},
+		{
+			name:          "fail_issue_doesn't_exist",
+			target:        100,
+			fields:        []string{"issue_title"},
+			values:        []any{"new title"},
+			expectedIssue: models.Issue{},
+			expectedError: ErrIssueNotFound,
+		},
+		{
+			name:          "fail_illegal_column",
+			target:        1,
+			fields:        []string{"hihi"},
+			values:        []any{"hoho"},
+			expectedIssue: models.Issue{},
+			expectedError: ErrIllegalFieldName,
+		},
+	}
+
+	repo := getIssueRepository(t)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Cleanup(func() {
+				original := &sampleIssues[0]
+				repo.CustomQuery("UPDATE issues SET issue_title=?, issue_description=?, last_changed=?, project=?, issue_status=? WHERE issue_id = 1", original.Title, original.Description, original.Updated, original.ProjectID, 1)
+			})
+
+			issue, err := repo.UpdateIssue(test.target, test.fields, test.values)
+			if err != test.expectedError {
+				t.FailNow()
+			}
+			if !issue.LenientEquals(test.expectedIssue) {
 				t.FailNow()
 			}
 		})

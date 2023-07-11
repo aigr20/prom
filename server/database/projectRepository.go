@@ -25,15 +25,9 @@ func (rep *ProjectRepository) GetAll() ([]models.Project, error) {
 	}
 	defer rows.Close()
 
-	projects := make([]models.Project, 0)
-	for rows.Next() {
-		var project models.Project
-		err = rows.Scan(&project.ID, &project.Name, &project.Created, &project.Updated)
-		if err != nil {
-			log.Println(err)
-			return nil, ErrProjectScan
-		}
-		projects = append(projects, project)
+	projects, err := models.ScanProjects(rows)
+	if err != nil {
+		return nil, ErrProjectScan
 	}
 
 	return projects, nil
@@ -44,10 +38,9 @@ func (rep *ProjectRepository) GetOne(id int) (models.Project, error) {
 	if row == nil {
 		return models.Project{}, ErrProjectNotFound
 	}
-	var project models.Project
-	err := row.Scan(&project.ID, &project.Name, &project.Created, &project.Updated)
+
+	project, err := models.ScanProject(row)
 	if err != nil {
-		log.Println(err)
 		return models.Project{}, ErrProjectScan
 	}
 	return project, nil

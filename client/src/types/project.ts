@@ -1,3 +1,5 @@
+import { Setter } from "./general";
+
 export type IProject = {
   id: number;
   name: string;
@@ -13,7 +15,14 @@ export type IProjectsAndSetter = {
 export type ITask = {
   id: number;
   title: string;
-  desciption: string;
+  description?: string;
   createdAt: Date;
   updatedAt: Date;
+  status: string;
+};
+
+export type IProjectViewOutletContext = {
+  project: IProject;
+  tasks: ITask[];
+  setShowCreateIssue: Setter<boolean>;
 };

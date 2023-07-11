@@ -28,6 +28,7 @@ func TestCreateIssueRoute(t *testing.T) {
 		wantedCode        int
 		wantedTitle       string
 		wantedDescription string
+		wantedStatus      string
 	}{
 		{
 			name: "title&description",
@@ -39,6 +40,7 @@ func TestCreateIssueRoute(t *testing.T) {
 			wantedCode:        http.StatusCreated,
 			wantedTitle:       "new issue",
 			wantedDescription: "description",
+			wantedStatus:      "TODO",
 		},
 		{
 			name: "title_no_description",
@@ -49,6 +51,7 @@ func TestCreateIssueRoute(t *testing.T) {
 			wantedCode:        http.StatusCreated,
 			wantedTitle:       "new issue",
 			wantedDescription: "",
+			wantedStatus:      "TODO",
 		},
 		{
 			name: "missing_title",
@@ -100,8 +103,77 @@ func TestCreateIssueRoute(t *testing.T) {
 			}
 
 			issue := issueFromBody(t, w.Body.Bytes())
-			if issue.Title != test.wantedTitle || issue.Description != test.wantedDescription {
+			if issue.Title != test.wantedTitle || issue.Description != test.wantedDescription || issue.Status != test.wantedStatus {
 				t.Log("failing content")
+				t.FailNow()
+			}
+		})
+	}
+}
+
+func TestUpdateStatusRoute(t *testing.T) {
+	tests := []struct {
+		name       string
+		body       models.UpdateIssueStatusBody
+		wantedCode int
+	}{
+		{
+			name: "success",
+			body: models.UpdateIssueStatusBody{
+				IssueID:   1,
+				NewStatus: "Finished",
+			},
+			wantedCode: http.StatusNoContent,
+		},
+		{
+			name: "fail_missing_id",
+			body: models.UpdateIssueStatusBody{
+				NewStatus: "Finished",
+			},
+			wantedCode: http.StatusBadRequest,
+		},
+		{
+			name: "fail_missing_status",
+			body: models.UpdateIssueStatusBody{
+				IssueID: 1,
+			},
+			wantedCode: http.StatusBadRequest,
+		},
+		{
+			name: "fail_invalid_issue",
+			body: models.UpdateIssueStatusBody{
+				IssueID:   100,
+				NewStatus: "Finished",
+			},
+			wantedCode: http.StatusBadRequest,
+		},
+		{
+			name: "fail_status_doesn't_exist",
+			body: models.UpdateIssueStatusBody{
+				IssueID:   1,
+				NewStatus: "Will do",
+			},
+			wantedCode: http.StatusBadRequest,
+		},
+	}
+
+	api := getTestAPI(t)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Cleanup(func() {
+				api.IssueRepo.CustomQuery("UPDATE issues SET issue_status=1 WHERE issue_id = 1")
+			})
+
+			w := httptest.NewRecorder()
+			bodyMarshal, err := json.Marshal(test.body)
+			if err != nil {
+				t.Error(err)
+			}
+			reader := bytes.NewReader(bodyMarshal)
+			req, _ := http.NewRequest("PATCH", "/issues/status", reader)
+			api.Router.ServeHTTP(w, req)
+
+			if w.Code != test.wantedCode {
 				t.FailNow()
 			}
 		})
