@@ -1,4 +1,4 @@
-.issue--modal-open {
+.issue--modal[open] {
   position: absolute;
   top: 35%;
   left: 0;
@@ -17,7 +17,7 @@
     "created updated estimate";
 }
 
-.issue--modal-open .close-button {
+.issue--modal .close-button {
   grid-area: close;
   background: transparent;
   font-size: 1.6rem;
@@ -26,29 +26,29 @@
   cursor: pointer;
 }
 
-.issue--modal-open .close-button:hover {
+.issue--modal .close-button:hover {
   color: red;
 }
 
-.issue--modal-open .heading {
+.issue--modal .heading {
   grid-area: heading;
   margin: 0;
   font-size: 1.2rem;
 }
 
-.issue--modal-open .description {
+.issue--modal .description {
   grid-area: description;
 }
 
-.issue--modal-open .created {
+.issue--modal .created {
   grid-area: created;
 }
 
-.issue--modal-open .updated {
+.issue--modal .updated {
   grid-area: updated;
 }
 
-.issue--modal-open .estimate {
+.issue--modal .estimate {
   grid-area: estimate;
   background: lightgray;
   text-align: center;

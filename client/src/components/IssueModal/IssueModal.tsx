@@ -10,7 +10,6 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
   ref,
 ) {
   const [issue, setIssue] = useState<ITask>();
-  const [isOpen, setIsOpen] = useState(false);
   const modalRef = useRef<HTMLDialogElement>(null);
   useImperativeHandle(
     ref,
@@ -18,18 +17,13 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
       return (issue) => {
         setIssue({ ...issue });
         modalRef.current?.showModal();
-        setIsOpen(true);
       };
     },
     [],
   );
 
   return (
-    <dialog
-      ref={modalRef}
-      className={isOpen ? "issue--modal-open" : "issue--modal-closed"}
-      onClose={() => setIsOpen(false)}
-    >
+    <dialog ref={modalRef} className="issue--modal">
       <button
         className="close-button"
         onClick={() => modalRef.current?.close()}
