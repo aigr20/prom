@@ -17,13 +17,20 @@ export default function CreateIssueForm({
   setIssues,
   setShowCreateIssue,
 }: Props) {
-  const { title, setTitle, description, setDescription, onSubmit } =
-    useIssueCreation({
-      projectId,
-      issues,
-      setIssues,
-      setShowCreateIssue,
-    });
+  const {
+    title,
+    setTitle,
+    description,
+    setDescription,
+    estimate,
+    setEstimate,
+    onSubmit,
+  } = useIssueCreation({
+    projectId,
+    issues,
+    setIssues,
+    setShowCreateIssue,
+  });
 
   return (
     <form className="rightbar--wrapper create_issue--form" onSubmit={onSubmit}>
@@ -41,6 +48,14 @@ export default function CreateIssueForm({
         placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
+      />
+      <input
+        type="number"
+        placeholder="0"
+        min={0}
+        step={1}
+        value={estimate?.toString()}
+        onChange={(e) => setEstimate(Number(e.currentTarget.value))}
       />
       <textarea
         rows={10}
