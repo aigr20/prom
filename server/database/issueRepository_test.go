@@ -146,6 +146,7 @@ func TestCreateIssue(t *testing.T) {
 		wantedDescription string
 		wantedProject     int
 		wantedStatus      string
+		wantedEstimate    int
 		wantedError       error
 	}{
 		{
@@ -172,6 +173,19 @@ func TestCreateIssue(t *testing.T) {
 			wantedProject:     2,
 			wantedStatus:      "TODO",
 			wantedError:       nil,
+		},
+		{
+			name: "with_estimate",
+			body: models.IssueCreateForm{
+				Title:     "new issue",
+				Estimate:  3,
+				ProjectID: 1,
+			},
+			wantedTitle:    "new issue",
+			wantedProject:  1,
+			wantedStatus:   "TODO",
+			wantedEstimate: 3,
+			wantedError:    nil,
 		},
 		{
 			name: "invalid_project",
@@ -224,7 +238,7 @@ func TestCreateIssue(t *testing.T) {
 				t.FailNow()
 			}
 
-			if issue.Title != test.wantedTitle || issue.Description != test.wantedDescription || issue.ProjectID != test.wantedProject || issue.Status != test.wantedStatus {
+			if issue.Title != test.wantedTitle || issue.Description != test.wantedDescription || issue.ProjectID != test.wantedProject || issue.Status != test.wantedStatus || issue.Estimate != test.wantedEstimate {
 				t.FailNow()
 			}
 		})
