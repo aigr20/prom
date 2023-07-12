@@ -16,7 +16,7 @@ type IssueRepository struct {
 func NewIssueRepository(db *sql.DB) *IssueRepository {
 	return &IssueRepository{
 		db:          db,
-		columnNames: []string{"issue_id", "issue_title", "issue_description", "creation_date", "last_changed", "project", "issue_status"},
+		columnNames: []string{"issue_id", "issue_title", "issue_description", "estimate", "creation_date", "last_changed", "project", "issue_status"},
 	}
 }
 
@@ -30,6 +30,7 @@ func (rep *IssueRepository) GetIssuesFromProject(projectId int) ([]models.Issue,
 		i.issue_id,
 		i.issue_title,
 		i.issue_description,
+		i.estimate,
 		i.creation_date,
 		i.last_changed,
 		i.project,
@@ -60,6 +61,7 @@ func (rep *IssueRepository) GetOne(issueId int) (models.Issue, error) {
 		i.issue_id,
 		i.issue_title,
 		i.issue_description,
+		i.estimate,
 		i.creation_date,
 		i.last_changed,
 		i.project,
@@ -88,7 +90,7 @@ func (rep *IssueRepository) CreateIssue(body models.IssueCreateForm) (models.Iss
 		return models.Issue{}, ErrIssueCreate
 	}
 
-	result, err := rep.db.Exec("INSERT INTO issues (issue_title, issue_description, project) VALUES (?, ?, ?)", body.Title, body.Description, body.ProjectID)
+	result, err := rep.db.Exec("INSERT INTO issues (issue_title, issue_description, estimate, project) VALUES (?, ?, ?, ?)", body.Title, body.Description, body.Estimate, body.ProjectID)
 	if err != nil {
 		log.Println(err)
 		return models.Issue{}, ErrIssueCreate

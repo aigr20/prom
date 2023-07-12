@@ -58,5 +58,6 @@ func (api *API) Routes() {
 	{
 		issuesGroup.POST("/create", api.CreateIssueHandler)
 		issuesGroup.PATCH("/status", api.UpdateIssueStatusHandler)
+		issuesGroup.PATCH("/estimate", api.UpdateIssueEstimateHandler)
 	}
 }

@@ -5,17 +5,19 @@ type CreateIssueArgs = {
   projectId: number;
   title: string;
   description: string;
+  estimate?: number;
 };
 export async function createIssue({
   projectId,
   title,
   description,
+  estimate,
 }: CreateIssueArgs): Promise<ResponseData<ITask | null>> {
   const headers = new Headers();
   headers.set("Content-Type", "application/json");
   const options: RequestInit = {
     method: "POST",
-    body: JSON.stringify({ project: projectId, title, description }),
+    body: JSON.stringify({ project: projectId, title, description, estimate }),
     headers,
   };
   return fetch("http://localhost:8080/issues/create", options)

@@ -15,11 +15,11 @@ INSERT INTO issue_statuses (status_id, status_text) VALUES
  (3, "Finished")
 ;
 
-INSERT INTO issues (issue_id, issue_title, issue_description, creation_date, last_changed, project, issue_status) VALUES
-  (1, "Make accessible", "Appen måste gå att använda av alla!", "2023-06-28 14:00:00", "2023-06-28 15:15:00", 1, 1),
-  (2, "Make more fun", "Lägg in mycket färger, appen skall vara rolig!", "2023-06-28 14:03:00", "2023-06-28 15:20:00", 1, 2),
-  (3, "Update damage system", "Damage system must be more complicated", "2023-06-29 13:12:03", "2023-06-29 16:12:00", 2, 3),
-  (4, "Receptmodell", "", "2023-06-30 10:00:00", "2023-06-30 15:00:34", 3, 1)
+INSERT INTO issues (issue_id, issue_title, issue_description, estimate, creation_date, last_changed, project, issue_status) VALUES
+  (1, "Make accessible", "Appen måste gå att använda av alla!", 5, "2023-06-28 14:00:00", "2023-06-28 15:15:00", 1, 1),
+  (2, "Make more fun", "Lägg in mycket färger, appen skall vara rolig!", 3, "2023-06-28 14:03:00", "2023-06-28 15:20:00", 1, 2),
+  (3, "Update damage system", "Damage system must be more complicated", 2, "2023-06-29 13:12:03", "2023-06-29 16:12:00", 2, 3),
+  (4, "Receptmodell", "", 1, "2023-06-30 10:00:00", "2023-06-30 15:00:34", 3, 1)
 ;
 
 

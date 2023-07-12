@@ -14,6 +14,8 @@ type IssueCreationReturn = {
   setTitle: Setter<string>;
   description: string;
   setDescription: Setter<string>;
+  estimate?: number;
+  setEstimate: Setter<number | undefined>;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
 };
 export function useIssueCreation({
@@ -24,15 +26,18 @@ export function useIssueCreation({
 }: IssueCreationArgs): IssueCreationReturn {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [estimate, setEstimate] = useState<number>();
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    createIssue({ title, description, projectId }).then(({ data }) => {
-      if (data !== null) {
-        setIssues([...issues, data]);
-        setShowCreateIssue(false);
-      }
-    });
+    createIssue({ title, description, estimate, projectId }).then(
+      ({ data }) => {
+        if (data !== null) {
+          setIssues([...issues, data]);
+          setShowCreateIssue(false);
+        }
+      },
+    );
   }
 
   return {
@@ -40,6 +45,8 @@ export function useIssueCreation({
     setTitle,
     description,
     setDescription,
+    estimate,
+    setEstimate,
     onSubmit,
   };
 }
