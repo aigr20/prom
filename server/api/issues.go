@@ -49,5 +49,23 @@ func (api *API) UpdateIssueStatusHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusNoContent, nil)
+	ctx.Status(http.StatusNoContent)
+}
+
+func (api *API) UpdateIssueEstimateHandler(ctx *gin.Context) {
+	var body models.UpdateEstimateBody
+	err := ctx.ShouldBindJSON(&body)
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	_, err = api.IssueRepo.UpdateIssue(body.IssueID, []string{"estimate"}, []any{body.NewEstimate})
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	ctx.Status(http.StatusNoContent)
 }

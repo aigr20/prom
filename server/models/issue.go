@@ -65,3 +65,8 @@ type UpdateIssueStatusBody struct {
 	IssueID   int    `json:"issueId" binding:"required"`
 	NewStatus string `json:"newStatus" binding:"required"`
 }
+
+type UpdateEstimateBody struct {
+	IssueID     int `json:"issueId" binding:"required"`
+	NewEstimate int `json:"newEstimate" binding:"required"`
+}
