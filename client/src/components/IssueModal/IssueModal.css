@@ -1,7 +1,57 @@
-.issue--modal {
+.issue--modal-open {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  font-size: 4rem;
+  top: 35%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  padding: 0;
+  width: 20%;
+  max-width: 20%;
+  overflow-x: scroll;
   background: blue;
+  display: grid;
+  grid-template-columns: 45% 45% 10%;
+  grid-template-rows: 20% 60% 20%;
+  grid-template-areas: "heading heading close"
+    "description description description"
+    "created updated estimate";
+}
+
+.issue--modal-open .close-button {
+  grid-area: close;
+  background: transparent;
+  font-size: 1.6rem;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.issue--modal-open .close-button:hover {
+  color: red;
+}
+
+.issue--modal-open .heading {
+  grid-area: heading;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.issue--modal-open .description {
+  grid-area: description;
+}
+
+.issue--modal-open .created {
+  grid-area: created;
+}
+
+.issue--modal-open .updated {
+  grid-area: updated;
+}
+
+.issue--modal-open .estimate {
+  grid-area: estimate;
+  background: lightgray;
+  text-align: center;
+  border-radius: 100% 100% 20%;
+  border: 1px solid black;
 }

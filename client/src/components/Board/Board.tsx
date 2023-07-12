@@ -13,7 +13,7 @@ export default function Board() {
     headings,
     tasks,
   });
-  const issueModal = useRef<OpenModalFunc>(null);
+  const openModalFunc = useRef<OpenModalFunc>(null);
 
   return (
     <>
@@ -35,16 +35,13 @@ export default function Board() {
                 columns={columns}
                 setColumns={setColumns}
                 setTasks={setTasks}
-                openAsModal={issueModal.current}
+                openAsModal={openModalFunc.current}
               />
             ))}
           </div>
         ))}
       </div>
-      <IssueModal
-        ref={issueModal}
-        // issue={tasks[0] ?? { createdAt: Date.now() }}
-      />
+      <IssueModal ref={openModalFunc} />
     </>
   );
 }
