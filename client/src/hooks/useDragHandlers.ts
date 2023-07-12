@@ -30,23 +30,25 @@ export function useDragHandlers<E extends HTMLElement>(
     if (event.button !== 0) {
       return;
     }
-    const target = event.currentTarget;
-    const col = Number(target.dataset["colIndex"]);
-    const card = Number(target.dataset["index"]);
-    const { width, height } = target.getBoundingClientRect();
-
-    dragged.current = {
-      data: columns[col].issues[card],
-      element: target,
-    };
-
-    target.classList.add("board--card-dragged");
-    target.style.width = `${width}px`;
-    target.style.height = `${height}px`;
-    move(event.pageX, event.pageY);
   }
 
   function onMouseMove(event: MouseEvent<E>) {
+    if (event.buttons !== 1) return;
+    if (!dragged.current) {
+      const target = event.currentTarget;
+      const col = Number(target.dataset["colIndex"]);
+      const card = Number(target.dataset["index"]);
+      const { width, height } = target.getBoundingClientRect();
+
+      dragged.current = {
+        data: columns[col].issues[card],
+        element: target,
+      };
+
+      target.classList.add("board--card-dragged");
+      target.style.width = `${width}px`;
+      target.style.height = `${height}px`;
+    }
     move(event.pageX, event.pageY);
   }
 
