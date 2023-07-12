@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 func issueFromBody(t *testing.T, body []byte) models.Issue {
@@ -161,7 +162,7 @@ func TestUpdateStatusRoute(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			t.Cleanup(func() {
-				api.IssueRepo.CustomQuery("UPDATE issues SET issue_status=1 WHERE issue_id = 1")
+				api.IssueRepo.CustomQuery("UPDATE issues SET issue_status=1, last_changed=? WHERE issue_id = 1", time.Date(2023, time.June, 28, 15, 15, 0, 0, time.Local))
 			})
 
 			w := httptest.NewRecorder()
