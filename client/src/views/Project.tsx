@@ -39,7 +39,7 @@ export default function Project() {
     <div className={layout}>
       <Topbar />
       <ProjectViewBar title={project.name} />
-      <main className="layout--content-sidebar">
+      <main className="layout--content">
         <Outlet context={{ project, setShowCreateIssue, tasks, setTasks }} />
       </main>
       {showCreateIssue && (
