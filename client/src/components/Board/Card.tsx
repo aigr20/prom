@@ -2,6 +2,7 @@ import { useDragHandlers } from "../../hooks/useDragHandlers";
 import { IColumn } from "../../types/board";
 import { Setter } from "../../types/general";
 import { ITask } from "../../types/project";
+import { OpenModalFunc } from "../IssueModal/IssueModal";
 import "./Card.css";
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
   columns: IColumn[];
   setColumns: Setter<IColumn[]>;
   setTasks: Setter<ITask[]>;
+  openAsModal: OpenModalFunc | null;
 };
 
 export default function Card({
@@ -20,6 +22,7 @@ export default function Card({
   columns,
   setColumns,
   setTasks,
+  openAsModal,
 }: Props) {
   const handlers = useDragHandlers(columns, setColumns, setTasks);
 
@@ -28,6 +31,7 @@ export default function Card({
       className="board--card"
       data-index={index}
       data-col-index={colIndex}
+      onMouseDown={() => openAsModal?.(task)}
       {...handlers}
     >
       <h4 className="card--title">{task.title}</h4>

@@ -5,7 +5,7 @@
   padding: 0.2rem;
   border-radius: 8px;
   position: static;
-  cursor: grab;
+  cursor: pointer;
   user-select: none;
 }
 

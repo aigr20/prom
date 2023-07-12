@@ -1,7 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { useOutletContext } from "react-router-dom";
 import { useColumns } from "../../hooks/useColumns";
 import { IProjectViewOutletContext } from "../../types/project";
+import IssueModal, { OpenModalFunc } from "../IssueModal/IssueModal";
 import "./Board.css";
 import Card from "./Card";
 
@@ -12,6 +13,7 @@ export default function Board() {
     headings,
     tasks,
   });
+  const issueModal = useRef<OpenModalFunc>(null);
 
   return (
     <>
@@ -33,11 +35,16 @@ export default function Board() {
                 columns={columns}
                 setColumns={setColumns}
                 setTasks={setTasks}
+                openAsModal={issueModal.current}
               />
             ))}
           </div>
         ))}
       </div>
+      <IssueModal
+        ref={issueModal}
+        // issue={tasks[0] ?? { createdAt: Date.now() }}
+      />
     </>
   );
 }

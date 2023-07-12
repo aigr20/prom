@@ -5,7 +5,6 @@ import { Setter } from "../types/general";
 import { ITask } from "../types/project";
 
 type useDragHandlerReturn<E extends Element> = {
-  onMouseDown: (event: MouseEvent<E>) => void;
   onMouseMove: (event: MouseEvent<E>) => void;
   onMouseLeave: (event: MouseEvent<E>) => void;
   onMouseUp: (event: MouseEvent<E>) => void;
@@ -23,12 +22,6 @@ export function useDragHandlers<E extends HTMLElement>(
       const element = dragged.current.element;
       element.style.left = `${x - element.offsetWidth / 2}px`;
       element.style.top = `${y - element.offsetHeight / 2}px`;
-    }
-  }
-
-  function onMouseDown(event: MouseEvent<E>) {
-    if (event.button !== 0) {
-      return;
     }
   }
 
@@ -91,5 +84,5 @@ export function useDragHandlers<E extends HTMLElement>(
     }
   }
 
-  return { onMouseDown, onMouseLeave, onMouseMove, onMouseUp };
+  return { onMouseLeave, onMouseMove, onMouseUp };
 }
