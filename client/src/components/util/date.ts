@@ -10,5 +10,7 @@ export function formatDate(date: Date): string {
   const hour = date.getHours();
   const minute = date.getMinutes();
 
-  return `${year}-${month}-${day} ${padZero(hour)}:${padZero(minute)}`;
+  return `${year}-${padZero(month)}-${padZero(day)} ${padZero(hour)}:${padZero(
+    minute,
+  )}`;
 }
