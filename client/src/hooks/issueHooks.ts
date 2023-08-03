@@ -1,4 +1,11 @@
-import { useState } from "react";
+import {
+  ForwardedRef,
+  RefObject,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import { OpenModalFunc } from "../components/IssueModal/IssueModal";
 import { createIssue } from "../services/issues";
 import { Setter } from "../types/general";
 import { ITask } from "../types/project";
@@ -49,4 +56,51 @@ export function useIssueCreation({
     setEstimate,
     onSubmit,
   };
+}
+
+type IssueModalReturn = {
+  issue?: ITask;
+  modalRef: RefObject<HTMLDialogElement>;
+  modifyFunction: (
+    field: keyof ITask,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
+};
+export function useIssueModal(
+  ref: ForwardedRef<OpenModalFunc>,
+): IssueModalReturn {
+  const [issue, setIssue] = useState<ITask>();
+  const modalRef = useRef<HTMLDialogElement>(null);
+
+  useImperativeHandle(
+    ref,
+    () => {
+      return (issue) => {
+        setIssue({ ...issue });
+        modalRef.current?.showModal();
+      };
+    },
+    [],
+  );
+
+  function modifyFunction(
+    field: keyof ITask,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
+    setIssue((oldIssue) => {
+      if (!oldIssue) return;
+      let number = false;
+      switch (field) {
+        case "estimate":
+          number = true;
+          break;
+        default:
+          number = false;
+      }
+      const val = number ? Number(event.target.value) : event.target.value;
+      return { ...oldIssue, [field]: val };
+    });
+  }
+
+  return { issue, modalRef, modifyFunction };
 }

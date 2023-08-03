@@ -1,4 +1,5 @@
-import { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef } from "react";
+import { useIssueModal } from "../../hooks/issueHooks";
 import { ITask } from "../../types/project";
 import { formatDate } from "../util/date";
 import { Icons } from "../util/icons";
@@ -10,18 +11,7 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
   _,
   ref,
 ) {
-  const [issue, setIssue] = useState<ITask>();
-  const modalRef = useRef<HTMLDialogElement>(null);
-  useImperativeHandle(
-    ref,
-    () => {
-      return (issue) => {
-        setIssue({ ...issue });
-        modalRef.current?.showModal();
-      };
-    },
-    [],
-  );
+  const { issue, modalRef, modifyFunction } = useIssueModal(ref);
 
   return (
     <dialog ref={modalRef} className="issue--modal">
@@ -29,12 +19,7 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
         className="heading"
         name="issue-heading"
         value={issue?.title ?? ""}
-        onChange={(e) =>
-          setIssue((oldIssue) => {
-            if (oldIssue === undefined) return;
-            return { ...oldIssue, title: e.target.value };
-          })
-        }
+        onChange={(e) => modifyFunction("title", e)}
       />
       <button
         className="close-button"
@@ -44,12 +29,7 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
       </button>
       <textarea
         className="description"
-        onChange={(e) =>
-          setIssue((oldIssue) => {
-            if (oldIssue === undefined) return;
-            return { ...oldIssue, description: e.target.value };
-          })
-        }
+        onChange={(e) => modifyFunction("description", e)}
         value={issue?.description ?? ""}
       ></textarea>
       <span className="created" title="Skapat">
@@ -65,12 +45,7 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
         min={0}
         step={1}
         value={issue?.estimate ?? 0}
-        onChange={(e) =>
-          setIssue((oldIssue) => {
-            if (oldIssue === undefined) return;
-            return { ...oldIssue, estimate: e.target.valueAsNumber };
-          })
-        }
+        onChange={(e) => modifyFunction("estimate", e)}
       />
     </dialog>
   );
