@@ -9,9 +9,24 @@
   user-select: none;
 }
 
+
 .board--card.board--card-dragged {
   position: absolute;
   cursor: grabbing;
+}
+
+.board--card .card--title-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: start;
+  width: 100%;
+}
+
+.board--card .card--drag-handle {
+  cursor: grab;
+  font-size: 1.2rem;
+  font-weight: bolder;
 }
 
 .board--card .card--title {

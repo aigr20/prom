@@ -3,6 +3,7 @@ import { IColumn } from "../../types/board";
 import { Setter } from "../../types/general";
 import { ITask } from "../../types/project";
 import { OpenModalFunc } from "../IssueModal/IssueModal";
+import { Icons } from "../util/icons";
 import "./Card.css";
 
 type Props = {
@@ -34,7 +35,15 @@ export default function Card({
       onMouseDown={() => openAsModal?.(task)}
       {...handlers}
     >
-      <h4 className="card--title">{task.title}</h4>
+      <div className="card--title-row">
+        <h4 className="card--title">{task.title}</h4>
+        <span
+          className="card--drag-handle"
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          {Icons.drag}
+        </span>
+      </div>
       <span className="card--tag">Some</span>
       <span className="card--tag">Tags</span>
     </div>
