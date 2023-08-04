@@ -65,8 +65,7 @@ type UpdateIssueStatusBody struct {
 	IssueID   int    `json:"issueId" binding:"required"`
 	NewStatus string `json:"newStatus" binding:"required"`
 }
-
-type UpdateEstimateBody struct {
-	IssueID     int `json:"issueId" binding:"required"`
-	NewEstimate int `json:"newEstimate" binding:"required"`
+type UpdateIssueBody struct {
+	IssueID int                    `json:"issueId" binding:"required"`
+	Updates map[string]interface{} `json:"updates"`
 }

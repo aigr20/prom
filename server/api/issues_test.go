@@ -181,25 +181,42 @@ func TestUpdateStatusRoute(t *testing.T) {
 	}
 }
 
-func TestUpdateEstimateRoute(t *testing.T) {
+func TestUpdateRoute(t *testing.T) {
 	tests := []struct {
 		name       string
-		body       models.UpdateEstimateBody
+		body       models.UpdateIssueBody
 		wantedCode int
 	}{
 		{
-			name:       "success",
-			body:       models.UpdateEstimateBody{IssueID: 1, NewEstimate: 1},
+			name: "one field",
+			body: models.UpdateIssueBody{
+				IssueID: 1,
+				Updates: map[string]interface{}{
+					"title": "test title",
+				},
+			},
 			wantedCode: http.StatusNoContent,
 		},
 		{
-			name:       "fail_missing_issue",
-			body:       models.UpdateEstimateBody{NewEstimate: 3},
-			wantedCode: http.StatusBadRequest,
+			name: "multiple fields",
+			body: models.UpdateIssueBody{
+				IssueID: 1,
+				Updates: map[string]interface{}{
+					"title":       "test title",
+					"description": "test description",
+					"estimate":    10,
+				},
+			},
+			wantedCode: http.StatusNoContent,
 		},
 		{
-			name:       "fail_missing_estimate",
-			body:       models.UpdateEstimateBody{IssueID: 1},
+			name: "invalid field",
+			body: models.UpdateIssueBody{
+				IssueID: 1,
+				Updates: map[string]interface{}{
+					"invalid": "field",
+				},
+			},
 			wantedCode: http.StatusBadRequest,
 		},
 	}
@@ -208,7 +225,7 @@ func TestUpdateEstimateRoute(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			t.Cleanup(func() {
-				api.IssueRepo.CustomQuery("UPDATE issues SET estimate=5, last_changed=? WHERE issue_id = 1", time.Date(2023, time.June, 28, 15, 15, 0, 0, time.Local))
+				api.IssueRepo.CustomQuery("UPDATE issues SET issue_title='Make accessible', issue_description='Appen måste gå att använda av alla!', estimate=5, last_changed=? WHERE issue_id = 1", time.Date(2023, time.June, 28, 15, 15, 0, 0, time.Local))
 			})
 
 			w := httptest.NewRecorder()
@@ -217,7 +234,7 @@ func TestUpdateEstimateRoute(t *testing.T) {
 				t.Error(err)
 			}
 			reader := bytes.NewReader(bodyMarshal)
-			req, _ := http.NewRequest("PATCH", "/issues/estimate", reader)
+			req, _ := http.NewRequest("PATCH", "/issues/update", reader)
 			api.Router.ServeHTTP(w, req)
 
 			if w.Code != test.wantedCode {
