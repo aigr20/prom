@@ -30,6 +30,31 @@ export async function createIssue({
     });
 }
 
+type UpdateIssueArgs = {
+  issueId: number;
+  fields: Partial<ITask>;
+};
+export async function updateIssue({
+  issueId,
+  fields,
+}: UpdateIssueArgs): Promise<void> {
+  const headers = new Headers();
+  headers.set("Content-Type", "application/json");
+  const options: RequestInit = {
+    method: "PATCH",
+    body: JSON.stringify({ issueId, updates: fields }),
+    headers,
+  };
+  return fetch("http://localhost:8080/issues/update", options)
+    .then((res) => {
+      if (res.ok && res.status === 204) return;
+      throw new Error("Update failed");
+    })
+    .catch((err: Error) => {
+      console.log(err.message);
+    });
+}
+
 type UpdateStatusArgs = {
   issueId: number;
   newStatus: string;

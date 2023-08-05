@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import { OpenModalFunc } from "../components/IssueModal/IssueModal";
-import { createIssue } from "../services/issues";
+import { createIssue, updateIssue } from "../services/issues";
 import { Setter } from "../types/general";
 import { ITask } from "../types/project";
 
@@ -71,6 +71,10 @@ export function useIssueModal(
 ): IssueModalReturn {
   const [issue, setIssue] = useState<ITask>();
   const modalRef = useRef<HTMLDialogElement>(null);
+  const currentCopyRef = useRef<ITask>();
+  const updateFieldsRef = useRef<Partial<ITask>>({});
+  const updateTimerRef = useRef<number>();
+  if (!currentCopyRef.current) currentCopyRef.current = issue;
 
   useImperativeHandle(
     ref,
@@ -87,17 +91,38 @@ export function useIssueModal(
     field: keyof ITask,
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
+    let number = false;
+    switch (field) {
+      case "estimate":
+        number = true;
+        break;
+      default:
+        number = false;
+    }
+
+    const val = number ? Number(event.target.value) : event.target.value;
+    if (currentCopyRef.current?.[field] !== val) {
+      (updateFieldsRef.current[field] as ITask[keyof ITask]) = val;
+    } else if (currentCopyRef.current?.[field] === val) {
+      updateFieldsRef.current[field] = undefined;
+    }
+
+    if (issue) {
+      clearTimeout(updateTimerRef?.current);
+      if (
+        Object.entries(updateFieldsRef.current).some(
+          ([, val]) => val !== undefined,
+        )
+      ) {
+        updateTimerRef.current = setTimeout(() => {
+          updateIssue({ issueId: issue.id, fields: updateFieldsRef.current });
+          console.log("updating with", updateFieldsRef.current);
+        }, 10 * 1000);
+      }
+    }
+
     setIssue((oldIssue) => {
       if (!oldIssue) return;
-      let number = false;
-      switch (field) {
-        case "estimate":
-          number = true;
-          break;
-        default:
-          number = false;
-      }
-      const val = number ? Number(event.target.value) : event.target.value;
       return { ...oldIssue, [field]: val };
     });
   }
