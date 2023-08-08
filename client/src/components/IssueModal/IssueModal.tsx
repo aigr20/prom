@@ -44,7 +44,7 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
         type="number"
         min={0}
         step={1}
-        value={issue?.estimate ?? 0}
+        value={String(issue?.estimate ?? 0)}
         onChange={(e) => modifyFunction("estimate", e)}
       />
     </dialog>
