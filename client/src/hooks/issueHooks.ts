@@ -5,10 +5,11 @@ import {
   type ForwardedRef,
   type RefObject,
 } from "react";
+import { useOutletContext } from "react-router-dom";
 import { type OpenModalFunc } from "../components/IssueModal/IssueModal";
 import { createIssue, updateIssue } from "../services/issues";
 import { type Setter } from "../types/general";
-import { type ITask } from "../types/project";
+import { type IProjectViewOutletContext, type ITask } from "../types/project";
 
 type IssueCreationArgs = {
   projectId: number;
@@ -75,6 +76,7 @@ export function useIssueModal(
   const currentCopyRef = useRef<ITask>();
   const updateFieldsRef = useRef<Partial<ITask>>({});
   const updateTimerRef = useRef<number>();
+  const { setTasks } = useOutletContext<IProjectViewOutletContext>();
   if (!currentCopyRef.current) currentCopyRef.current = issue;
 
   useImperativeHandle(
@@ -109,10 +111,14 @@ export function useIssueModal(
     }
 
     if (issue) {
-      clearTimeout(updateTimerRef?.current);
+      clearTimeout(updateTimerRef.current);
       if (issueHasChanged(updateFieldsRef.current)) {
         updateTimerRef.current = setTimeout(() => {
-          updateIssue({ issueId: issue.id, fields: updateFieldsRef.current });
+          updateIssue({
+            issueId: issue.id,
+            fields: { ...updateFieldsRef.current },
+          });
+          updateFieldsRef.current = {};
         }, 10 * 1000);
       }
     }
@@ -126,8 +132,18 @@ export function useIssueModal(
   function onModalClose() {
     if (issue && issueHasChanged(updateFieldsRef.current)) {
       clearTimeout(updateTimerRef.current);
-      updateIssue({ issueId: issue.id, fields: updateFieldsRef.current });
+      updateIssue({
+        issueId: issue.id,
+        fields: { ...updateFieldsRef.current },
+      });
+      updateFieldsRef.current = {};
     }
+    setTasks((oldTasks) => {
+      if (!issue) return oldTasks;
+      const index = oldTasks.findIndex((task) => task.id === issue.id);
+      oldTasks[index] = issue;
+      return [...oldTasks];
+    });
   }
 
   return { issue, modalRef, modifyFunction, onModalClose };
