@@ -34,7 +34,7 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
         className="description"
         onChange={(e) => modifyFunction("description", e)}
         value={issue?.description ?? ""}
-      ></textarea>
+      />
       <span className="created" title="Skapat">
         {issue?.createdAt && formatDate(issue.createdAt)}
       </span>
