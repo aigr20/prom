@@ -65,6 +65,7 @@ type IssueModalReturn = {
     field: keyof ITask,
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
+  onModalClose: () => void;
 };
 export function useIssueModal(
   ref: ForwardedRef<OpenModalFunc>,
@@ -109,14 +110,9 @@ export function useIssueModal(
 
     if (issue) {
       clearTimeout(updateTimerRef?.current);
-      if (
-        Object.entries(updateFieldsRef.current).some(
-          ([, val]) => val !== undefined,
-        )
-      ) {
+      if (issueHasChanged(updateFieldsRef.current)) {
         updateTimerRef.current = setTimeout(() => {
           updateIssue({ issueId: issue.id, fields: updateFieldsRef.current });
-          console.log("updating with", updateFieldsRef.current);
         }, 10 * 1000);
       }
     }
@@ -127,5 +123,16 @@ export function useIssueModal(
     });
   }
 
-  return { issue, modalRef, modifyFunction };
+  function onModalClose() {
+    if (issue && issueHasChanged(updateFieldsRef.current)) {
+      clearTimeout(updateTimerRef.current);
+      updateIssue({ issueId: issue.id, fields: updateFieldsRef.current });
+    }
+  }
+
+  return { issue, modalRef, modifyFunction, onModalClose };
+}
+
+function issueHasChanged(issue: Partial<ITask>): boolean {
+  return Object.entries(issue).some(([, val]) => val !== undefined);
 }
