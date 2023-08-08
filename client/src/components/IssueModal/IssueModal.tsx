@@ -14,7 +14,7 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
   const { issue, modalRef, modifyFunction, onModalClose } = useIssueModal(ref);
 
   return (
-    <dialog ref={modalRef} className="issue--modal">
+    <dialog ref={modalRef} className="issue--modal" onClose={onModalClose}>
       <input
         className="heading"
         name="issue-heading"
@@ -23,10 +23,7 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
       />
       <button
         className="close-button"
-        onClick={() => {
-          onModalClose();
-          modalRef.current?.close();
-        }}
+        onClick={() => modalRef.current?.close()}
       >
         {Icons.close}
       </button>
