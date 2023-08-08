@@ -1,6 +1,6 @@
 import { useIssueCreation } from "../../hooks/issueHooks";
-import { Setter } from "../../types/general";
-import { ITask } from "../../types/project";
+import { type Setter } from "../../types/general";
+import { type ITask } from "../../types/project";
 import { Icons } from "../util/icons";
 import "./CreateIssueForm.css";
 

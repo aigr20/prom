@@ -6,7 +6,7 @@ import ProjectViewBar from "../components/sidebars/ProjectViewBar";
 import { useOnRouteChange } from "../hooks/generalHooks";
 import { useProjectTasks } from "../hooks/projectHooks";
 import { getProject } from "../services/projects";
-import { IProject } from "../types/project";
+import { type IProject } from "../types/project";
 
 type LoaderProps = {
   params: Params<"projectId">;

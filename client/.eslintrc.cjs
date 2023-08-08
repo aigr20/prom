@@ -22,6 +22,8 @@ module.exports = {
   },
   rules: {
     semi: ["warn", "always"],
+    "no-empty": ["warn", { allowEmptyCatch: false }],
+    "prettier/prettier": ["warn"],
     "react/react-in-jsx-scope": [0, "always"],
   },
 };

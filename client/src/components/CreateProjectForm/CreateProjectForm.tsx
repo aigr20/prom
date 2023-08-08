@@ -1,5 +1,5 @@
 import { useProjectCreation } from "../../hooks/projectHooks";
-import { Setter } from "../../types/general";
+import { type Setter } from "../../types/general";
 import { Icons } from "../util/icons";
 import "./CreateProjectForm.css";
 

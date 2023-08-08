@@ -1,11 +1,10 @@
 import { useRef, type MouseEvent } from "react";
 import { updateStatus } from "../services/issues";
-import { IColumn } from "../types/board";
-import { Setter } from "../types/general";
-import { ITask } from "../types/project";
+import { type IColumn } from "../types/board";
+import { type Setter } from "../types/general";
+import { type ITask } from "../types/project";
 
 type useDragHandlerReturn<E extends Element> = {
-  onMouseDown: (event: MouseEvent<E>) => void;
   onMouseMove: (event: MouseEvent<E>) => void;
   onMouseLeave: (event: MouseEvent<E>) => void;
   onMouseUp: (event: MouseEvent<E>) => void;
@@ -26,27 +25,23 @@ export function useDragHandlers<E extends HTMLElement>(
     }
   }
 
-  function onMouseDown(event: MouseEvent<E>) {
-    if (event.button !== 0) {
-      return;
-    }
-    const target = event.currentTarget;
-    const col = Number(target.dataset["colIndex"]);
-    const card = Number(target.dataset["index"]);
-    const { width, height } = target.getBoundingClientRect();
-
-    dragged.current = {
-      data: columns[col].issues[card],
-      element: target,
-    };
-
-    target.classList.add("board--card-dragged");
-    target.style.width = `${width}px`;
-    target.style.height = `${height}px`;
-    move(event.pageX, event.pageY);
-  }
-
   function onMouseMove(event: MouseEvent<E>) {
+    if (event.buttons !== 1) return;
+    if (!dragged.current) {
+      const target = event.currentTarget;
+      const col = Number(target.dataset["colIndex"]);
+      const card = Number(target.dataset["index"]);
+      const { width, height } = target.getBoundingClientRect();
+
+      dragged.current = {
+        data: columns[col].issues[card],
+        element: target,
+      };
+
+      target.classList.add("board--card-dragged");
+      target.style.width = `${width}px`;
+      target.style.height = `${height}px`;
+    }
     move(event.pageX, event.pageY);
   }
 
@@ -89,5 +84,5 @@ export function useDragHandlers<E extends HTMLElement>(
     }
   }
 
-  return { onMouseDown, onMouseLeave, onMouseMove, onMouseUp };
+  return { onMouseLeave, onMouseMove, onMouseUp };
 }

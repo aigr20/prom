@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useProjects } from "../../hooks/projectHooks";
-import { Setter } from "../../types/general";
+import { type Setter } from "../../types/general";
 import { Icons } from "../util/icons";
 import "./HomeViewBar.css";
 

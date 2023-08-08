@@ -1,0 +1,79 @@
+.issue--modal[open] {
+  position: absolute;
+  top: 20%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  padding: 2px;
+  width: 40%;
+  max-width: 40%;
+  height: 35rem;
+  max-height: 35rem;
+  overflow: hidden;
+  background: #f9f9f9;
+  display: grid;
+  grid-template-columns: 47% 47% 6%;
+  grid-template-rows: 8% 85% 7%;
+  grid-template-areas: "heading heading close"
+    "description description description"
+    "created updated estimate";
+}
+
+.issue--modal .close-button {
+  grid-area: close;
+  background: transparent;
+  font-size: 1.6rem;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  justify-self: end;
+  align-self: center;
+}
+
+.issue--modal .close-button:hover {
+  color: red;
+}
+
+.issue--modal .heading {
+  grid-area: heading;
+  margin: 0;
+  font-size: 1.2rem;
+  align-self: center;
+}
+
+.issue--modal .description {
+  grid-area: description;
+  margin: 0;
+  resize: none;
+}
+
+.issue--modal .created {
+  grid-area: created;
+  align-self: end;
+}
+
+.issue--modal .updated {
+  grid-area: updated;
+  justify-self: end;
+  align-self: end;
+  margin-right: 1rem;
+}
+
+.issue--modal .estimate {
+  grid-area: estimate;
+  background: lightgray;
+  text-align: center;
+  border-radius: 100% 100% 20%;
+  border: 1px solid black;
+  align-self: end;
+  justify-self: end;
+  width: 100%;
+  padding: 0.3rem 0.5rem;
+  appearance: textfield;
+}
+
+.issue--modal .estimate::-webkit-inner-spin-button,
+.issue--modal .estimate::-webkit-outer-spin-button {
+  display: none;
+  margin: 0;
+}

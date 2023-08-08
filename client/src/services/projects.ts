@@ -1,5 +1,5 @@
-import { CreateProjectArg, ResponseData } from "../types/general";
-import { IProject, ITask } from "../types/project";
+import { type CreateProjectArg, type ResponseData } from "../types/general";
+import { type IProject, type ITask } from "../types/project";
 
 const endpoint = "projects";
 

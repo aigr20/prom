@@ -52,8 +52,8 @@ func (api *API) UpdateIssueStatusHandler(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
-func (api *API) UpdateIssueEstimateHandler(ctx *gin.Context) {
-	var body models.UpdateEstimateBody
+func (api *API) UpdateIssueHandler(ctx *gin.Context) {
+	var body models.UpdateIssueBody
 	err := ctx.ShouldBindJSON(&body)
 	if err != nil {
 		log.Println(err)
@@ -61,7 +61,20 @@ func (api *API) UpdateIssueEstimateHandler(ctx *gin.Context) {
 		return
 	}
 
-	_, err = api.IssueRepo.UpdateIssue(body.IssueID, []string{"estimate"}, []any{body.NewEstimate})
+	fields := make([]string, 0)
+	values := make([]any, 0)
+	for field, value := range body.Updates {
+		switch field {
+		case "title", "description":
+			fields = append(fields, "issue_"+field)
+			values = append(values, value)
+		default:
+			fields = append(fields, field)
+			values = append(values, value)
+		}
+	}
+
+	_, err = api.IssueRepo.UpdateIssue(body.IssueID, fields, values)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
