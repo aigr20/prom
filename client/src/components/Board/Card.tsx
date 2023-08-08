@@ -46,6 +46,7 @@ export default function Card({
       </div>
       <span className="card--tag">Some</span>
       <span className="card--tag">Tags</span>
+      <span className="card--estimate">{task.estimate}</span>
     </div>
   );
 }
