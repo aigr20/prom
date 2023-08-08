@@ -1,5 +1,5 @@
-import { ResponseData } from "../types/general";
-import { ITask } from "../types/project";
+import { type ResponseData } from "../types/general";
+import { type ITask } from "../types/project";
 
 type CreateIssueArgs = {
   projectId: number;

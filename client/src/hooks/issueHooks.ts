@@ -1,14 +1,14 @@
 import {
-  ForwardedRef,
-  RefObject,
   useImperativeHandle,
   useRef,
   useState,
+  type ForwardedRef,
+  type RefObject,
 } from "react";
-import { OpenModalFunc } from "../components/IssueModal/IssueModal";
+import { type OpenModalFunc } from "../components/IssueModal/IssueModal";
 import { createIssue, updateIssue } from "../services/issues";
-import { Setter } from "../types/general";
-import { ITask } from "../types/project";
+import { type Setter } from "../types/general";
+import { type ITask } from "../types/project";
 
 type IssueCreationArgs = {
   projectId: number;

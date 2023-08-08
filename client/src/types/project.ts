@@ -1,4 +1,4 @@
-import { Setter } from "./general";
+import { type Setter } from "./general";
 
 export type IProject = {
   id: number;

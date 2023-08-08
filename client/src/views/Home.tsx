@@ -3,7 +3,7 @@ import CreateProjectForm from "../components/CreateProjectForm/CreateProjectForm
 import Topbar from "../components/Topbar/Topbar";
 import HomeViewBar from "../components/sidebars/HomeViewBar";
 import { ProjectContext } from "../context/ProjectContext";
-import { IProject } from "../types/project";
+import { type IProject } from "../types/project";
 import "./Home.css";
 
 function Home() {

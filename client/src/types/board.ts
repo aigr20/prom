@@ -1,4 +1,4 @@
-import { ITask } from "./project";
+import { type ITask } from "./project";
 
 export type IColumn = {
   issues: ITask[];

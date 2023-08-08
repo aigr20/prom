@@ -1,8 +1,8 @@
 import { useDragHandlers } from "../../hooks/useDragHandlers";
-import { IColumn } from "../../types/board";
-import { Setter } from "../../types/general";
-import { ITask } from "../../types/project";
-import { OpenModalFunc } from "../IssueModal/IssueModal";
+import { type IColumn } from "../../types/board";
+import { type Setter } from "../../types/general";
+import { type ITask } from "../../types/project";
+import { type OpenModalFunc } from "../IssueModal/IssueModal";
 import { Icons } from "../util/icons";
 import "./Card.css";
 

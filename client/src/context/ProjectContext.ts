@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { IProjectsAndSetter } from "../types/project";
+import { type IProjectsAndSetter } from "../types/project";
 
 export const ProjectContext = createContext<IProjectsAndSetter>({
   projects: [],

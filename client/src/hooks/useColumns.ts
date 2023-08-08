@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { IColumn } from "../types/board";
-import { Setter } from "../types/general";
-import { ITask } from "../types/project";
+import { type IColumn } from "../types/board";
+import { type Setter } from "../types/general";
+import { type ITask } from "../types/project";
 
 type UseColumnsArgs = {
   headings: string[];

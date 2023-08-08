@@ -1,5 +1,5 @@
 import { useOutletContext } from "react-router-dom";
-import { IProjectViewOutletContext } from "../../types/project";
+import { type IProjectViewOutletContext } from "../../types/project";
 import SpinIfNull from "../util/SpinIfNull";
 import { Icons } from "../util/icons";
 

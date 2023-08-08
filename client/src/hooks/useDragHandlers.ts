@@ -1,8 +1,8 @@
 import { useRef, type MouseEvent } from "react";
 import { updateStatus } from "../services/issues";
-import { IColumn } from "../types/board";
-import { Setter } from "../types/general";
-import { ITask } from "../types/project";
+import { type IColumn } from "../types/board";
+import { type Setter } from "../types/general";
+import { type ITask } from "../types/project";
 
 type useDragHandlerReturn<E extends Element> = {
   onMouseMove: (event: MouseEvent<E>) => void;

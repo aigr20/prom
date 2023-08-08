@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { useIssueModal } from "../../hooks/issueHooks";
-import { ITask } from "../../types/project";
+import { type ITask } from "../../types/project";
 import { formatDate } from "../util/date";
 import { Icons } from "../util/icons";
 import "./IssueModal.css";
