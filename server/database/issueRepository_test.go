@@ -2,75 +2,10 @@ package database
 
 import (
 	"aigr20/prom/models"
+	"aigr20/prom/testdata"
 	"testing"
 	"time"
 )
-
-var sampleIssues = []models.Issue{
-	{
-		ID:          1,
-		Title:       "Make accessible",
-		Description: "Appen måste gå att använda av alla!",
-		Estimate:    5,
-		Created:     time.Date(2023, time.June, 28, 14, 0, 0, 0, time.Local),
-		Updated:     time.Date(2023, time.June, 28, 15, 15, 0, 0, time.Local),
-		ProjectID:   1,
-		Status:      "TODO",
-		Tags: []models.IssueTag{
-			{
-				Text:  "important",
-				Color: "#ff0000",
-			},
-			{
-				Text:  "bug",
-				Color: "#0000ff",
-			},
-		},
-	},
-	{
-		ID:          2,
-		Title:       "Make more fun",
-		Description: "Lägg in mycket färger, appen skall vara rolig!",
-		Estimate:    3,
-		Created:     time.Date(2023, time.June, 28, 14, 3, 0, 0, time.Local),
-		Updated:     time.Date(2023, time.June, 28, 15, 20, 0, 0, time.Local),
-		ProjectID:   1,
-		Status:      "In Progress",
-		Tags: []models.IssueTag{
-			{
-				Text:  "important",
-				Color: "#ff0000",
-			},
-		},
-	},
-	{
-		ID:          3,
-		Title:       "Update damage system",
-		Description: "Damage system must be more complicated",
-		Estimate:    2,
-		Created:     time.Date(2023, time.June, 29, 13, 12, 3, 0, time.Local),
-		Updated:     time.Date(2023, time.June, 29, 16, 12, 0, 0, time.Local),
-		ProjectID:   2,
-		Status:      "Finished",
-		Tags: []models.IssueTag{
-			{
-				Text:  "important",
-				Color: "#ff0000",
-			},
-		},
-	},
-	{
-		ID:          4,
-		Title:       "Receptmodell",
-		Description: "",
-		Estimate:    1,
-		Created:     time.Date(2023, time.June, 30, 10, 0, 0, 0, time.Local),
-		Updated:     time.Date(2023, time.June, 30, 15, 0, 34, 0, time.Local),
-		ProjectID:   3,
-		Status:      "TODO",
-		Tags:        []models.IssueTag{},
-	},
-}
 
 func getIssueRepository(t *testing.T) *IssueRepository {
 	db, err := CreateConnection("prom_test", "prom_tester", "tester")
@@ -129,17 +64,17 @@ func TestGetAllForProjectContent(t *testing.T) {
 		{
 			name:    "project_1",
 			project: 1,
-			want:    sampleIssues[0:2],
+			want:    testdata.SampleIssues[0:2],
 		},
 		{
 			name:    "project_2",
 			project: 2,
-			want:    sampleIssues[2:3],
+			want:    testdata.SampleIssues[2:3],
 		},
 		{
 			name:    "project_3",
 			project: 3,
-			want:    sampleIssues[3:],
+			want:    testdata.SampleIssues[3:],
 		},
 	}
 
@@ -355,7 +290,7 @@ func TestUpdateIssue(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			t.Cleanup(func() {
-				original := &sampleIssues[0]
+				original := &testdata.SampleIssues[0]
 				repo.CustomQuery("UPDATE issues SET issue_title=?, issue_description=?, last_changed=?, project=?, issue_status=? WHERE issue_id = 1", original.Title, original.Description, original.Updated, original.ProjectID, 1)
 			})
 

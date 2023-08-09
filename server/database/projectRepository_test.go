@@ -2,30 +2,9 @@ package database
 
 import (
 	"aigr20/prom/models"
+	"aigr20/prom/testdata"
 	"testing"
-	"time"
 )
-
-var sampleProjects = []models.Project{
-	{
-		ID:      1,
-		Name:    "Glada Schemat",
-		Created: time.Date(2023, time.June, 24, 10, 0, 0, 0, time.Local),
-		Updated: time.Date(2023, time.June, 24, 10, 15, 0, 0, time.Local),
-	},
-	{
-		ID:      2,
-		Name:    "Max Power",
-		Created: time.Date(2023, time.June, 24, 9, 10, 0, 0, time.Local),
-		Updated: time.Date(2023, time.June, 24, 16, 13, 12, 0, time.Local),
-	},
-	{
-		ID:      3,
-		Name:    "Mina Recept",
-		Created: time.Date(2023, time.June, 25, 15, 22, 35, 0, time.Local),
-		Updated: time.Date(2023, time.June, 26, 12, 0, 14, 0, time.Local),
-	},
-}
 
 func getProjectRepository(t *testing.T) *ProjectRepository {
 	db, err := CreateConnection("prom_test", "prom_tester", "tester")
@@ -57,15 +36,15 @@ func TestGetAllContent(t *testing.T) {
 	}{
 		{
 			name: "project_1",
-			want: sampleProjects[0],
+			want: testdata.SampleProjects[0],
 		},
 		{
 			name: "project_2",
-			want: sampleProjects[1],
+			want: testdata.SampleProjects[1],
 		},
 		{
 			name: "project_3",
-			want: sampleProjects[2],
+			want: testdata.SampleProjects[2],
 		},
 	}
 
@@ -93,17 +72,17 @@ func TestGetOneContent(t *testing.T) {
 		{
 			name: "project_1",
 			id:   1,
-			want: sampleProjects[0],
+			want: testdata.SampleProjects[0],
 		},
 		{
 			name: "project_2",
 			id:   2,
-			want: sampleProjects[1],
+			want: testdata.SampleProjects[1],
 		},
 		{
 			name: "project_3",
 			id:   3,
-			want: sampleProjects[2],
+			want: testdata.SampleProjects[2],
 		},
 	}
 
