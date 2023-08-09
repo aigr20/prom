@@ -33,6 +33,8 @@ func (issue *Issue) LenientEquals(other Issue) bool {
 				break
 			}
 		}
+	} else {
+		tagsMatch = false
 	}
 
 	return issue.ID == other.ID &&
@@ -57,6 +59,7 @@ func ScanIssues(rows *sql.Rows) ([]Issue, error) {
 		}
 
 		if scannedIssue, isScanned := issueHasBeenScanned(issues, issue.ID); !isScanned {
+			issue.Tags = make([]IssueTag, 0)
 			if tag.Text != "" && tag.Color != "" {
 				issue.Tags = append(issue.Tags, tag)
 			}
@@ -72,9 +75,9 @@ func ScanIssues(rows *sql.Rows) ([]Issue, error) {
 }
 
 func issueHasBeenScanned(issues []Issue, id int) (*Issue, bool) {
-	for _, issue := range issues {
-		if issue.ID == id {
-			return &issue, true
+	for i := range issues {
+		if issues[i].ID == id {
+			return &issues[i], true
 		}
 	}
 	return nil, false
