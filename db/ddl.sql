@@ -1,6 +1,8 @@
+DROP TABLE IF EXISTS issue_tags;
 DROP TABLE IF EXISTS issues;
 DROP TABLE IF EXISTS issue_statuses;
 DROP TABLE IF EXISTS projects;
+DROP TABLE tags;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE projects (
@@ -32,6 +34,23 @@ CREATE TABLE issues (
   PRIMARY KEY (issue_id),
   FOREIGN KEY project_fk (project) REFERENCES projects (project_id) ON DELETE CASCADE,
   FOREIGN KEY status_fk (issue_status) REFERENCES issue_statuses (status_id)
+);
+
+CREATE TABLE tags (
+  tag_id INT NOT NULL AUTO_INCREMENT,
+  tag_text VARCHAR(50) NOT NULL,
+  tag_color CHAR(7) NOT NULL,
+
+  PRIMARY KEY (tag_id)
+);
+
+CREATE TABLE issue_tags (
+  issue_id INT NOT NULL,
+  tag_id INT NOT NULL,
+
+  PRIMARY KEY (issue_id, tag_id),
+  FOREIGN KEY issue_fk (issue_id) REFERENCES issues (issue_id) ON DELETE CASCADE,
+  FOREIGN KEY tag_fk (tag_id) REFERENCES tags (tag_id) ON DELETE CASCADE
 );
 
 CREATE TABLE users (
