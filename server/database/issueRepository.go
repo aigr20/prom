@@ -34,10 +34,16 @@ func (rep *IssueRepository) GetIssuesFromProject(projectId int) ([]models.Issue,
 		i.creation_date,
 		i.last_changed,
 		i.project,
-		s.status_text
+		s.status_text,
+		COALESCE(t.tag_text, ''),
+		COALESCE(t.tag_color, '')
 	FROM issues AS i
 	JOIN issue_statuses AS s
 	ON i.issue_status = s.status_id
+	LEFT JOIN issue_tags AS itags
+	ON itags.issue_id = i.issue_id
+	LEFT JOIN tags AS t
+	ON t.tag_id = itags.tag_id
 	WHERE project = ?`
 	rows, err := rep.db.Query(query, projectId)
 	if err != nil {

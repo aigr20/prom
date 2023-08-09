@@ -16,6 +16,7 @@ var sampleIssues = []models.Issue{
 		Updated:     time.Date(2023, time.June, 28, 15, 15, 0, 0, time.Local),
 		ProjectID:   1,
 		Status:      "TODO",
+		Tags:        []models.IssueTag{},
 	},
 	{
 		ID:          2,
@@ -26,6 +27,7 @@ var sampleIssues = []models.Issue{
 		Updated:     time.Date(2023, time.June, 28, 15, 20, 0, 0, time.Local),
 		ProjectID:   1,
 		Status:      "In Progress",
+		Tags:        []models.IssueTag{},
 	},
 	{
 		ID:          3,
@@ -36,6 +38,7 @@ var sampleIssues = []models.Issue{
 		Updated:     time.Date(2023, time.June, 29, 16, 12, 0, 0, time.Local),
 		ProjectID:   2,
 		Status:      "Finished",
+		Tags:        []models.IssueTag{},
 	},
 	{
 		ID:          4,
@@ -46,6 +49,7 @@ var sampleIssues = []models.Issue{
 		Updated:     time.Date(2023, time.June, 30, 15, 0, 34, 0, time.Local),
 		ProjectID:   3,
 		Status:      "TODO",
+		Tags:        []models.IssueTag{},
 	},
 }
 
@@ -130,7 +134,7 @@ func TestGetAllForProjectContent(t *testing.T) {
 				t.Error(err)
 			}
 			for i, issue := range test.want {
-				if issue != issues[i] {
+				if issue.LenientEquals(issues[i]) {
 					t.Fail()
 				}
 			}
