@@ -7,7 +7,10 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
+
+	"github.com/gin-gonic/gin"
 )
 
 func getTestAPI(t *testing.T) *API {
@@ -16,6 +19,8 @@ func getTestAPI(t *testing.T) *API {
 		t.Error("Failed on database connection")
 	}
 
+	gin.DefaultWriter, _ = os.Open(os.DevNull)
+	gin.DefaultErrorWriter, _ = os.Open(os.DevNull)
 	return NewAPI(db)
 }
 

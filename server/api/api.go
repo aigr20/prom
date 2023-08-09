@@ -18,8 +18,11 @@ type API struct {
 }
 
 func NewAPI(db *sql.DB) *API {
+	router := gin.New()
+	router.Use(gin.Logger(), gin.Recovery())
+
 	api := &API{
-		Router:      gin.Default(),
+		Router:      router,
 		ProjectRepo: *database.NewProjectRepository(db),
 		IssueRepo:   *database.NewIssueRepository(db),
 		StatusRepo:  *database.NewStatusRepository(db),
