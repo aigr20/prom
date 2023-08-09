@@ -25,14 +25,13 @@ type Issue struct {
 
 // Compares issues without comparing the Updated field
 func (issue *Issue) LenientEquals(other Issue) bool {
-	tagsMatch := false
+	tagsMatch := true
 	if len(issue.Tags) == len(other.Tags) {
 		for i, tag := range issue.Tags {
 			if tag.Text != other.Tags[i].Text || tag.Color != other.Tags[i].Color {
 				tagsMatch = false
 				break
 			}
-			tagsMatch = true
 		}
 	}
 
