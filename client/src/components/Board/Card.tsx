@@ -26,6 +26,20 @@ export default function Card({
   openAsModal,
 }: Props) {
   const handlers = useDragHandlers(columns, setColumns, setTasks);
+  const tagElements = task.tags.map((tag, idx) => {
+    return (
+      <span
+        key={`tag-${tag.text}-${idx}`}
+        style={{
+          background: tag.color,
+          color: "white",
+        }}
+        className="card--tag"
+      >
+        {tag.text}
+      </span>
+    );
+  });
 
   return (
     <div
@@ -44,8 +58,7 @@ export default function Card({
           {Icons.drag}
         </span>
       </div>
-      <span className="card--tag">Some</span>
-      <span className="card--tag">Tags</span>
+      {tagElements}
       <span className="card--estimate">{task.estimate}</span>
     </div>
   );

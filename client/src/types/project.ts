@@ -12,6 +12,11 @@ export type IProjectsAndSetter = {
   setProjects: React.Dispatch<React.SetStateAction<IProject[]>>;
 };
 
+export type ITag = {
+  text: string;
+  color: string;
+};
+
 export type ITask = {
   id: number;
   title: string;
@@ -20,6 +25,7 @@ export type ITask = {
   createdAt: Date;
   updatedAt: Date;
   status: string;
+  tags: ITag[];
 };
 
 export type IProjectViewOutletContext = {
