@@ -53,8 +53,8 @@ var SampleIssues = []models.Issue{
 		Status:      "Finished",
 		Tags: []models.IssueTag{
 			{
-				Text:  "important",
-				Color: "#ff0000",
+				Text:  "bug",
+				Color: "#0000ff",
 			},
 		},
 	},

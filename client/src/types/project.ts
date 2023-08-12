@@ -3,6 +3,7 @@ import { type Setter } from "./general";
 export type IProject = {
   id: number;
   name: string;
+  tags: ITag[];
   createdAt: Date;
   updatedAt: Date;
 };

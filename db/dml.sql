@@ -35,6 +35,12 @@ INSERT INTO issue_tags (issue_id, tag_id) VALUES
   (3, 2)
 ;
 
+INSERT INTO project_tags (project_id, tag_id) VALUES
+  (1, 1),
+  (1, 2),
+  (2, 2)
+;
+
 INSERT INTO users (forename, surname, user_email, user_password) VALUES
   ("Test", "Testson", "testis@test.com", "gargamel")
 ;

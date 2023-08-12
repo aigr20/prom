@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS issue_tags;
+DROP TABLE IF EXISTS project_tags;
 DROP TABLE IF EXISTS issues;
 DROP TABLE IF EXISTS issue_statuses;
 DROP TABLE IF EXISTS projects;
@@ -51,6 +52,15 @@ CREATE TABLE issue_tags (
   PRIMARY KEY (issue_id, tag_id),
   FOREIGN KEY issue_fk (issue_id) REFERENCES issues (issue_id) ON DELETE CASCADE,
   FOREIGN KEY tag_fk (tag_id) REFERENCES tags (tag_id) ON DELETE CASCADE
+);
+
+CREATE TABLE project_tags (
+  project_id INT NOT NULL,
+  tag_id INT NOT NULL,
+
+  PRIMARY KEY (project_id, tag_id),
+  FOREIGN KEY p2t_project_fk (project_id) REFERENCES projects (project_id) ON DELETE CASCADE,
+  FOREIGN KEY p2t_tag_fk (tag_id) REFERENCES tags (tag_id) ON DELETE CASCADE
 );
 
 CREATE TABLE users (

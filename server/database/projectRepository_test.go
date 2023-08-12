@@ -56,7 +56,7 @@ func TestGetAllContent(t *testing.T) {
 	}
 	for i, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			if projects[i] != test.want {
+			if projects[i].ID != test.want.ID || projects[i].Name != test.want.Name || projects[i].Created != test.want.Created || projects[i].Updated != test.want.Updated {
 				t.Fail()
 			}
 		})
@@ -94,7 +94,7 @@ func TestGetOneContent(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			if project != test.want {
+			if !project.Equals(test.want) {
 				t.Fail()
 			}
 		})
