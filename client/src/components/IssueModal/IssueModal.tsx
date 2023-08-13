@@ -4,6 +4,7 @@ import { type ITask } from "../../types/project";
 import { formatDate } from "../util/date";
 import { Icons } from "../util/icons";
 import "./IssueModal.css";
+import TagDropdown from "./TagDropdown";
 
 export type OpenModalFunc = (issue: ITask) => void;
 
@@ -11,7 +12,8 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
   _,
   ref,
 ) {
-  const { issue, modalRef, modifyFunction, onModalClose } = useIssueModal(ref);
+  const { issue, modalRef, modifyFunction, onModalClose, availableTags } =
+    useIssueModal(ref);
 
   return (
     <dialog ref={modalRef} className="issue--modal" onClose={onModalClose}>
@@ -32,6 +34,20 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
         onChange={(e) => modifyFunction("description", e)}
         value={issue?.description ?? ""}
       />
+      <div className="tags">
+        {issue?.tags.map((tag) => {
+          return (
+            <span
+              key={`modal-tag-${tag.text}-${issue.id}`}
+              className="tag"
+              style={{ background: tag.color }}
+            >
+              {tag.text}
+            </span>
+          );
+        })}
+      </div>
+      <TagDropdown />
       <span className="created" title="Skapat">
         {issue?.createdAt && formatDate(issue.createdAt)}
       </span>

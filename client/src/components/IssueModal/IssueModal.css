@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   margin: 0 auto;
-  padding: 2px;
+  padding: 2px 6px;
   width: 40%;
   max-width: 40%;
   height: 35rem;
@@ -12,11 +12,13 @@
   overflow: hidden;
   background: #f9f9f9;
   display: grid;
-  grid-template-columns: 47% 47% 6%;
-  grid-template-rows: 8% 85% 7%;
-  grid-template-areas: "heading heading close"
-    "description description description"
-    "created updated estimate";
+  grid-template-columns: 42% 43% 10% 5%;
+  grid-template-rows: 8% 1fr 5% 5%;
+  grid-template-areas: "heading heading heading close"
+    "description description description description"
+    "tags tags add-tag add-tag"
+    "created updated updated estimate";
+  row-gap: 4px;
 }
 
 .issue--modal .close-button {
@@ -45,6 +47,23 @@
   grid-area: description;
   margin: 0;
   resize: none;
+}
+
+.issue--modal .tags {
+  grid-area: tags;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: scroll;
+  color: white;
+}
+
+.issue--modal .tags .tag {
+  padding: 0.2rem;
+  border: 1px solid #444;
+}
+
+.issue--modal .tags+* {
+  grid-area: add-tag;
 }
 
 .issue--modal .created {
