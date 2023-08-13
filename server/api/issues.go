@@ -2,6 +2,7 @@ package api
 
 import (
 	"aigr20/prom/models"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -43,6 +44,40 @@ func (api *API) UpdateIssueStatusHandler(ctx *gin.Context) {
 	}
 
 	_, err = api.IssueRepo.UpdateIssue(body.IssueID, []string{"issue_status"}, []any{statusID})
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
+}
+
+func (api *API) AddIssueTagsHandler(ctx *gin.Context) {
+	var body models.AddIssueTagsBody
+	err := ctx.ShouldBindJSON(&body)
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	issue, err := api.IssueRepo.GetOne(body.IssueID)
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	for i := range body.Tags {
+		if _, ok := api.TagRepo.FindTagInProject(body.Tags[i], issue.ProjectID); !ok {
+			fmt.Printf("Tag %v is not part of project %v\n", body.Tags[i], issue.ProjectID)
+			ctx.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+	}
+
+	err = api.IssueRepo.AddTags(issue.ID, body.Tags)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusBadRequest)

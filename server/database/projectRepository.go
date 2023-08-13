@@ -35,7 +35,7 @@ func (rep *ProjectRepository) GetAll() ([]models.Project, error) {
 
 func (rep *ProjectRepository) GetOne(id int) (models.Project, error) {
 	const query = `
-	SELECT p.*, COALESCE(t.tag_text, ''), COALESCE(t.tag_color, '') FROM projects AS p
+	SELECT p.*, COALESCE(t.tag_id, -1), COALESCE(t.tag_text, ''), COALESCE(t.tag_color, '') FROM projects AS p
 		LEFT JOIN project_tags AS pts ON pts.project_id = p.project_id
 		LEFT JOIN tags AS t ON t.tag_id = pts.tag_id
 	WHERE p.project_id = ?`

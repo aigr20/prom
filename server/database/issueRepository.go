@@ -35,6 +35,7 @@ func (rep *IssueRepository) GetIssuesFromProject(projectId int) ([]models.Issue,
 		i.last_changed,
 		i.project,
 		s.status_text,
+		COALESCE(t.tag_id, -1),
 		COALESCE(t.tag_text, ''),
 		COALESCE(t.tag_color, '')
 	FROM issues AS i
@@ -159,6 +160,27 @@ func (rep *IssueRepository) UpdateIssue(target int, fields []string, values []an
 		return models.Issue{}, ErrIssueNotFound
 	}
 	return updatedIssue, nil
+}
+
+func (rep *IssueRepository) AddTags(target int, tags []int) error {
+	issueArgs := make([]interface{}, 0, len(tags)*2)
+	builder := strings.Builder{}
+	for i := range tags {
+		builder.WriteString("(?, ?)")
+		if i < len(tags)-1 {
+			builder.WriteString(",")
+		}
+		issueArgs = append(issueArgs, target, tags[i])
+	}
+
+	query := fmt.Sprintf("INSERT IGNORE INTO issue_tags (issue_id, tag_id) VALUES %s", builder.String())
+	_, err := rep.db.Exec(query, issueArgs...)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
 }
 
 // Should only be used in tests

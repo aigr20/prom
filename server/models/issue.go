@@ -6,11 +6,6 @@ import (
 	"time"
 )
 
-type IssueTag struct {
-	Text  string `json:"text"`
-	Color string `json:"color"`
-}
-
 type Issue struct {
 	ID          int        `json:"id"`
 	Title       string     `json:"title"`
@@ -52,7 +47,7 @@ func ScanIssues(rows *sql.Rows) ([]Issue, error) {
 	for rows.Next() {
 		var issue Issue
 		var tag IssueTag
-		err := rows.Scan(&issue.ID, &issue.Title, &issue.Description, &issue.Estimate, &issue.Created, &issue.Updated, &issue.ProjectID, &issue.Status, &tag.Text, &tag.Color)
+		err := rows.Scan(&issue.ID, &issue.Title, &issue.Description, &issue.Estimate, &issue.Created, &issue.Updated, &issue.ProjectID, &issue.Status, &tag.ID, &tag.Text, &tag.Color)
 		if err != nil {
 			log.Println(err)
 			continue
@@ -106,6 +101,12 @@ type UpdateIssueStatusBody struct {
 	IssueID   int    `json:"issueId" binding:"required"`
 	NewStatus string `json:"newStatus" binding:"required"`
 }
+
+type AddIssueTagsBody struct {
+	IssueID int   `json:"issueId" binding:"required"`
+	Tags    []int `json:"tags" binding:"required"`
+}
+
 type UpdateIssueBody struct {
 	IssueID int                    `json:"issueId" binding:"required"`
 	Updates map[string]interface{} `json:"updates"`

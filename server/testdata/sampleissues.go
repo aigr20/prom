@@ -17,10 +17,12 @@ var SampleIssues = []models.Issue{
 		Status:      "TODO",
 		Tags: []models.IssueTag{
 			{
+				ID:    1,
 				Text:  "important",
 				Color: "#ff0000",
 			},
 			{
+				ID:    2,
 				Text:  "bug",
 				Color: "#0000ff",
 			},
@@ -37,6 +39,7 @@ var SampleIssues = []models.Issue{
 		Status:      "In Progress",
 		Tags: []models.IssueTag{
 			{
+				ID:    1,
 				Text:  "important",
 				Color: "#ff0000",
 			},
@@ -53,6 +56,7 @@ var SampleIssues = []models.Issue{
 		Status:      "Finished",
 		Tags: []models.IssueTag{
 			{
+				ID:    2,
 				Text:  "bug",
 				Color: "#0000ff",
 			},

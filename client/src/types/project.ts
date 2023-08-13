@@ -14,6 +14,7 @@ export type IProjectsAndSetter = {
 };
 
 export type ITag = {
+  id: number;
   text: string;
   color: string;
 };

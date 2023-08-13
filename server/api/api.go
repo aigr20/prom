@@ -15,6 +15,7 @@ type API struct {
 	ProjectRepo database.ProjectRepository
 	IssueRepo   database.IssueRepository
 	StatusRepo  database.StatusRepository
+	TagRepo     database.TagRepository
 }
 
 func NewAPI(db *sql.DB) *API {
@@ -26,6 +27,7 @@ func NewAPI(db *sql.DB) *API {
 		ProjectRepo: *database.NewProjectRepository(db),
 		IssueRepo:   *database.NewIssueRepository(db),
 		StatusRepo:  *database.NewStatusRepository(db),
+		TagRepo:     *database.NewTagRepository(db),
 	}
 	api.Routes()
 	return api
@@ -62,5 +64,10 @@ func (api *API) Routes() {
 		issuesGroup.POST("/create", api.CreateIssueHandler)
 		issuesGroup.PATCH("/status", api.UpdateIssueStatusHandler)
 		issuesGroup.PATCH("/update", api.UpdateIssueHandler)
+		issuesGroup.PATCH("/tags", api.AddIssueTagsHandler)
+	}
+	tagsGroup := api.Router.Group("/tags")
+	{
+		tagsGroup.POST("/create", api.CreateTagHandler)
 	}
 }

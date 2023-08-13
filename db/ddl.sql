@@ -42,7 +42,8 @@ CREATE TABLE tags (
   tag_text VARCHAR(50) NOT NULL,
   tag_color CHAR(7) NOT NULL,
 
-  PRIMARY KEY (tag_id)
+  PRIMARY KEY (tag_id),
+  UNIQUE INDEX (tag_text, tag_color)
 );
 
 CREATE TABLE issue_tags (

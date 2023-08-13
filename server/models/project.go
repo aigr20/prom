@@ -67,7 +67,7 @@ func scanProjectsWithTags(rows *sql.Rows) ([]Project, error) {
 	for rows.Next() {
 		var project Project
 		var tag IssueTag
-		err := rows.Scan(&project.ID, &project.Name, &project.Created, &project.Updated, &tag.Text, &tag.Color)
+		err := rows.Scan(&project.ID, &project.Name, &project.Created, &project.Updated, &tag.ID, &tag.Text, &tag.Color)
 		if err != nil {
 			log.Println(err)
 			continue
