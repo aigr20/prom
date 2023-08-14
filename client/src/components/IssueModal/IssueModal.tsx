@@ -1,5 +1,5 @@
-import { forwardRef } from "react";
-import { useIssueModal } from "../../hooks/issueHooks";
+import { useNavigate } from "react-router-dom";
+import { useIssueModal } from "../../hooks/issueModalHooks";
 import { type ITask } from "../../types/project";
 import { formatDate } from "../util/date";
 import { Icons } from "../util/icons";
@@ -8,15 +8,17 @@ import TagDropdown from "./TagDropdown";
 
 export type OpenModalFunc = (issue: ITask) => void;
 
-const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
-  _,
-  ref,
-) {
-  const { issue, modalRef, modifyFunction, onModalClose, availableTags } =
-    useIssueModal(ref);
+// const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
+//   _,
+//   ref,
+// ) {
+function IssueModal() {
+  // const { issue, modalRef, modifyFunction, onModalClose } = useIssueModal(ref);
+  const { issue, modifyFunction, onModalClose } = useIssueModal();
+  const navigate = useNavigate();
 
   return (
-    <dialog ref={modalRef} className="issue--modal" onClose={onModalClose}>
+    <div className="issue--modal">
       <input
         className="heading"
         name="issue-heading"
@@ -25,7 +27,10 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
       />
       <button
         className="close-button"
-        onClick={() => modalRef.current?.close()}
+        onClick={() => {
+          onModalClose();
+          navigate("..");
+        }}
       >
         {Icons.close}
       </button>
@@ -47,7 +52,7 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
           );
         })}
       </div>
-      <TagDropdown />
+      <TagDropdown issueId={issue?.id} tags={issue?.tags} />
       <span className="created" title="Skapat">
         {issue?.createdAt && formatDate(issue.createdAt)}
       </span>
@@ -63,8 +68,8 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
         value={String(issue?.estimate ?? 0)}
         onChange={(e) => modifyFunction("estimate", e)}
       />
-    </dialog>
+    </div>
   );
-});
+}
 
 export default IssueModal;
