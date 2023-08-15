@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default function TagDropdown({ issueId, tags }: Props) {
-  const { isShown, setIsShown, selectedTags, selectTag } = useTagDropdown({
+  const { isShown, toggleDropdown, selectedTags, selectTag } = useTagDropdown({
     issueId,
     tags: tags ?? [],
   });
@@ -18,10 +18,7 @@ export default function TagDropdown({ issueId, tags }: Props) {
 
   return (
     <div className="tagselector--wrapper">
-      <button
-        onClick={() => setIsShown((prev) => !prev)}
-        className="tagselector--toggle"
-      >
+      <button onClick={toggleDropdown} className="tagselector--toggle">
         Add tag
       </button>
       <div

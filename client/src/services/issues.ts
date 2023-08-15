@@ -96,3 +96,24 @@ export async function getIssue({
       return { data: null };
     });
 }
+
+type AddTagsArgs = {
+  issueId: number;
+  tags: number[];
+};
+export async function addTags({ issueId, tags }: AddTagsArgs): Promise<void> {
+  const headers = new Headers();
+  headers.set("Content-Type", "application/json");
+  const options: RequestInit = {
+    method: "PATCH",
+    body: JSON.stringify({ issueId, tags }),
+    headers,
+  };
+
+  return fetch("http://localhost:8080/issues/tags", options)
+    .then((res) => {
+      if (res.ok && res.status === 204) return;
+      throw new Error("Failed to add tags");
+    })
+    .catch((err: Error) => alert(err.message));
+}

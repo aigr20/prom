@@ -1,8 +1,7 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { updateIssue } from "../services/issues";
+import { addTags, updateIssue } from "../services/issues";
 import type { IIssueModalOutletContext } from "../types/board";
-import type { Setter } from "../types/general";
 import type { ITag, ITask } from "../types/project";
 
 type IssueModalReturn = {
@@ -94,7 +93,7 @@ type TagDropdownArgs = {
 };
 type TagDropdownReturn = {
   isShown: boolean;
-  setIsShown: Setter<boolean>;
+  toggleDropdown: () => void;
   selectTag: (tag: number) => void;
   selectedTags: number[];
 };
@@ -115,5 +114,14 @@ export function useTagDropdown({
     () => tags.map((tag) => tag.id),
   );
 
-  return { isShown, setIsShown, selectTag: dispatch, selectedTags };
+  function toggleDropdown() {
+    setIsShown((wasShown) => {
+      if (wasShown && issueId !== undefined) {
+        addTags({ issueId, tags: selectedTags });
+      }
+      return !wasShown;
+    });
+  }
+
+  return { isShown, toggleDropdown, selectTag: dispatch, selectedTags };
 }
