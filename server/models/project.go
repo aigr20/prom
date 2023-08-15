@@ -78,12 +78,12 @@ func scanProjectsWithTags(rows *sql.Rows) ([]Project, error) {
 			if tag.Text != "" && tag.Color != "" {
 				project.Tags = append(project.Tags, tag)
 			}
+			projects = append(projects, project)
 		} else {
 			if tag.Text != "" && tag.Color != "" {
 				scannedProject.Tags = append(scannedProject.Tags, tag)
 			}
 		}
-		projects = append(projects, project)
 	}
 	return projects, nil
 }

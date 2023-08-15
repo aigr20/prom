@@ -45,7 +45,7 @@ func (rep *ProjectRepository) GetOne(id int) (models.Project, error) {
 	}
 
 	project, err := models.ScanProjects(rows)
-	if err != nil && len(project) == 1 {
+	if err != nil || len(project) > 1 {
 		return models.Project{}, ErrProjectScan
 	}
 	return project[0], nil
