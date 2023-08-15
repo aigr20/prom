@@ -61,6 +61,7 @@ func (api *API) Routes() {
 	}
 	issuesGroup := api.Router.Group("/issues")
 	{
+		issuesGroup.GET("/:issueId", api.GetIssueHandler)
 		issuesGroup.POST("/create", api.CreateIssueHandler)
 		issuesGroup.PATCH("/status", api.UpdateIssueStatusHandler)
 		issuesGroup.PATCH("/update", api.UpdateIssueHandler)

@@ -78,18 +78,6 @@ func issueHasBeenScanned(issues []Issue, id int) (*Issue, bool) {
 	return nil, false
 }
 
-func ScanIssue(row *sql.Row) (Issue, error) {
-	if err := row.Err(); err != nil {
-		return Issue{}, err
-	}
-	var issue Issue
-	err := row.Scan(&issue.ID, &issue.Title, &issue.Description, &issue.Estimate, &issue.Created, &issue.Updated, &issue.ProjectID, &issue.Status)
-	if err != nil {
-		return Issue{}, err
-	}
-	return issue, nil
-}
-
 type IssueCreateForm struct {
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description,omitempty"`

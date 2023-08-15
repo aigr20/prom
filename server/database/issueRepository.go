@@ -72,24 +72,37 @@ func (rep *IssueRepository) GetOne(issueId int) (models.Issue, error) {
 		i.creation_date,
 		i.last_changed,
 		i.project,
-		s.status_text
+		s.status_text,
+		COALESCE(t.tag_id, -1),
+		COALESCE(t.tag_text, ''),
+		COALESCE(t.tag_color, '')
 	FROM issues AS i
 	JOIN issue_statuses AS s
 	ON i.issue_status = s.status_id
+	LEFT JOIN issue_tags AS itags
+	ON itags.issue_id = i.issue_id
+	LEFT JOIN tags AS t
+	ON t.tag_id = itags.tag_id
 	WHERE i.issue_id = ?`
-	row := rep.db.QueryRow(query, issueId)
-	if row.Err() != nil {
-		log.Println(row.Err())
-		return models.Issue{}, ErrIssueNotFound
-	}
-
-	issue, err := models.ScanIssue(row)
+	rows, err := rep.db.Query(query, issueId)
 	if err != nil {
 		log.Println(err)
 		return models.Issue{}, ErrIssueNotFound
 	}
 
-	return issue, nil
+	issues, err := models.ScanIssues(rows)
+	if err != nil {
+		log.Println(err)
+		return models.Issue{}, ErrIssueNotFound
+	} else if len(issues) > 1 {
+		log.Println("Received multiple issues")
+		return models.Issue{}, ErrIssueNotFound
+	} else if len(issues) < 1 {
+		log.Println("Found no issues")
+		return models.Issue{}, ErrIssueNotFound
+	}
+
+	return issues[0], nil
 }
 
 func (rep *IssueRepository) CreateIssue(body models.IssueCreateForm) (models.Issue, error) {

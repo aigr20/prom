@@ -1,13 +1,47 @@
 package api
 
 import (
+	"aigr20/prom/database"
 	"aigr20/prom/models"
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
+
+func (api *API) GetIssueHandler(ctx *gin.Context) {
+	var issueId int
+	if id, ok := ctx.Params.Get("issueId"); ok {
+		var err error
+		issueId, err = strconv.Atoi(id)
+		if err != nil {
+			log.Println(err)
+			ctx.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+	} else {
+		log.Println("Missing issueId")
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	issue, err := api.IssueRepo.GetOne(issueId)
+	if err != nil {
+		var status int
+		switch err {
+		case database.ErrIssueNotFound:
+			status = http.StatusNotFound
+		default:
+			status = http.StatusBadRequest
+		}
+		ctx.AbortWithStatus(status)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, ResponseData{"data": issue})
+}
 
 func (api *API) CreateIssueHandler(ctx *gin.Context) {
 	var body models.IssueCreateForm
