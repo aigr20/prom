@@ -1,5 +1,5 @@
 import { type ResponseData } from "../types/general";
-import { type ITask } from "../types/project";
+import { type ITag, type ITask } from "../types/project";
 
 type CreateIssueArgs = {
   projectId: number;
@@ -101,7 +101,10 @@ type TagManipArgs = {
   issueId: number;
   tags: number[];
 };
-export async function addTags({ issueId, tags }: TagManipArgs): Promise<void> {
+export async function addTags({
+  issueId,
+  tags,
+}: TagManipArgs): Promise<ResponseData<ITag[]>> {
   const headers = new Headers();
   headers.set("Content-Type", "application/json");
   const options: RequestInit = {
@@ -112,7 +115,7 @@ export async function addTags({ issueId, tags }: TagManipArgs): Promise<void> {
 
   return fetch("http://localhost:8080/issues/tags", options)
     .then((res) => {
-      if (res.ok && res.status === 204) return;
+      if (res.ok && res.status === 200) return res.json();
       throw new Error("Failed to add tags");
     })
     .catch((err: Error) => alert(err.message));
@@ -121,7 +124,7 @@ export async function addTags({ issueId, tags }: TagManipArgs): Promise<void> {
 export async function removeTags({
   issueId,
   tags,
-}: TagManipArgs): Promise<void> {
+}: TagManipArgs): Promise<ResponseData<ITag[]>> {
   const headers = new Headers();
   headers.set("Content-Type", "application/json");
   const options: RequestInit = {
@@ -132,7 +135,7 @@ export async function removeTags({
 
   return fetch("http://localhost:8080/issues/tags", options)
     .then((res) => {
-      if (res.ok && res.status === 204) return;
+      if (res.ok && res.status === 200) return res.json();
       throw new Error("Failed to remove tags");
     })
     .catch((err: Error) => alert(err.message));

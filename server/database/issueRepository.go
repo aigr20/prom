@@ -175,7 +175,7 @@ func (rep *IssueRepository) UpdateIssue(target int, fields []string, values []an
 	return updatedIssue, nil
 }
 
-func (rep *IssueRepository) AddTags(target int, tags []int) error {
+func (rep *IssueRepository) AddTags(target int, tags []int) ([]models.IssueTag, error) {
 	issueArgs := make([]interface{}, 0, len(tags)*2)
 	builder := strings.Builder{}
 	for i := range tags {
@@ -190,13 +190,18 @@ func (rep *IssueRepository) AddTags(target int, tags []int) error {
 	_, err := rep.db.Exec(query, issueArgs...)
 	if err != nil {
 		log.Println(err)
-		return err
+		return []models.IssueTag{}, err
 	}
 
-	return nil
+	newTags, err := rep.getTags(target)
+	if err != nil {
+		return []models.IssueTag{}, err
+	}
+
+	return newTags, nil
 }
 
-func (rep *IssueRepository) RemoveTags(target int, tags []int) error {
+func (rep *IssueRepository) RemoveTags(target int, tags []int) ([]models.IssueTag, error) {
 	builder := strings.Builder{}
 	args := make([]interface{}, len(tags))
 	for i := range tags {
@@ -212,10 +217,34 @@ func (rep *IssueRepository) RemoveTags(target int, tags []int) error {
 	_, err := rep.db.Exec(query, args...)
 	if err != nil {
 		log.Println(err)
-		return err
+		return []models.IssueTag{}, err
 	}
 
-	return nil
+	newTags, err := rep.getTags(target)
+	if err != nil {
+		return []models.IssueTag{}, err
+	}
+
+	return newTags, nil
+}
+
+func (rep *IssueRepository) getTags(issueID int) ([]models.IssueTag, error) {
+	const query = `
+	SELECT t.tag_id, t.tag_text, t.tag_color FROM tags AS t
+	JOIN issue_tags AS itag ON itag.tag_id = t.tag_id
+	WHERE itag.issue_id = ?`
+	rows, err := rep.db.Query(query, issueID)
+	if err != nil {
+		log.Println(err)
+		return []models.IssueTag{}, ErrTagNotFound
+	}
+
+	tags, err := models.ScanTags(rows)
+	if err != nil {
+		return []models.IssueTag{}, ErrTagNotFound
+	}
+
+	return tags, nil
 }
 
 // Should only be used in tests

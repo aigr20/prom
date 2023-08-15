@@ -111,14 +111,14 @@ func (api *API) AddIssueTagsHandler(ctx *gin.Context) {
 		}
 	}
 
-	err = api.IssueRepo.AddTags(issue.ID, body.Tags)
+	tags, err := api.IssueRepo.AddTags(issue.ID, body.Tags)
 	if err != nil {
 		log.Println(err)
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	ctx.Status(http.StatusNoContent)
+	ctx.JSON(http.StatusOK, ResponseData{"data": tags})
 }
 
 func (api *API) RemoveIssueTagsHandler(ctx *gin.Context) {
@@ -130,13 +130,13 @@ func (api *API) RemoveIssueTagsHandler(ctx *gin.Context) {
 		return
 	}
 
-	err = api.IssueRepo.RemoveTags(body.IssueID, body.Tags)
+	tags, err := api.IssueRepo.RemoveTags(body.IssueID, body.Tags)
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	ctx.Status(http.StatusNoContent)
+	ctx.JSON(http.StatusOK, ResponseData{"data": tags})
 }
 
 func (api *API) UpdateIssueHandler(ctx *gin.Context) {
