@@ -2,6 +2,7 @@ import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { addTags, removeTags, updateIssue } from "../services/issues";
 import type { IIssueModalOutletContext } from "../types/board";
+import type { Setter } from "../types/general";
 import type { ITag, ITask } from "../types/project";
 
 type IssueModalReturn = {
@@ -11,6 +12,7 @@ type IssueModalReturn = {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
   onModalClose: () => void;
+  setIssue: Setter<ITask | null>;
 };
 export function useIssueModal(openedIssue: ITask | null): IssueModalReturn {
   const currentCopyRef = useRef<ITask | null>(null);
@@ -80,7 +82,7 @@ export function useIssueModal(openedIssue: ITask | null): IssueModalReturn {
     });
   }
 
-  return { issueValues: issue, modifyFunction, onModalClose };
+  return { issueValues: issue, modifyFunction, onModalClose, setIssue };
 }
 
 function issueHasChanged(issue: Partial<ITask>): boolean {
@@ -90,6 +92,7 @@ function issueHasChanged(issue: Partial<ITask>): boolean {
 type TagDropdownArgs = {
   issueId?: number;
   tags: ITag[];
+  setIssue: Setter<ITask | null>;
 };
 type TagDropdownReturn = {
   isShown: boolean;
@@ -100,16 +103,10 @@ type TagDropdownReturn = {
 export function useTagDropdown({
   issueId,
   tags,
+  setIssue,
 }: TagDropdownArgs): TagDropdownReturn {
   const [isShown, setIsShown] = useState(false);
-  const originalTags = useMemo(
-    () =>
-      tags.map((tag) => {
-        console.log(tag);
-        return tag.id;
-      }),
-    [tags],
-  );
+  const originalTags = useMemo(() => tags.map((tag) => tag.id), [tags]);
   const [selectedTags, dispatch] = useReducer(
     (prev: number[], touched: number) => {
       if (prev.includes(touched)) {
@@ -125,12 +122,22 @@ export function useTagDropdown({
     setIsShown((wasShown) => {
       if (wasShown && issueId !== undefined) {
         if (selectedTags.some((tag) => !originalTags.includes(tag))) {
-          addTags({ issueId, tags: selectedTags });
+          addTags({ issueId, tags: selectedTags }).then(({ data }) => {
+            setIssue((prev) => {
+              if (!prev) return null;
+              return { ...prev, tags: [...data] };
+            });
+          });
         }
         if (originalTags.some((tag) => !selectedTags.includes(tag))) {
           removeTags({
             issueId,
             tags: originalTags.filter((tag) => !selectedTags.includes(tag)),
+          }).then(({ data }) => {
+            setIssue((prev) => {
+              if (!prev) return null;
+              return { ...prev, tags: data };
+            });
           });
         }
       }

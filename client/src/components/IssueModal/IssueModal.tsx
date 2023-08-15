@@ -21,7 +21,8 @@ export async function issueLoader({
 export default function IssueModal() {
   const navigate = useNavigate();
   const { issue } = useLoaderData() as Awaited<ReturnType<typeof issueLoader>>;
-  const { issueValues, modifyFunction, onModalClose } = useIssueModal(issue);
+  const { issueValues, modifyFunction, onModalClose, setIssue } =
+    useIssueModal(issue);
 
   return (
     <div className="issue--modal">
@@ -46,10 +47,10 @@ export default function IssueModal() {
         value={issueValues?.description ?? ""}
       />
       <div className="tags">
-        {issue?.tags.map((tag) => {
+        {issueValues?.tags.map((tag) => {
           return (
             <span
-              key={`modal-tag-${tag.text}-${issue.id}`}
+              key={`modal-tag-${tag.id}-${issue?.id}`}
               className="tag"
               style={{ background: tag.color }}
             >
@@ -58,7 +59,7 @@ export default function IssueModal() {
           );
         })}
       </div>
-      <TagDropdown issueId={issue?.id} tags={issue?.tags} />
+      <TagDropdown issueId={issue?.id} tags={issue?.tags} setIssue={setIssue} />
       <span className="created" title="Skapat">
         {issue?.createdAt && formatDate(issue.createdAt)}
       </span>
