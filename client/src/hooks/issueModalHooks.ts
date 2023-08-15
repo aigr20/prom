@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { addTags, updateIssue } from "../services/issues";
 import type { IIssueModalOutletContext } from "../types/board";
@@ -102,6 +102,14 @@ export function useTagDropdown({
   tags,
 }: TagDropdownArgs): TagDropdownReturn {
   const [isShown, setIsShown] = useState(false);
+  const originalTags = useMemo(
+    () =>
+      tags.map((tag) => {
+        console.log(tag);
+        return tag.id;
+      }),
+    [tags],
+  );
   const [selectedTags, dispatch] = useReducer(
     (prev: number[], touched: number) => {
       if (prev.includes(touched)) {
@@ -110,13 +118,16 @@ export function useTagDropdown({
         return [...prev, touched];
       }
     },
-    [],
-    () => tags.map((tag) => tag.id),
+    originalTags,
   );
 
   function toggleDropdown() {
     setIsShown((wasShown) => {
-      if (wasShown && issueId !== undefined) {
+      if (
+        wasShown &&
+        issueId !== undefined &&
+        selectedTags.some((tag) => !originalTags.includes(tag))
+      ) {
         addTags({ issueId, tags: selectedTags });
       }
       return !wasShown;
