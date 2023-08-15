@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Backlog from "./components/Backlog/Backlog";
 import Board from "./components/Board/Board";
-import IssueModal from "./components/IssueModal/IssueModal";
+import IssueModal, { issueLoader } from "./components/IssueModal/IssueModal";
 import "./index.css";
 import "./layout/base.css";
 import Home from "./views/Home";
@@ -30,6 +30,7 @@ const router = createBrowserRouter([
           {
             path: ":issueId",
             element: <IssueModal />,
+            loader: issueLoader,
           },
         ],
       },

@@ -6,19 +6,18 @@ import type { Setter } from "../types/general";
 import type { ITag, ITask } from "../types/project";
 
 type IssueModalReturn = {
-  issue?: ITask;
+  issueValues: ITask | null;
   modifyFunction: (
     field: keyof ITask,
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
   onModalClose: () => void;
 };
-export function useIssueModal(): IssueModalReturn {
-  const currentCopyRef = useRef<ITask>();
+export function useIssueModal(openedIssue: ITask | null): IssueModalReturn {
+  const currentCopyRef = useRef<ITask | null>(null);
   const updateFieldsRef = useRef<Partial<ITask>>({});
   const updateTimerRef = useRef<number>();
-  const { task: openedIssue, setTasks } =
-    useOutletContext<IIssueModalOutletContext>();
+  const { setTasks } = useOutletContext<IIssueModalOutletContext>();
   const [issue, setIssue] = useState(openedIssue);
   useEffect(() => {
     if (!issue && openedIssue) setIssue({ ...openedIssue });
@@ -60,7 +59,7 @@ export function useIssueModal(): IssueModalReturn {
     }
 
     setIssue((oldIssue) => {
-      if (!oldIssue) return;
+      if (!oldIssue) return null;
       return { ...oldIssue, [field]: val };
     });
   }
@@ -82,7 +81,7 @@ export function useIssueModal(): IssueModalReturn {
     });
   }
 
-  return { issue: issue, modifyFunction, onModalClose };
+  return { issueValues: issue, modifyFunction, onModalClose };
 }
 
 function issueHasChanged(issue: Partial<ITask>): boolean {

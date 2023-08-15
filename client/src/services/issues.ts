@@ -80,3 +80,19 @@ export async function updateStatus({
       console.error(err.message);
     });
 }
+
+export async function getIssue({
+  issueId,
+}: {
+  issueId: number;
+}): Promise<ResponseData<ITask | null>> {
+  return fetch(`http://localhost:8080/issues/${issueId}`)
+    .then((res) => {
+      if (res.ok && res.status === 200) return res.json();
+      throw new Error("Failed to get issue");
+    })
+    .catch((err: Error) => {
+      alert(err.message);
+      return { data: null };
+    });
+}
