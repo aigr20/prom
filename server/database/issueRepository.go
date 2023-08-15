@@ -196,6 +196,28 @@ func (rep *IssueRepository) AddTags(target int, tags []int) error {
 	return nil
 }
 
+func (rep *IssueRepository) RemoveTags(target int, tags []int) error {
+	builder := strings.Builder{}
+	args := make([]interface{}, len(tags))
+	for i := range tags {
+		builder.WriteString("tag_id = ?")
+		if i < len(tags)-1 {
+			builder.WriteString(" OR ")
+		}
+		args[i] = tags[i]
+	}
+	args = append([]interface{}{target}, args...)
+
+	query := fmt.Sprintf("DELETE FROM issue_tags WHERE issue_id = ? AND (%s)", builder.String())
+	_, err := rep.db.Exec(query, args...)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
+}
+
 // Should only be used in tests
 func (rep *IssueRepository) CustomQuery(query string, args ...any) (sql.Result, error) {
 	return rep.db.Exec(query, args...)

@@ -90,7 +90,7 @@ type UpdateIssueStatusBody struct {
 	NewStatus string `json:"newStatus" binding:"required"`
 }
 
-type AddIssueTagsBody struct {
+type IssueTagsBody struct {
 	IssueID int   `json:"issueId" binding:"required"`
 	Tags    []int `json:"tags" binding:"required"`
 }

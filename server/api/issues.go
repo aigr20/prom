@@ -88,7 +88,7 @@ func (api *API) UpdateIssueStatusHandler(ctx *gin.Context) {
 }
 
 func (api *API) AddIssueTagsHandler(ctx *gin.Context) {
-	var body models.AddIssueTagsBody
+	var body models.IssueTagsBody
 	err := ctx.ShouldBindJSON(&body)
 	if err != nil {
 		log.Println(err)
@@ -114,6 +114,24 @@ func (api *API) AddIssueTagsHandler(ctx *gin.Context) {
 	err = api.IssueRepo.AddTags(issue.ID, body.Tags)
 	if err != nil {
 		log.Println(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	ctx.Status(http.StatusNoContent)
+}
+
+func (api *API) RemoveIssueTagsHandler(ctx *gin.Context) {
+	var body models.IssueTagsBody
+	err := ctx.ShouldBindJSON(&body)
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	err = api.IssueRepo.RemoveTags(body.IssueID, body.Tags)
+	if err != nil {
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}

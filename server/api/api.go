@@ -66,6 +66,7 @@ func (api *API) Routes() {
 		issuesGroup.PATCH("/status", api.UpdateIssueStatusHandler)
 		issuesGroup.PATCH("/update", api.UpdateIssueHandler)
 		issuesGroup.PATCH("/tags", api.AddIssueTagsHandler)
+		issuesGroup.DELETE("/tags", api.RemoveIssueTagsHandler)
 	}
 	tagsGroup := api.Router.Group("/tags")
 	{
