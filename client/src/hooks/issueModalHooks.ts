@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { addTags, updateIssue } from "../services/issues";
+import { addTags, removeTags, updateIssue } from "../services/issues";
 import type { IIssueModalOutletContext } from "../types/board";
 import type { ITag, ITask } from "../types/project";
 
@@ -123,12 +123,16 @@ export function useTagDropdown({
 
   function toggleDropdown() {
     setIsShown((wasShown) => {
-      if (
-        wasShown &&
-        issueId !== undefined &&
-        selectedTags.some((tag) => !originalTags.includes(tag))
-      ) {
-        addTags({ issueId, tags: selectedTags });
+      if (wasShown && issueId !== undefined) {
+        if (selectedTags.some((tag) => !originalTags.includes(tag))) {
+          addTags({ issueId, tags: selectedTags });
+        }
+        if (originalTags.some((tag) => !selectedTags.includes(tag))) {
+          removeTags({
+            issueId,
+            tags: originalTags.filter((tag) => !selectedTags.includes(tag)),
+          });
+        }
       }
       return !wasShown;
     });

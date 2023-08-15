@@ -97,11 +97,11 @@ export async function getIssue({
     });
 }
 
-type AddTagsArgs = {
+type TagManipArgs = {
   issueId: number;
   tags: number[];
 };
-export async function addTags({ issueId, tags }: AddTagsArgs): Promise<void> {
+export async function addTags({ issueId, tags }: TagManipArgs): Promise<void> {
   const headers = new Headers();
   headers.set("Content-Type", "application/json");
   const options: RequestInit = {
@@ -114,6 +114,26 @@ export async function addTags({ issueId, tags }: AddTagsArgs): Promise<void> {
     .then((res) => {
       if (res.ok && res.status === 204) return;
       throw new Error("Failed to add tags");
+    })
+    .catch((err: Error) => alert(err.message));
+}
+
+export async function removeTags({
+  issueId,
+  tags,
+}: TagManipArgs): Promise<void> {
+  const headers = new Headers();
+  headers.set("Content-Type", "application/json");
+  const options: RequestInit = {
+    method: "DELETE",
+    body: JSON.stringify({ issueId, tags }),
+    headers,
+  };
+
+  return fetch("http://localhost:8080/issues/tags", options)
+    .then((res) => {
+      if (res.ok && res.status === 204) return;
+      throw new Error("Failed to remove tags");
     })
     .catch((err: Error) => alert(err.message));
 }
