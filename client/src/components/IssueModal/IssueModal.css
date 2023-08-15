@@ -19,6 +19,9 @@
     "tags tags add-tag add-tag"
     "created updated updated estimate";
   row-gap: 4px;
+  box-shadow: 0 0.4rem 2rem 1rem rgba(0, 0, 0, 0.7);
+  outline: 3px solid #000;
+  border-radius: 4px;
 }
 
 .issue--modal .close-button {
