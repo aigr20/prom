@@ -13,7 +13,6 @@ type Props = {
   columns: IColumn[];
   setColumns: Setter<IColumn[]>;
   setTasks: Setter<ITask[]>;
-  // openAsModal: OpenModalFunc | null;
 };
 
 export default function Card({
@@ -23,8 +22,7 @@ export default function Card({
   columns,
   setColumns,
   setTasks,
-}: // openAsModal,
-Props) {
+}: Props) {
   const handlers = useDragHandlers(columns, setColumns, setTasks);
   const navigate = useNavigate();
   const tagElements = task.tags.map((tag, idx) => {
@@ -48,7 +46,6 @@ Props) {
       data-index={index}
       data-col-index={colIndex}
       onMouseDown={() => {
-        console.log(task.id);
         navigate(`./${task.id}`);
       }}
       {...handlers}
