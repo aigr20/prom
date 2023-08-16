@@ -22,7 +22,7 @@ export default function TagDropdown({ issueId, tags, setIssue }: Props) {
   return (
     <div className="tagselector--wrapper">
       <button onClick={toggleDropdown} className="tagselector--toggle">
-        Add tag
+        Change tags
       </button>
       <div
         style={{ display: isShown ? "" : "none" }}

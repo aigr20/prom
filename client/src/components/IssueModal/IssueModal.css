@@ -12,8 +12,8 @@
   overflow: hidden;
   background: #f9f9f9;
   display: grid;
-  grid-template-columns: 42% 43% 10% 5%;
-  grid-template-rows: 8% 1fr 5% 5%;
+  grid-template-columns: 41% 42% 12% 5%;
+  grid-template-rows: 8% 1fr 6% 5%;
   grid-template-areas: "heading heading heading close"
     "description description description description"
     "tags tags add-tag add-tag"
@@ -57,16 +57,24 @@
   width: 100%;
   max-width: 100%;
   overflow-x: scroll;
+  overflow-y: hidden;
   color: white;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
 }
 
 .issue--modal .tags .tag {
-  padding: 0.2rem;
+  padding: 0.3rem;
   border: 1px solid #444;
+  line-height: 1;
+  height: fit-content;
+  white-space: nowrap;
 }
 
 .issue--modal .tags+* {
   grid-area: add-tag;
+  margin-left: 4px;
 }
 
 .issue--modal .created {
