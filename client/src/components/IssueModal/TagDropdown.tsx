@@ -36,7 +36,7 @@ export default function TagDropdown({ issueId, tags, setIssue }: Props) {
               className={`tagselector--item ${
                 isSelected ? "tagselector--item-selected" : ""
               }`}
-              onClick={() => selectTag(tag.id)}
+              onClick={() => selectTag({ action: "do", tag: tag.id })}
             >
               <svg width={10} height={10} viewBox="0 0 2.6458 2.6458">
                 <rect fill={tag.color} height="100%" width="100%" />

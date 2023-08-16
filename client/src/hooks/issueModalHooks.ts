@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import { useOutletContext } from "react-router-dom";
 import { addTags, removeTags, updateIssue } from "../services/issues";
 import type { IIssueModalOutletContext } from "../types/board";
@@ -97,7 +104,7 @@ type TagDropdownArgs = {
 type TagDropdownReturn = {
   isShown: boolean;
   toggleDropdown: () => void;
-  selectTag: (tag: number) => void;
+  selectTag: (arg: { action: "reset" | "do"; tag: number }) => void;
   selectedTags: number[];
 };
 export function useTagDropdown({
@@ -107,38 +114,47 @@ export function useTagDropdown({
 }: TagDropdownArgs): TagDropdownReturn {
   const [isShown, setIsShown] = useState(false);
   const originalTags = useMemo(() => tags.map((tag) => tag.id), [tags]);
-  const [selectedTags, dispatch] = useReducer(
-    (prev: number[], touched: number) => {
-      if (prev.includes(touched)) {
-        return [...prev.filter((id) => id !== touched)];
+  const tagReducer = useCallback(
+    (prev: number[], arg: { action: "do" | "reset"; tag?: number }) => {
+      if (arg.action === "reset" || arg.tag === undefined) {
+        return [...originalTags];
+      }
+      if (prev.includes(arg.tag)) {
+        return [...prev.filter((id) => id !== arg.tag)];
       } else {
-        return [...prev, touched];
+        return [...prev, arg.tag];
       }
     },
-    originalTags,
+    [originalTags],
   );
+  const [selectedTags, dispatch] = useReducer(tagReducer, originalTags);
 
   function toggleDropdown() {
     setIsShown((wasShown) => {
       if (wasShown && issueId !== undefined) {
         if (selectedTags.some((tag) => !originalTags.includes(tag))) {
-          addTags({ issueId, tags: selectedTags }).then(({ data }) => {
-            setIssue((prev) => {
-              if (!prev) return null;
-              return { ...prev, tags: [...data] };
-            });
-          });
+          addTags({ issueId, tags: selectedTags })
+            .then(({ data }) => {
+              setIssue((prev) => {
+                if (!prev) return null;
+                return { ...prev, tags: data };
+              });
+            })
+            .then(() => dispatch({ action: "reset" }));
         }
+
         if (originalTags.some((tag) => !selectedTags.includes(tag))) {
           removeTags({
             issueId,
             tags: originalTags.filter((tag) => !selectedTags.includes(tag)),
-          }).then(({ data }) => {
-            setIssue((prev) => {
-              if (!prev) return null;
-              return { ...prev, tags: data };
-            });
-          });
+          })
+            .then(({ data }) => {
+              setIssue((prev) => {
+                if (!prev) return null;
+                return { ...prev, tags: data };
+              });
+            })
+            .then(() => dispatch({ action: "reset" }));
         }
       }
       return !wasShown;

@@ -59,7 +59,11 @@ export default function IssueModal() {
           );
         })}
       </div>
-      <TagDropdown issueId={issue?.id} tags={issue?.tags} setIssue={setIssue} />
+      <TagDropdown
+        issueId={issue?.id}
+        tags={issueValues?.tags}
+        setIssue={setIssue}
+      />
       <span className="created" title="Skapat">
         {issue?.createdAt && formatDate(issue.createdAt)}
       </span>
