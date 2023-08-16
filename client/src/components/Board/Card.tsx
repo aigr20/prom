@@ -1,8 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import { useDragHandlers } from "../../hooks/useDragHandlers";
 import { type IColumn } from "../../types/board";
 import { type Setter } from "../../types/general";
 import { type ITask } from "../../types/project";
-import { type OpenModalFunc } from "../IssueModal/IssueModal";
 import { Icons } from "../util/icons";
 import "./Card.css";
 
@@ -13,7 +13,6 @@ type Props = {
   columns: IColumn[];
   setColumns: Setter<IColumn[]>;
   setTasks: Setter<ITask[]>;
-  openAsModal: OpenModalFunc | null;
 };
 
 export default function Card({
@@ -23,16 +22,32 @@ export default function Card({
   columns,
   setColumns,
   setTasks,
-  openAsModal,
 }: Props) {
   const handlers = useDragHandlers(columns, setColumns, setTasks);
+  const navigate = useNavigate();
+  const tagElements = task.tags.slice(0, 6).map((tag, idx) => {
+    return (
+      <span
+        key={`tag-${tag.text}-${idx}`}
+        style={{
+          background: tag.color,
+          color: "white",
+        }}
+        className="card--tag"
+      >
+        {tag.text}
+      </span>
+    );
+  });
 
   return (
     <div
       className="board--card"
       data-index={index}
       data-col-index={colIndex}
-      onMouseDown={() => openAsModal?.(task)}
+      onMouseDown={() => {
+        navigate(`./${task.id}`);
+      }}
       {...handlers}
     >
       <div className="card--title-row">
@@ -44,8 +59,7 @@ export default function Card({
           {Icons.drag}
         </span>
       </div>
-      <span className="card--tag">Some</span>
-      <span className="card--tag">Tags</span>
+      <div className="card--tag-wrapper">{tagElements}</div>
       <span className="card--estimate">{task.estimate}</span>
     </div>
   );

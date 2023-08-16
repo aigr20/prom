@@ -2,52 +2,10 @@ package database
 
 import (
 	"aigr20/prom/models"
+	"aigr20/prom/testdata"
 	"testing"
 	"time"
 )
-
-var sampleIssues = []models.Issue{
-	{
-		ID:          1,
-		Title:       "Make accessible",
-		Description: "Appen måste gå att använda av alla!",
-		Estimate:    5,
-		Created:     time.Date(2023, time.June, 28, 14, 0, 0, 0, time.Local),
-		Updated:     time.Date(2023, time.June, 28, 15, 15, 0, 0, time.Local),
-		ProjectID:   1,
-		Status:      "TODO",
-	},
-	{
-		ID:          2,
-		Title:       "Make more fun",
-		Description: "Lägg in mycket färger, appen skall vara rolig!",
-		Estimate:    3,
-		Created:     time.Date(2023, time.June, 28, 14, 3, 0, 0, time.Local),
-		Updated:     time.Date(2023, time.June, 28, 15, 20, 0, 0, time.Local),
-		ProjectID:   1,
-		Status:      "In Progress",
-	},
-	{
-		ID:          3,
-		Title:       "Update damage system",
-		Description: "Damage system must be more complicated",
-		Estimate:    2,
-		Created:     time.Date(2023, time.June, 29, 13, 12, 3, 0, time.Local),
-		Updated:     time.Date(2023, time.June, 29, 16, 12, 0, 0, time.Local),
-		ProjectID:   2,
-		Status:      "Finished",
-	},
-	{
-		ID:          4,
-		Title:       "Receptmodell",
-		Description: "",
-		Estimate:    1,
-		Created:     time.Date(2023, time.June, 30, 10, 0, 0, 0, time.Local),
-		Updated:     time.Date(2023, time.June, 30, 15, 0, 34, 0, time.Local),
-		ProjectID:   3,
-		Status:      "TODO",
-	},
-}
 
 func getIssueRepository(t *testing.T) *IssueRepository {
 	db, err := CreateConnection("prom_test", "prom_tester", "tester")
@@ -106,17 +64,17 @@ func TestGetAllForProjectContent(t *testing.T) {
 		{
 			name:    "project_1",
 			project: 1,
-			want:    sampleIssues[0:2],
+			want:    testdata.SampleIssues[0:2],
 		},
 		{
 			name:    "project_2",
 			project: 2,
-			want:    sampleIssues[2:3],
+			want:    testdata.SampleIssues[2:3],
 		},
 		{
 			name:    "project_3",
 			project: 3,
-			want:    sampleIssues[3:],
+			want:    testdata.SampleIssues[3:],
 		},
 	}
 
@@ -130,7 +88,7 @@ func TestGetAllForProjectContent(t *testing.T) {
 				t.Error(err)
 			}
 			for i, issue := range test.want {
-				if issue != issues[i] {
+				if !issue.LenientEquals(issues[i]) {
 					t.Fail()
 				}
 			}
@@ -267,6 +225,7 @@ func TestUpdateIssue(t *testing.T) {
 				Created:     time.Date(2023, time.June, 28, 14, 0, 0, 0, time.Local),
 				ProjectID:   1,
 				Status:      "TODO",
+				Tags:        testdata.SampleIssues[0].Tags,
 			},
 			expectedError: nil,
 		},
@@ -283,6 +242,7 @@ func TestUpdateIssue(t *testing.T) {
 				Created:     time.Date(2023, time.June, 28, 14, 0, 0, 0, time.Local),
 				ProjectID:   1,
 				Status:      "TODO",
+				Tags:        testdata.SampleIssues[0].Tags,
 			},
 			expectedError: nil,
 		},
@@ -332,7 +292,7 @@ func TestUpdateIssue(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			t.Cleanup(func() {
-				original := &sampleIssues[0]
+				original := &testdata.SampleIssues[0]
 				repo.CustomQuery("UPDATE issues SET issue_title=?, issue_description=?, last_changed=?, project=?, issue_status=? WHERE issue_id = 1", original.Title, original.Description, original.Updated, original.ProjectID, 1)
 			})
 
@@ -342,6 +302,114 @@ func TestUpdateIssue(t *testing.T) {
 			}
 			if !issue.LenientEquals(test.expectedIssue) {
 				t.FailNow()
+			}
+		})
+	}
+}
+
+func findTag(needle models.IssueTag, haystack []models.IssueTag) bool {
+	found := false
+	for i := range haystack {
+		if needle == haystack[i] {
+			found = true
+			break
+		}
+	}
+	return found
+}
+
+func TestAddTags(t *testing.T) {
+	tests := []struct {
+		name          string
+		target        int
+		tags          []int
+		expectedTags  []models.IssueTag
+		expectedError error
+	}{
+		{
+			name:          "one_tag_no_priors",
+			target:        4,
+			tags:          []int{2},
+			expectedTags:  testdata.SampleTags[1:2],
+			expectedError: nil,
+		},
+		{
+			name:          "one_tag_one_prior",
+			target:        2,
+			tags:          []int{2},
+			expectedTags:  testdata.SampleTags,
+			expectedError: nil,
+		},
+		{
+			name:          "multiple_tags",
+			target:        4,
+			tags:          []int{1, 2},
+			expectedTags:  testdata.SampleTags,
+			expectedError: nil,
+		},
+	}
+
+	repo := getIssueRepository(t)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Cleanup(func() {
+				repo.CustomQuery("DELETE FROM issue_tags WHERE (issue_id = ?) OR (issue_id = ? AND tag_id = ?)", 4, 2, 2)
+				repo.CustomQuery("UPDATE issues SET last_changed = ? WHERE issue_id = ?", testdata.SampleIssues[test.target-1].Updated, test.target)
+			})
+			tags, err := repo.AddTags(test.target, test.tags)
+			if err != test.expectedError || len(tags) != len(test.expectedTags) {
+				t.FailNow()
+			}
+			for i := range tags {
+				if !findTag(tags[i], test.expectedTags) {
+					t.FailNow()
+				}
+			}
+		})
+	}
+}
+
+func TestRemoveTags(t *testing.T) {
+	tests := []struct {
+		name          string
+		target        int
+		tags          []int
+		expectedTags  []models.IssueTag
+		expectedError error
+	}{
+		{
+			name:          "one_tag",
+			target:        1,
+			tags:          []int{1},
+			expectedTags:  testdata.SampleTags[1:2],
+			expectedError: nil,
+		},
+		{
+			name:          "all_tags",
+			target:        1,
+			tags:          []int{1, 2},
+			expectedTags:  []models.IssueTag{},
+			expectedError: nil,
+		},
+	}
+
+	repo := getIssueRepository(t)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Cleanup(func() {
+				repo.CustomQuery("INSERT IGNORE INTO issue_tags (issue_id, tag_id) VALUES (?, ?), (?, ?)", test.target, 1, test.target, 2)
+				repo.CustomQuery("UPDATE issues SET last_changed = ? WHERE issue_id = ?", testdata.SampleIssues[test.target-1].Updated, test.target)
+			})
+
+			tags, err := repo.RemoveTags(test.target, test.tags)
+			if err != test.expectedError || len(tags) != len(test.expectedTags) {
+				t.FailNow()
+			}
+
+			for i := range tags {
+				if !findTag(tags[i], test.expectedTags) {
+					t.FailNow()
+				}
 			}
 		})
 	}

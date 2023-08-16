@@ -1,36 +1,68 @@
-import { forwardRef } from "react";
-import { useIssueModal } from "../../hooks/issueHooks";
-import { type ITask } from "../../types/project";
+import { useLoaderData, useNavigate, type Params } from "react-router-dom";
+import { useIssueModal } from "../../hooks/issueModalHooks";
+import { getIssue } from "../../services/issues";
+import type { ITask } from "../../types/project";
 import { formatDate } from "../util/date";
 import { Icons } from "../util/icons";
 import "./IssueModal.css";
+import TagDropdown from "./TagDropdown";
 
-export type OpenModalFunc = (issue: ITask) => void;
+type LoaderProps = {
+  params: Params<"issueId">;
+};
 
-const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
-  _,
-  ref,
-) {
-  const { issue, modalRef, modifyFunction, onModalClose } = useIssueModal(ref);
+export async function issueLoader({
+  params,
+}: LoaderProps): Promise<{ issue: ITask | null }> {
+  const { data } = await getIssue({ issueId: Number(params.issueId) });
+  return { issue: data };
+}
+
+export default function IssueModal() {
+  const navigate = useNavigate();
+  const { issue } = useLoaderData() as Awaited<ReturnType<typeof issueLoader>>;
+  const { issueValues, modifyFunction, onModalClose, setIssue } =
+    useIssueModal(issue);
 
   return (
-    <dialog ref={modalRef} className="issue--modal" onClose={onModalClose}>
+    <div className="issue--modal">
       <input
         className="heading"
         name="issue-heading"
-        value={issue?.title ?? ""}
+        value={issueValues?.title ?? ""}
         onChange={(e) => modifyFunction("title", e)}
       />
       <button
         className="close-button"
-        onClick={() => modalRef.current?.close()}
+        onClick={() => {
+          onModalClose();
+          navigate("..");
+        }}
       >
         {Icons.close}
       </button>
       <textarea
         className="description"
         onChange={(e) => modifyFunction("description", e)}
-        value={issue?.description ?? ""}
+        value={issueValues?.description ?? ""}
+      />
+      <div className="tags">
+        {issueValues?.tags.map((tag) => {
+          return (
+            <span
+              key={`modal-tag-${tag.id}-${issue?.id}`}
+              className="tag"
+              style={{ background: tag.color }}
+            >
+              {tag.text}
+            </span>
+          );
+        })}
+      </div>
+      <TagDropdown
+        issueId={issue?.id}
+        tags={issueValues?.tags}
+        setIssue={setIssue}
       />
       <span className="created" title="Skapat">
         {issue?.createdAt && formatDate(issue.createdAt)}
@@ -44,11 +76,9 @@ const IssueModal = forwardRef<OpenModalFunc, object>(function IssueModal(
         type="number"
         min={0}
         step={1}
-        value={String(issue?.estimate ?? 0)}
+        value={String(issueValues?.estimate ?? 0)}
         onChange={(e) => modifyFunction("estimate", e)}
       />
-    </dialog>
+    </div>
   );
-});
-
-export default IssueModal;
+}

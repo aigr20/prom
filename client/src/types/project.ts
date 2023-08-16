@@ -3,6 +3,7 @@ import { type Setter } from "./general";
 export type IProject = {
   id: number;
   name: string;
+  tags: ITag[];
   createdAt: Date;
   updatedAt: Date;
 };
@@ -10,6 +11,12 @@ export type IProject = {
 export type IProjectsAndSetter = {
   projects: IProject[];
   setProjects: React.Dispatch<React.SetStateAction<IProject[]>>;
+};
+
+export type ITag = {
+  id: number;
+  text: string;
+  color: string;
 };
 
 export type ITask = {
@@ -20,6 +27,7 @@ export type ITask = {
   createdAt: Date;
   updatedAt: Date;
   status: string;
+  tags: ITag[];
 };
 
 export type IProjectViewOutletContext = {

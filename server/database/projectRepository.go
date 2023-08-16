@@ -34,16 +34,21 @@ func (rep *ProjectRepository) GetAll() ([]models.Project, error) {
 }
 
 func (rep *ProjectRepository) GetOne(id int) (models.Project, error) {
-	row := rep.db.QueryRow("SELECT * FROM projects WHERE project_id = ?", id)
-	if row == nil {
+	const query = `
+	SELECT p.*, COALESCE(t.tag_id, -1), COALESCE(t.tag_text, ''), COALESCE(t.tag_color, '') FROM projects AS p
+		LEFT JOIN project_tags AS pts ON pts.project_id = p.project_id
+		LEFT JOIN tags AS t ON t.tag_id = pts.tag_id
+	WHERE p.project_id = ?`
+	rows, err := rep.db.Query(query, id)
+	if err != nil {
 		return models.Project{}, ErrProjectNotFound
 	}
 
-	project, err := models.ScanProject(row)
-	if err != nil {
+	project, err := models.ScanProjects(rows)
+	if err != nil || len(project) > 1 {
 		return models.Project{}, ErrProjectScan
 	}
-	return project, nil
+	return project[0], nil
 }
 
 func (rep *ProjectRepository) CreateProject(body models.ProjectCreateForm) (models.Project, error) {

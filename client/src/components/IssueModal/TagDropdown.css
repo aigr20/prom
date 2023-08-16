@@ -1,0 +1,40 @@
+.tagselector--wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.tagselector--toggle {
+  width: 100%;
+}
+
+.tagselector--item-wrapper {
+  position: absolute;
+  top: -10rem;
+  left: 0;
+  background: #cecece;
+  height: 10rem;
+  max-height: 10rem;
+  min-height: 0;
+  overflow-y: scroll;
+  width: 100%;
+  overflow-x: hidden;
+  z-index: 100;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: end;
+}
+
+.tagselector--item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+}
+
+.tagselector--item-selected {
+  background: red;
+}
+
+.tagselector--item svg {
+  min-width: 10px;
+}

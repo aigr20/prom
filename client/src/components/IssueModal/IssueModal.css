@@ -1,10 +1,10 @@
-.issue--modal[open] {
+.issue--modal {
   position: absolute;
   top: 20%;
   left: 0;
   right: 0;
   margin: 0 auto;
-  padding: 2px;
+  padding: 2px 6px;
   width: 40%;
   max-width: 40%;
   height: 35rem;
@@ -12,11 +12,16 @@
   overflow: hidden;
   background: #f9f9f9;
   display: grid;
-  grid-template-columns: 47% 47% 6%;
-  grid-template-rows: 8% 85% 7%;
-  grid-template-areas: "heading heading close"
-    "description description description"
-    "created updated estimate";
+  grid-template-columns: 41% 42% 12% 5%;
+  grid-template-rows: 8% 1fr 6% 5%;
+  grid-template-areas: "heading heading heading close"
+    "description description description description"
+    "tags tags add-tag add-tag"
+    "created updated updated estimate";
+  row-gap: 4px;
+  box-shadow: 0 0.4rem 2rem 1rem rgba(0, 0, 0, 0.7);
+  outline: 3px solid #000;
+  border-radius: 4px;
 }
 
 .issue--modal .close-button {
@@ -45,6 +50,31 @@
   grid-area: description;
   margin: 0;
   resize: none;
+}
+
+.issue--modal .tags {
+  grid-area: tags;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.issue--modal .tags .tag {
+  padding: 0.3rem;
+  border: 1px solid #444;
+  line-height: 1;
+  height: fit-content;
+  white-space: nowrap;
+}
+
+.issue--modal .tags+* {
+  grid-area: add-tag;
+  margin-left: 4px;
 }
 
 .issue--modal .created {

@@ -1,5 +1,5 @@
 import { type ResponseData } from "../types/general";
-import { type ITask } from "../types/project";
+import { type ITag, type ITask } from "../types/project";
 
 type CreateIssueArgs = {
   projectId: number;
@@ -79,4 +79,64 @@ export async function updateStatus({
     .catch((err: Error) => {
       console.error(err.message);
     });
+}
+
+export async function getIssue({
+  issueId,
+}: {
+  issueId: number;
+}): Promise<ResponseData<ITask | null>> {
+  return fetch(`http://localhost:8080/issues/${issueId}`)
+    .then((res) => {
+      if (res.ok && res.status === 200) return res.json();
+      throw new Error("Failed to get issue");
+    })
+    .catch((err: Error) => {
+      alert(err.message);
+      return { data: null };
+    });
+}
+
+type TagManipArgs = {
+  issueId: number;
+  tags: number[];
+};
+export async function addTags({
+  issueId,
+  tags,
+}: TagManipArgs): Promise<ResponseData<ITag[]>> {
+  const headers = new Headers();
+  headers.set("Content-Type", "application/json");
+  const options: RequestInit = {
+    method: "PATCH",
+    body: JSON.stringify({ issueId, tags }),
+    headers,
+  };
+
+  return fetch("http://localhost:8080/issues/tags", options)
+    .then((res) => {
+      if (res.ok && res.status === 200) return res.json();
+      throw new Error("Failed to add tags");
+    })
+    .catch((err: Error) => alert(err.message));
+}
+
+export async function removeTags({
+  issueId,
+  tags,
+}: TagManipArgs): Promise<ResponseData<ITag[]>> {
+  const headers = new Headers();
+  headers.set("Content-Type", "application/json");
+  const options: RequestInit = {
+    method: "DELETE",
+    body: JSON.stringify({ issueId, tags }),
+    headers,
+  };
+
+  return fetch("http://localhost:8080/issues/tags", options)
+    .then((res) => {
+      if (res.ok && res.status === 200) return res.json();
+      throw new Error("Failed to remove tags");
+    })
+    .catch((err: Error) => alert(err.message));
 }

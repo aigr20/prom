@@ -34,10 +34,17 @@ func (rep *IssueRepository) GetIssuesFromProject(projectId int) ([]models.Issue,
 		i.creation_date,
 		i.last_changed,
 		i.project,
-		s.status_text
+		s.status_text,
+		COALESCE(t.tag_id, -1),
+		COALESCE(t.tag_text, ''),
+		COALESCE(t.tag_color, '')
 	FROM issues AS i
 	JOIN issue_statuses AS s
 	ON i.issue_status = s.status_id
+	LEFT JOIN issue_tags AS itags
+	ON itags.issue_id = i.issue_id
+	LEFT JOIN tags AS t
+	ON t.tag_id = itags.tag_id
 	WHERE project = ?`
 	rows, err := rep.db.Query(query, projectId)
 	if err != nil {
@@ -65,24 +72,37 @@ func (rep *IssueRepository) GetOne(issueId int) (models.Issue, error) {
 		i.creation_date,
 		i.last_changed,
 		i.project,
-		s.status_text
+		s.status_text,
+		COALESCE(t.tag_id, -1),
+		COALESCE(t.tag_text, ''),
+		COALESCE(t.tag_color, '')
 	FROM issues AS i
 	JOIN issue_statuses AS s
 	ON i.issue_status = s.status_id
+	LEFT JOIN issue_tags AS itags
+	ON itags.issue_id = i.issue_id
+	LEFT JOIN tags AS t
+	ON t.tag_id = itags.tag_id
 	WHERE i.issue_id = ?`
-	row := rep.db.QueryRow(query, issueId)
-	if row.Err() != nil {
-		log.Println(row.Err())
-		return models.Issue{}, ErrIssueNotFound
-	}
-
-	issue, err := models.ScanIssue(row)
+	rows, err := rep.db.Query(query, issueId)
 	if err != nil {
 		log.Println(err)
 		return models.Issue{}, ErrIssueNotFound
 	}
 
-	return issue, nil
+	issues, err := models.ScanIssues(rows)
+	if err != nil {
+		log.Println(err)
+		return models.Issue{}, ErrIssueNotFound
+	} else if len(issues) > 1 {
+		log.Println("Received multiple issues")
+		return models.Issue{}, ErrIssueNotFound
+	} else if len(issues) < 1 {
+		log.Println("Found no issues")
+		return models.Issue{}, ErrIssueNotFound
+	}
+
+	return issues[0], nil
 }
 
 func (rep *IssueRepository) CreateIssue(body models.IssueCreateForm) (models.Issue, error) {
@@ -153,6 +173,88 @@ func (rep *IssueRepository) UpdateIssue(target int, fields []string, values []an
 		return models.Issue{}, ErrIssueNotFound
 	}
 	return updatedIssue, nil
+}
+
+func (rep *IssueRepository) AddTags(target int, tags []int) ([]models.IssueTag, error) {
+	issueArgs := make([]interface{}, 0, len(tags)*2)
+	builder := strings.Builder{}
+	for i := range tags {
+		builder.WriteString("(?, ?)")
+		if i < len(tags)-1 {
+			builder.WriteString(",")
+		}
+		issueArgs = append(issueArgs, target, tags[i])
+	}
+
+	query := fmt.Sprintf("INSERT IGNORE INTO issue_tags (issue_id, tag_id) VALUES %s", builder.String())
+	_, err := rep.db.Exec(query, issueArgs...)
+	if err != nil {
+		log.Println(err)
+		return []models.IssueTag{}, err
+	}
+	_, err = rep.db.Exec("UPDATE issues SET last_changed = CURRENT_TIMESTAMP() WHERE issue_id = ?", target)
+	if err != nil {
+		log.Println(err)
+		return []models.IssueTag{}, err
+	}
+
+	newTags, err := rep.getTags(target)
+	if err != nil {
+		return []models.IssueTag{}, err
+	}
+
+	return newTags, nil
+}
+
+func (rep *IssueRepository) RemoveTags(target int, tags []int) ([]models.IssueTag, error) {
+	builder := strings.Builder{}
+	args := make([]interface{}, len(tags))
+	for i := range tags {
+		builder.WriteString("tag_id = ?")
+		if i < len(tags)-1 {
+			builder.WriteString(" OR ")
+		}
+		args[i] = tags[i]
+	}
+	args = append([]interface{}{target}, args...)
+
+	query := fmt.Sprintf("DELETE FROM issue_tags WHERE issue_id = ? AND (%s)", builder.String())
+	_, err := rep.db.Exec(query, args...)
+	if err != nil {
+		log.Println(err)
+		return []models.IssueTag{}, err
+	}
+	_, err = rep.db.Exec("UPDATE issues SET last_changed = CURRENT_TIMESTAMP() WHERE issue_id = ?", target)
+	if err != nil {
+		log.Println(err)
+		return []models.IssueTag{}, err
+	}
+
+	newTags, err := rep.getTags(target)
+	if err != nil {
+		return []models.IssueTag{}, err
+	}
+
+	return newTags, nil
+}
+
+func (rep *IssueRepository) getTags(issueID int) ([]models.IssueTag, error) {
+	const query = `
+	SELECT t.tag_id, t.tag_text, t.tag_color FROM tags AS t
+	JOIN issue_tags AS itag ON itag.tag_id = t.tag_id
+	WHERE itag.issue_id = ?`
+	rows, err := rep.db.Query(query, issueID)
+	if err != nil {
+		log.Println(err)
+		return []models.IssueTag{}, ErrTagNotFound
+	}
+
+	tags, err := models.ScanTags(rows)
+	if err != nil {
+		return []models.IssueTag{}, ErrTagNotFound
+	}
+
+	return tags, nil
 }
 
 // Should only be used in tests

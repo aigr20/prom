@@ -33,13 +33,24 @@
   margin: 0 0 0.4rem;
 }
 
+.board--card .card--tag-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
 .board--card .card--tag {
   background: #f3f3f3;
-  margin: 0 0.2rem;
   padding: 0.2rem;
   border-radius: 6px;
   border: 2px solid #444;
   color: #777;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 25%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .board--card .card--estimate {

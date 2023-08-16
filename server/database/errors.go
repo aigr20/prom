@@ -14,3 +14,6 @@ var ErrUpdateFieldCount = errors.New("amount of fields must match amount of valu
 var ErrNoFields = errors.New("at least one field and value must be passed")
 var ErrUpdateFailed = errors.New("update failed")
 var ErrIllegalFieldName = errors.New("illegal field name passed")
+var ErrTagCreate = errors.New("tag could not be created")
+var ErrTagDuplicate = errors.New("duplicate tag for project")
+var ErrTagNotFound = errors.New("no tags found")
