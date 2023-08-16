@@ -25,7 +25,7 @@ export default function Card({
 }: Props) {
   const handlers = useDragHandlers(columns, setColumns, setTasks);
   const navigate = useNavigate();
-  const tagElements = task.tags.map((tag, idx) => {
+  const tagElements = task.tags.slice(0, 5).map((tag, idx) => {
     return (
       <span
         key={`tag-${tag.text}-${idx}`}
@@ -59,7 +59,7 @@ export default function Card({
           {Icons.drag}
         </span>
       </div>
-      {tagElements}
+      <div className="card--tag-wrapper">{tagElements}</div>
       <span className="card--estimate">{task.estimate}</span>
     </div>
   );
