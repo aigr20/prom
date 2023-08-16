@@ -76,7 +76,7 @@ export default function IssueModal() {
         type="number"
         min={0}
         step={1}
-        value={String(issue?.estimate ?? 0)}
+        value={String(issueValues?.estimate ?? 0)}
         onChange={(e) => modifyFunction("estimate", e)}
       />
     </div>
