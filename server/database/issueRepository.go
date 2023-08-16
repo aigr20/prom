@@ -192,6 +192,11 @@ func (rep *IssueRepository) AddTags(target int, tags []int) ([]models.IssueTag, 
 		log.Println(err)
 		return []models.IssueTag{}, err
 	}
+	_, err = rep.db.Exec("UPDATE issues SET last_changed = CURRENT_TIMESTAMP() WHERE issue_id = ?", target)
+	if err != nil {
+		log.Println(err)
+		return []models.IssueTag{}, err
+	}
 
 	newTags, err := rep.getTags(target)
 	if err != nil {
@@ -215,6 +220,11 @@ func (rep *IssueRepository) RemoveTags(target int, tags []int) ([]models.IssueTa
 
 	query := fmt.Sprintf("DELETE FROM issue_tags WHERE issue_id = ? AND (%s)", builder.String())
 	_, err := rep.db.Exec(query, args...)
+	if err != nil {
+		log.Println(err)
+		return []models.IssueTag{}, err
+	}
+	_, err = rep.db.Exec("UPDATE issues SET last_changed = CURRENT_TIMESTAMP() WHERE issue_id = ?", target)
 	if err != nil {
 		log.Println(err)
 		return []models.IssueTag{}, err
