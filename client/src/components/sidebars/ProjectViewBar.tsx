@@ -27,6 +27,11 @@ export default function ProjectViewBar({ title }: Props) {
             Board
           </Link>
         </li>
+        <li>
+          <Link to="settings" className={isActive(curr, "settings")}>
+            Project Settings
+          </Link>
+        </li>
       </ul>
     </aside>
   );
