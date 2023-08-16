@@ -5,6 +5,19 @@ import (
 	"time"
 )
 
+var SampleTags = []models.IssueTag{
+	{
+		ID:    1,
+		Text:  "important",
+		Color: "#ff0000",
+	},
+	{
+		ID:    2,
+		Text:  "bug",
+		Color: "#0000ff",
+	},
+}
+
 var SampleIssues = []models.Issue{
 	{
 		ID:          1,
@@ -15,18 +28,7 @@ var SampleIssues = []models.Issue{
 		Updated:     time.Date(2023, time.June, 28, 15, 15, 0, 0, time.Local),
 		ProjectID:   1,
 		Status:      "TODO",
-		Tags: []models.IssueTag{
-			{
-				ID:    1,
-				Text:  "important",
-				Color: "#ff0000",
-			},
-			{
-				ID:    2,
-				Text:  "bug",
-				Color: "#0000ff",
-			},
-		},
+		Tags:        SampleTags,
 	},
 	{
 		ID:          2,
@@ -37,13 +39,7 @@ var SampleIssues = []models.Issue{
 		Updated:     time.Date(2023, time.June, 28, 15, 20, 0, 0, time.Local),
 		ProjectID:   1,
 		Status:      "In Progress",
-		Tags: []models.IssueTag{
-			{
-				ID:    1,
-				Text:  "important",
-				Color: "#ff0000",
-			},
-		},
+		Tags:        SampleTags[0:1],
 	},
 	{
 		ID:          3,
@@ -54,13 +50,7 @@ var SampleIssues = []models.Issue{
 		Updated:     time.Date(2023, time.June, 29, 16, 12, 0, 0, time.Local),
 		ProjectID:   2,
 		Status:      "Finished",
-		Tags: []models.IssueTag{
-			{
-				ID:    2,
-				Text:  "bug",
-				Color: "#0000ff",
-			},
-		},
+		Tags:        SampleTags[1:2],
 	},
 	{
 		ID:          4,

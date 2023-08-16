@@ -306,3 +306,111 @@ func TestUpdateIssue(t *testing.T) {
 		})
 	}
 }
+
+func findTag(needle models.IssueTag, haystack []models.IssueTag) bool {
+	found := false
+	for i := range haystack {
+		if needle == haystack[i] {
+			found = true
+			break
+		}
+	}
+	return found
+}
+
+func TestAddTags(t *testing.T) {
+	tests := []struct {
+		name          string
+		target        int
+		tags          []int
+		expectedTags  []models.IssueTag
+		expectedError error
+	}{
+		{
+			name:          "one_tag_no_priors",
+			target:        4,
+			tags:          []int{2},
+			expectedTags:  testdata.SampleTags[1:2],
+			expectedError: nil,
+		},
+		{
+			name:          "one_tag_one_prior",
+			target:        2,
+			tags:          []int{2},
+			expectedTags:  testdata.SampleTags,
+			expectedError: nil,
+		},
+		{
+			name:          "multiple_tags",
+			target:        4,
+			tags:          []int{1, 2},
+			expectedTags:  testdata.SampleTags,
+			expectedError: nil,
+		},
+	}
+
+	repo := getIssueRepository(t)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Cleanup(func() {
+				repo.CustomQuery("DELETE FROM issue_tags WHERE (issue_id = ?) OR (issue_id = ? AND tag_id = ?)", 4, 2, 2)
+				repo.CustomQuery("UPDATE issues SET last_changed = ? WHERE issue_id = ?", testdata.SampleIssues[test.target-1].Updated, test.target)
+			})
+			tags, err := repo.AddTags(test.target, test.tags)
+			if err != test.expectedError || len(tags) != len(test.expectedTags) {
+				t.FailNow()
+			}
+			for i := range tags {
+				if !findTag(tags[i], test.expectedTags) {
+					t.FailNow()
+				}
+			}
+		})
+	}
+}
+
+func TestRemoveTags(t *testing.T) {
+	tests := []struct {
+		name          string
+		target        int
+		tags          []int
+		expectedTags  []models.IssueTag
+		expectedError error
+	}{
+		{
+			name:          "one_tag",
+			target:        1,
+			tags:          []int{1},
+			expectedTags:  testdata.SampleTags[1:2],
+			expectedError: nil,
+		},
+		{
+			name:          "all_tags",
+			target:        1,
+			tags:          []int{1, 2},
+			expectedTags:  []models.IssueTag{},
+			expectedError: nil,
+		},
+	}
+
+	repo := getIssueRepository(t)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Cleanup(func() {
+				repo.CustomQuery("INSERT IGNORE INTO issue_tags (issue_id, tag_id) VALUES (?, ?), (?, ?)", test.target, 1, test.target, 2)
+				repo.CustomQuery("UPDATE issues SET last_changed = ? WHERE issue_id = ?", testdata.SampleIssues[test.target-1].Updated, test.target)
+			})
+
+			tags, err := repo.RemoveTags(test.target, test.tags)
+			if err != test.expectedError || len(tags) != len(test.expectedTags) {
+				t.FailNow()
+			}
+
+			for i := range tags {
+				if !findTag(tags[i], test.expectedTags) {
+					t.FailNow()
+				}
+			}
+		})
+	}
+}
