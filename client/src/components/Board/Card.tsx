@@ -25,7 +25,7 @@ export default function Card({
 }: Props) {
   const handlers = useDragHandlers(columns, setColumns, setTasks);
   const navigate = useNavigate();
-  const tagElements = task.tags.slice(0, 5).map((tag, idx) => {
+  const tagElements = task.tags.slice(0, 6).map((tag, idx) => {
     return (
       <span
         key={`tag-${tag.text}-${idx}`}
