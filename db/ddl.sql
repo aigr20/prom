@@ -39,7 +39,7 @@ CREATE TABLE issues (
 
 CREATE TABLE tags (
   tag_id INT NOT NULL AUTO_INCREMENT,
-  tag_text VARCHAR(50) NOT NULL,
+  tag_text VARCHAR(15) NOT NULL,
   tag_color CHAR(7) NOT NULL,
 
   PRIMARY KEY (tag_id),
