@@ -1,0 +1,15 @@
+.settings--tag_list-wrapper {
+  width: 33%;
+  display: grid;
+  grid-template-columns: repeat(3, fit-content(15ch));
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+.settings--tag_list-wrapper .tag {
+  padding: 0.2rem;
+  border-radius: 6px;
+  border: 2px solid #444;
+  color: #fff;
+}
