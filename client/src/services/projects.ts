@@ -1,5 +1,10 @@
 import { type CreateProjectArg, type ResponseData } from "../types/general";
-import { type IProject, type ITag, type ITask } from "../types/project";
+import {
+  type IProject,
+  type ITag,
+  type ITagCount,
+  type ITask,
+} from "../types/project";
 
 const endpoint = "projects";
 
@@ -82,6 +87,19 @@ export async function getProjectTasks({
   projectId,
 }: ProjectIDArg): Promise<ResponseData<ITask[]>> {
   return fetch(`http://localhost:8080/${endpoint}/${projectId}/issues`)
+    .then((res) => {
+      if (res.ok && res.status === 200) return res.json();
+      return { data: [] };
+    })
+    .catch(() => {
+      return { data: [] };
+    });
+}
+
+export async function getProjectTagCounts({
+  projectId,
+}: ProjectIDArg): Promise<ResponseData<ITagCount[]>> {
+  return fetch(`http://localhost:8080/${endpoint}/${projectId}/tag_counts`)
     .then((res) => {
       if (res.ok && res.status === 200) return res.json();
       return { data: [] };

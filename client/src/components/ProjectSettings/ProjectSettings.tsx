@@ -1,15 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { useTagCreation } from "../../hooks/projectSettingsHooks";
-import { createTag } from "../../services/projects";
-import type { IProjectViewOutletContext, ITag } from "../../types/project";
+import { createTag, getProjectTagCounts } from "../../services/projects";
+import type {
+  IProjectViewOutletContext,
+  ITag,
+  ITagCount,
+} from "../../types/project";
 import ColorPicker from "../util/ColorPicker/ColorPicker";
 import "./ProjectSettings.css";
 
 export default function ProjectSettings() {
   const { project } = useOutletContext<IProjectViewOutletContext>();
   const [tags, setTags] = useState<ITag[]>(project.tags);
+  const [tagCounts, setTagCounts] = useState<ITagCount[]>([]);
   const tagCreator = useTagCreation();
+
+  useEffect(() => {
+    getProjectTagCounts({ projectId: project.id }).then(({ data }) => {
+      setTagCounts([...data]);
+    });
+  }, [project.id]);
 
   return (
     <>
@@ -24,7 +35,8 @@ export default function ProjectSettings() {
                 className="tag"
                 style={{ background: tag.color }}
               >
-                {tag.text}
+                {tag.text} (
+                {tagCounts.find((t) => t.tag === tag.text)?.count ?? 0})
               </li>
             );
           })}
