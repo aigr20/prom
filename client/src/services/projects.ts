@@ -73,7 +73,7 @@ export async function createTag({
     body: JSON.stringify({ projectId, text: tagText, color: tagColor }),
   };
 
-  return fetch("http://localhost:8080/tags/create", options)
+  return fetch(`${import.meta.env.VITE_API_URL}/tags/create`, options)
     .then((res) => {
       if (res.ok && res.status === 201) return res.json();
       throw new Error("Tag creation failed");
@@ -97,7 +97,9 @@ export async function getProjectTasks({
 export async function getProjectTagCounts({
   projectId,
 }: ProjectIDArg): Promise<ResponseData<ITagCount[]>> {
-  return fetch(`http://localhost:8080/${endpoint}/${projectId}/tag_counts`)
+  return fetch(
+    `${import.meta.env.VITE_API_URL}/projects/${projectId}/tag_counts`,
+  )
     .then((res) => {
       if (res.ok && res.status === 200) return res.json();
       return { data: [] };
