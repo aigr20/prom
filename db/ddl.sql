@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS issue_tags;
 DROP TABLE IF EXISTS project_tags;
+DROP TABLE IF EXISTS sprint_issues;
+DROP TABLE IF EXISTS sprints;
 DROP TABLE IF EXISTS issues;
 DROP TABLE IF EXISTS issue_statuses;
 DROP TABLE IF EXISTS projects;
@@ -35,6 +37,29 @@ CREATE TABLE issues (
   PRIMARY KEY (issue_id),
   FOREIGN KEY project_fk (project) REFERENCES projects (project_id) ON DELETE CASCADE,
   FOREIGN KEY status_fk (issue_status) REFERENCES issue_statuses (status_id)
+);
+
+CREATE TABLE sprints (
+  sprint_id INT NOT NULL AUTO_INCREMENT,
+  sprint_name VARCHAR(30) NOT NULL,
+  project INT NOT NULL,
+  sprint_start DATE NOT NULL DEFAULT CURRENT_DATE,
+  sprint_end DATE NOT NULL DEFAULT (CURRENT_DATE + INTERVAL 7 DAY),
+  finished BOOLEAN NOT NULL DEFAULT FALSE,
+  current BOOLEAN NOT NULL DEFAULT TRUE,
+
+  PRIMARY KEY (sprint_id),
+  FOREIGN KEY sprint_project_fk (project) REFERENCES projects (project_id) ON DELETE CASCADE
+);
+
+CREATE TABLE sprint_issues (
+  issue_id INT NOT NULL,
+  sprint_id INT NOT NULL,
+  issue_priority INT NOT NULL DEFAULT 0,
+
+  PRIMARY KEY (issue_id, sprint_id),
+  FOREIGN KEY sprint_issue_fk (issue_id) REFERENCES issues (issue_id),
+  FOREIGN KEY sprint_fk (sprint_id) REFERENCES sprints (sprint_id)
 );
 
 CREATE TABLE tags (
@@ -77,6 +102,7 @@ CREATE TABLE users (
 );
 
 DROP VIEW IF EXISTS project_tag_counts;
+DROP VIEW IF EXISTS sprint_issues_v;
 
 CREATE VIEW project_tag_counts AS
   SELECT
@@ -89,4 +115,24 @@ CREATE VIEW project_tag_counts AS
   LEFT JOIN issues AS i ON i.issue_id = itags.issue_id AND i.project = ptags.project_id
   GROUP BY ptags.project_id, t.tag_text, t.tag_color
   ORDER BY tag_count DESC
+;
+
+CREATE VIEW sprint_issues_v AS
+  SELECT
+    issues.issue_id,
+    issues.issue_title,
+    issues.issue_description,
+    issues.estimate,
+    issues.creation_date,
+    issues.last_changed,
+    issues.project,
+    issue_statuses.status_text,
+    sprint_issues.issue_priority,
+    sprints.sprint_id,
+    sprints.current
+  FROM sprints
+  JOIN sprint_issues ON sprint_issues.sprint_id = sprints.sprint_id
+  JOIN issues ON issues.issue_id = sprint_issues.issue_id
+  JOIN issue_statuses ON issue_statuses.status_id = issues.issue_status
+  ORDER BY sprints.project ASC, sprint_issues.issue_priority DESC
 ;
