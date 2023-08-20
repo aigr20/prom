@@ -42,7 +42,7 @@ func (issue *Issue) LenientEquals(other Issue) bool {
 		tagsMatch
 }
 
-func ScanIssues(rows *sql.Rows) ([]Issue, error) {
+func ScanIssues(rows *sql.Rows) []Issue {
 	issues := make([]Issue, 0)
 	for rows.Next() {
 		var issue Issue
@@ -66,7 +66,7 @@ func ScanIssues(rows *sql.Rows) ([]Issue, error) {
 		}
 	}
 
-	return issues, nil
+	return issues
 }
 
 func issueHasBeenScanned(issues []Issue, id int) (*Issue, bool) {

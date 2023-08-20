@@ -13,6 +13,7 @@ type ResponseData = map[string]interface{}
 type API struct {
 	Router      *gin.Engine
 	ProjectRepo database.ProjectRepository
+	SprintRepo  database.SprintRepository
 	IssueRepo   database.IssueRepository
 	StatusRepo  database.StatusRepository
 	TagRepo     database.TagRepository
@@ -25,6 +26,7 @@ func NewAPI(db *sql.DB) *API {
 	api := &API{
 		Router:      router,
 		ProjectRepo: *database.NewProjectRepository(db),
+		SprintRepo:  *database.NewSprintRepository(db),
 		IssueRepo:   *database.NewIssueRepository(db),
 		StatusRepo:  *database.NewStatusRepository(db),
 		TagRepo:     *database.NewTagRepository(db),
@@ -68,6 +70,10 @@ func (api *API) Routes() {
 		issuesGroup.PATCH("/update", api.UpdateIssueHandler)
 		issuesGroup.PATCH("/tags", api.AddIssueTagsHandler)
 		issuesGroup.DELETE("/tags", api.RemoveIssueTagsHandler)
+	}
+	sprintsGroup := api.Router.Group("/sprints")
+	{
+		sprintsGroup.GET("/:sprintId/issues", api.GetSprintIssuesHandler)
 	}
 	tagsGroup := api.Router.Group("/tags")
 	{

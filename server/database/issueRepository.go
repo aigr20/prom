@@ -53,11 +53,7 @@ func (rep *IssueRepository) GetIssuesFromProject(projectId int) ([]models.Issue,
 	}
 	defer rows.Close()
 
-	issues, err := models.ScanIssues(rows)
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
+	issues := models.ScanIssues(rows)
 
 	return issues, nil
 }
@@ -90,11 +86,8 @@ func (rep *IssueRepository) GetOne(issueId int) (models.Issue, error) {
 		return models.Issue{}, ErrIssueNotFound
 	}
 
-	issues, err := models.ScanIssues(rows)
-	if err != nil {
-		log.Println(err)
-		return models.Issue{}, ErrIssueNotFound
-	} else if len(issues) > 1 {
+	issues := models.ScanIssues(rows)
+	if len(issues) > 1 {
 		log.Println("Received multiple issues")
 		return models.Issue{}, ErrIssueNotFound
 	} else if len(issues) < 1 {
