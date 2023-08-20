@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useRevalidator } from "react-router-dom";
 import { useTagCreation } from "../../hooks/projectSettingsHooks";
 import { createTag, getProjectTagCounts } from "../../services/projects";
 import type {
@@ -15,7 +15,7 @@ export default function ProjectSettings() {
   const [tags, setTags] = useState<ITag[]>(project.tags);
   const [tagCounts, setTagCounts] = useState<ITagCount[]>([]);
   const tagCreator = useTagCreation();
-
+  const { revalidate } = useRevalidator();
   useEffect(() => {
     getProjectTagCounts({ projectId: project.id }).then(({ data }) => {
       setTagCounts([...data]);
@@ -52,6 +52,7 @@ export default function ProjectSettings() {
             }).then(({ data }) => {
               if (!data) return;
               setTags((prev) => [...prev, data]);
+              revalidate();
             });
           }}
         >
