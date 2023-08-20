@@ -69,3 +69,21 @@ func (api *API) CreateProjectHandler(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, ResponseData{"data": project})
 }
+
+func (api *API) GetTagCountsHandler(ctx *gin.Context) {
+	projectId, err := strconv.Atoi(ctx.Param("projectId"))
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	counts, err := api.ProjectRepo.GetTagIssueCounts(projectId)
+	if err != nil {
+		log.Println("Failed to count tags for project ", projectId)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, ResponseData{"data": counts})
+}

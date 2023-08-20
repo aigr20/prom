@@ -19,6 +19,11 @@ export type ITag = {
   color: string;
 };
 
+export type ITagCount = {
+  tag: string;
+  count: number;
+};
+
 export type ITask = {
   id: number;
   title: string;

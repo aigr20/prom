@@ -1,6 +1,12 @@
-import { useLoaderData, useNavigate, type Params } from "react-router-dom";
+import {
+  useLoaderData,
+  useNavigate,
+  useOutletContext,
+  type Params,
+} from "react-router-dom";
 import { useIssueModal } from "../../hooks/issueModalHooks";
 import { getIssue } from "../../services/issues";
+import { type IIssueModalOutletContext } from "../../types/board";
 import type { ITask } from "../../types/project";
 import { formatDate } from "../util/date";
 import { Icons } from "../util/icons";
@@ -23,6 +29,7 @@ export default function IssueModal() {
   const { issue } = useLoaderData() as Awaited<ReturnType<typeof issueLoader>>;
   const { issueValues, modifyFunction, onModalClose, setIssue } =
     useIssueModal(issue);
+  const { project } = useOutletContext<IIssueModalOutletContext>();
 
   return (
     <div className="issue--modal">
@@ -61,6 +68,7 @@ export default function IssueModal() {
       </div>
       <TagDropdown
         issueId={issue?.id}
+        projectTags={project?.tags ?? []}
         tags={issueValues?.tags}
         setIssue={setIssue}
       />

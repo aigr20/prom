@@ -4,6 +4,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Backlog from "./components/Backlog/Backlog";
 import Board from "./components/Board/Board";
 import IssueModal, { issueLoader } from "./components/IssueModal/IssueModal";
+import ProjectSettings from "./components/ProjectSettings/ProjectSettings";
 import "./index.css";
 import "./layout/base.css";
 import Home from "./views/Home";
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
             loader: issueLoader,
           },
         ],
+      },
+      {
+        path: "settings",
+        element: <ProjectSettings />,
       },
     ],
   },

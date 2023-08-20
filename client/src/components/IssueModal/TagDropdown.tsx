@@ -1,23 +1,26 @@
-import { useOutletContext } from "react-router-dom";
 import { useTagDropdown } from "../../hooks/issueModalHooks";
-import type { IIssueModalOutletContext } from "../../types/board";
 import type { Setter } from "../../types/general";
 import { type ITag, type ITask } from "../../types/project";
 import "./TagDropdown.css";
 
 type Props = {
   issueId?: number;
+  projectTags: ITag[];
   tags?: ITag[];
   setIssue: Setter<ITask | null>;
 };
 
-export default function TagDropdown({ issueId, tags, setIssue }: Props) {
+export default function TagDropdown({
+  issueId,
+  projectTags,
+  tags,
+  setIssue,
+}: Props) {
   const { isShown, toggleDropdown, selectedTags, selectTag } = useTagDropdown({
     issueId,
     tags: tags ?? [],
     setIssue,
   });
-  const { project } = useOutletContext<IIssueModalOutletContext>();
 
   return (
     <div className="tagselector--wrapper">
@@ -28,7 +31,7 @@ export default function TagDropdown({ issueId, tags, setIssue }: Props) {
         style={{ display: isShown ? "" : "none" }}
         className="tagselector--item-wrapper"
       >
-        {project?.tags.map((tag, idx) => {
+        {projectTags.map((tag, idx) => {
           const isSelected = selectedTags.includes(tag.id);
           return (
             <button

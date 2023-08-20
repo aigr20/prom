@@ -76,6 +76,17 @@ func (rep *ProjectRepository) CreateProject(body models.ProjectCreateForm) (mode
 	return project, nil
 }
 
+func (rep *ProjectRepository) GetTagIssueCounts(projectId int) ([]models.TagCount, error) {
+	rows, err := rep.db.Query("SELECT tag_text, tag_count FROM project_tag_counts WHERE project_id = ?", projectId)
+	if err != nil {
+		log.Println(err)
+		return []models.TagCount{}, ErrTagCountFail
+	}
+
+	counts := models.ScanTagCounts(rows)
+	return counts, nil
+}
+
 // Should only be used in tests
 func (rep *ProjectRepository) CustomQuery(query string, args ...any) (sql.Result, error) {
 	return rep.db.Exec(query, args...)

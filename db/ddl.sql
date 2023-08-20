@@ -39,7 +39,7 @@ CREATE TABLE issues (
 
 CREATE TABLE tags (
   tag_id INT NOT NULL AUTO_INCREMENT,
-  tag_text VARCHAR(50) NOT NULL,
+  tag_text VARCHAR(15) NOT NULL,
   tag_color CHAR(7) NOT NULL,
 
   PRIMARY KEY (tag_id),
@@ -75,3 +75,18 @@ CREATE TABLE users (
   PRIMARY KEY (user_id),
   UNIQUE INDEX (user_email)
 );
+
+DROP VIEW IF EXISTS project_tag_counts;
+
+CREATE VIEW project_tag_counts AS
+  SELECT
+    ptags.project_id,
+    t.tag_text,
+    SUM(IF(i.project IS NULL, 0, 1)) AS tag_count
+  FROM tags AS t
+  JOIN project_tags AS ptags ON ptags.tag_id = t.tag_id
+  LEFT JOIN issue_tags AS itags ON itags.tag_id = t.tag_id
+  LEFT JOIN issues AS i ON i.issue_id = itags.issue_id AND i.project = ptags.project_id
+  GROUP BY ptags.project_id, t.tag_text, t.tag_color
+  ORDER BY tag_count DESC
+;
