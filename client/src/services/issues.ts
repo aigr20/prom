@@ -20,7 +20,7 @@ export async function createIssue({
     body: JSON.stringify({ project: projectId, title, description, estimate }),
     headers,
   };
-  return fetch("http://localhost:8080/issues/create", options)
+  return fetch(`${import.meta.env.VITE_API_URL}/issues/create`, options)
     .then((res) => {
       if (res.ok && res.status === 201) return res.json();
       return { data: null };
@@ -45,7 +45,7 @@ export async function updateIssue({
     body: JSON.stringify({ issueId, updates: fields }),
     headers,
   };
-  return fetch("http://localhost:8080/issues/update", options)
+  return fetch(`${import.meta.env.VITE_API_URL}/issues/update`, options)
     .then((res) => {
       if (res.ok && res.status === 204) return;
       throw new Error("Update failed");
@@ -71,7 +71,7 @@ export async function updateStatus({
     headers,
   };
 
-  return fetch("http://localhost:8080/issues/status", options)
+  return fetch(`${import.meta.env.VITE_API_URL}/issues/status`, options)
     .then((res) => {
       if (res.ok && res.status === 204) return;
       throw new Error("Status update failed");
@@ -86,7 +86,7 @@ export async function getIssue({
 }: {
   issueId: number;
 }): Promise<ResponseData<ITask | null>> {
-  return fetch(`http://localhost:8080/issues/${issueId}`)
+  return fetch(`${import.meta.env.VITE_API_URL}/issues/${issueId}`)
     .then((res) => {
       if (res.ok && res.status === 200) return res.json();
       throw new Error("Failed to get issue");
@@ -113,7 +113,7 @@ export async function addTags({
     headers,
   };
 
-  return fetch("http://localhost:8080/issues/tags", options)
+  return fetch(`${import.meta.env.VITE_API_URL}/issues/tags`, options)
     .then((res) => {
       if (res.ok && res.status === 200) return res.json();
       throw new Error("Failed to add tags");
@@ -133,7 +133,7 @@ export async function removeTags({
     headers,
   };
 
-  return fetch("http://localhost:8080/issues/tags", options)
+  return fetch(`${import.meta.env.VITE_API_URL}/issues/tags`, options)
     .then((res) => {
       if (res.ok && res.status === 200) return res.json();
       throw new Error("Failed to remove tags");

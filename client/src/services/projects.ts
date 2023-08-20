@@ -1,14 +1,12 @@
 import { type CreateProjectArg, type ResponseData } from "../types/general";
 import { type IProject, type ITask } from "../types/project";
 
-const endpoint = "projects";
-
 type ProjectIDArg = {
   projectId: number;
 };
 
 export async function getProjects(): Promise<ResponseData<IProject[]>> {
-  return fetch(`http://localhost:8080/${endpoint}/all`)
+  return fetch(`${import.meta.env.VITE_API_URL}/projects/all`)
     .then((res) => {
       if (res.ok && res.status === 200) return res.json();
       return { data: [] };
@@ -21,7 +19,7 @@ export async function getProjects(): Promise<ResponseData<IProject[]>> {
 export async function getProject({
   projectId,
 }: ProjectIDArg): Promise<ResponseData<IProject | null>> {
-  return fetch(`http://localhost:8080/${endpoint}/${projectId}`)
+  return fetch(`${import.meta.env.VITE_API_URL}/projects/${projectId}`)
     .then((res) => {
       if (res.ok && res.status === 200) return res.json();
       return { data: null };
@@ -42,7 +40,7 @@ export async function createProject({
     body: JSON.stringify({ name: projectName }),
   };
 
-  return fetch(`http://localhost:8080/${endpoint}/create`, options)
+  return fetch(`${import.meta.env.VITE_API_URL}/projects/create`, options)
     .then((res) => {
       if (res.ok && res.status === 201) return res.json();
       return { data: null };
@@ -55,7 +53,7 @@ export async function createProject({
 export async function getProjectTasks({
   projectId,
 }: ProjectIDArg): Promise<ResponseData<ITask[]>> {
-  return fetch(`http://localhost:8080/${endpoint}/${projectId}/issues`)
+  return fetch(`${import.meta.env.VITE_API_URL}/projects/${projectId}/issues`)
     .then((res) => {
       if (res.ok && res.status === 200) return res.json();
       return { data: [] };
