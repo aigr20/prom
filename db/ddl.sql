@@ -127,6 +127,9 @@ CREATE VIEW sprint_issues_v AS
     issues.last_changed,
     issues.project,
     issue_statuses.status_text,
+    COALESCE(tags.tag_id, -1) AS tag_id,
+    COALESCE(tags.tag_text, "") AS tag_text,
+    COALESCE(tags.tag_color, "") AS tag_color,
     sprint_issues.issue_priority,
     sprints.sprint_id,
     sprints.current
@@ -134,5 +137,7 @@ CREATE VIEW sprint_issues_v AS
   JOIN sprint_issues ON sprint_issues.sprint_id = sprints.sprint_id
   JOIN issues ON issues.issue_id = sprint_issues.issue_id
   JOIN issue_statuses ON issue_statuses.status_id = issues.issue_status
+  LEFT JOIN issue_tags ON issue_tags.issue_id = issues.issue_id
+  LEFT JOIN tags ON tags.tag_id = issue_tags.tag_id
   ORDER BY sprints.project ASC, sprint_issues.issue_priority DESC
 ;
