@@ -10,6 +10,17 @@ export default function Backlog() {
   return (
     <>
       <h2>{project.name} Backlog</h2>
+      {project.currentSprint && (
+        <>
+          <h3>Sprint Backlog - {project.currentSprint.name}</h3>
+          <ul>
+            {project.currentSprint.issues.map((task) => {
+              return <li key={task.id}>{task.title}</li>;
+            })}
+          </ul>
+        </>
+      )}
+      <h3>Project Backlog</h3>
       <SpinIfNull couldBeNull={tasks}>
         <ul>
           {tasks?.map((task) => {
