@@ -1,6 +1,7 @@
 package api
 
 import (
+	"aigr20/prom/models"
 	"log"
 	"net/http"
 	"strconv"
@@ -40,4 +41,22 @@ func (api *API) GetSprintIssuesHandler(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, ResponseData{"data": issues})
+}
+
+func (api *API) CreateSprintHandler(ctx *gin.Context) {
+	var body models.CreateSprintBody
+	err := ctx.ShouldBindJSON(&body)
+	if err != nil {
+		log.Println(err)
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	id, err := api.SprintRepo.CreateSprint(body)
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, ResponseData{"data": id})
 }

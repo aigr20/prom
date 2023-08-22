@@ -79,3 +79,10 @@ func ScanSprint(rows *sql.Rows) Sprint {
 
 	return sprint
 }
+
+type CreateSprintBody struct {
+	Project int       `json:"project" binding:"required"`
+	Name    string    `json:"name" binding:"required"`
+	Start   time.Time `json:"startDate"`
+	End     time.Time `json:"endDate"`
+}

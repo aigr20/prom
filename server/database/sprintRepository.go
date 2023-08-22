@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 )
 
 const baseSprintQuery = `
@@ -65,6 +66,25 @@ func (rep *SprintRepository) GetCurrentSprintForProject(projectId int) (models.S
 	}
 
 	return sprint, nil
+}
+
+func (rep *SprintRepository) CreateSprint(body models.CreateSprintBody) (int, error) {
+	if body.Start.IsZero() {
+		body.Start = time.Now()
+	}
+	if body.End.IsZero() {
+		body.End = body.Start.AddDate(0, 0, 7)
+	}
+
+	const query = "INSERT INTO sprints (sprint_name, project, sprint_start, sprint_end) VALUES (?, ?, ?, ?)"
+	result, err := rep.db.Exec(query, body.Name, body.Project, body.Start, body.End)
+	if err != nil {
+		log.Println(err)
+		return 0, ErrSprintCreate
+	}
+
+	inserted, _ := result.LastInsertId()
+	return int(inserted), nil
 }
 
 func (rep *SprintRepository) GetIssues(sprintId int) ([]models.Issue, error) {
