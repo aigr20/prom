@@ -22,6 +22,7 @@ type API struct {
 func NewAPI(db *sql.DB) *API {
 	router := gin.New()
 	router.Use(gin.Logger(), gin.Recovery())
+	router.SetTrustedProxies(nil)
 
 	api := &API{
 		Router:      router,
