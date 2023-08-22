@@ -10,11 +10,12 @@ import (
 var ErrColumnCount = errors.New("unexpected column count when scanning")
 
 type Project struct {
-	ID      int        `json:"id"`
-	Name    string     `json:"name"`
-	Tags    []IssueTag `json:"tags"`
-	Created time.Time  `json:"createdAt"`
-	Updated time.Time  `json:"updatedAt"`
+	ID            int        `json:"id"`
+	Name          string     `json:"name"`
+	Tags          []IssueTag `json:"tags"`
+	CurrentSprint *Sprint    `json:"currentSprint,omitempty"`
+	Created       time.Time  `json:"createdAt"`
+	Updated       time.Time  `json:"updatedAt"`
 }
 
 func (project *Project) Equals(other Project) bool {

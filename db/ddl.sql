@@ -125,6 +125,7 @@ CREATE VIEW sprint_issues_v AS
     sprints.sprint_end,
     sprints.finished,
     sprints.current,
+    sprints.project AS sprint_project,
     issues.issue_id,
     issues.issue_title,
     issues.issue_description,

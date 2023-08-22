@@ -18,6 +18,10 @@ type Issue struct {
 	Tags        []IssueTag `json:"tags"`
 }
 
+func (issue *Issue) Equals(other Issue) bool {
+	return issue.Updated == other.Updated && issue.LenientEquals(other)
+}
+
 // Compares issues without comparing the Updated field
 func (issue *Issue) LenientEquals(other Issue) bool {
 	tagsMatch := true

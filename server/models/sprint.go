@@ -16,6 +16,22 @@ type Sprint struct {
 	Current  bool      `json:"-"`
 }
 
+func (sprint Sprint) Equals(other Sprint) bool {
+	issuesEqual := true
+	if len(sprint.Issues) == len(other.Issues) {
+		for i := range other.Issues {
+			if !sprint.Issues[i].Equals(other.Issues[i]) {
+				issuesEqual = false
+				break
+			}
+		}
+	} else {
+		issuesEqual = false
+	}
+
+	return issuesEqual
+}
+
 func ScanSprint(rows *sql.Rows) Sprint {
 	var sprint Sprint
 	sprint.Issues = make([]Issue, 0)

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"aigr20/prom/database"
 	"aigr20/prom/models"
 	"log"
 	"net/http"
@@ -30,6 +31,12 @@ func (api *API) GetProjectHandler(ctx *gin.Context) {
 	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, ErrGetProjects)
 		return
+	}
+	currentSprint, err := api.SprintRepo.GetCurrentSprintForProject(project.ID)
+	if err == database.ErrSprintNotFound {
+		project.CurrentSprint = nil
+	} else {
+		project.CurrentSprint = &currentSprint
 	}
 
 	ctx.JSON(200, ResponseData{"data": project})
