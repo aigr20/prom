@@ -73,6 +73,7 @@ func (api *API) Routes() {
 	}
 	sprintsGroup := api.Router.Group("/sprints")
 	{
+		sprintsGroup.GET("/:sprintId", api.GetSprintHandler)
 		sprintsGroup.GET("/:sprintId/issues", api.GetSprintIssuesHandler)
 	}
 	tagsGroup := api.Router.Group("/tags")

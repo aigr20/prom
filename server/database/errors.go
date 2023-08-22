@@ -5,6 +5,7 @@ import "errors"
 var ErrConnectionFailed = errors.New("connecting to the database failed")
 var ErrProjectNotFound = errors.New("could not find requested project")
 var ErrIssuesNotFound = errors.New("could not find issues for project")
+var ErrSprintNotFound = errors.New("could not find requested sprint")
 var ErrProjectScan = errors.New("project could not be scanned")
 var ErrProjectCreate = errors.New("project could not be created")
 var ErrIssueCreate = errors.New("issue could not be created")

@@ -119,6 +119,12 @@ CREATE VIEW project_tag_counts AS
 
 CREATE VIEW sprint_issues_v AS
   SELECT
+    sprints.sprint_id,
+    sprints.sprint_name,
+    sprints.sprint_start,
+    sprints.sprint_end,
+    sprints.finished,
+    sprints.current,
     issues.issue_id,
     issues.issue_title,
     issues.issue_description,
@@ -130,9 +136,7 @@ CREATE VIEW sprint_issues_v AS
     COALESCE(tags.tag_id, -1) AS tag_id,
     COALESCE(tags.tag_text, "") AS tag_text,
     COALESCE(tags.tag_color, "") AS tag_color,
-    sprint_issues.issue_priority,
-    sprints.sprint_id,
-    sprints.current
+    sprint_issues.issue_priority
   FROM sprints
   JOIN sprint_issues ON sprint_issues.sprint_id = sprints.sprint_id
   JOIN issues ON issues.issue_id = sprint_issues.issue_id
