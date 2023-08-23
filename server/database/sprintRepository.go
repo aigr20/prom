@@ -69,6 +69,12 @@ func (rep *SprintRepository) GetCurrentSprintForProject(projectId int) (models.S
 }
 
 func (rep *SprintRepository) CreateSprint(body models.CreateSprintBody) (int, error) {
+	transaction, err := rep.db.Begin()
+	if err != nil {
+		log.Println(err)
+		return 0, ErrSprintCreate
+	}
+
 	if body.Start.IsZero() {
 		body.Start = time.Now()
 	}
@@ -76,14 +82,33 @@ func (rep *SprintRepository) CreateSprint(body models.CreateSprintBody) (int, er
 		body.End = body.Start.AddDate(0, 0, 7)
 	}
 
+	_, err = transaction.Exec("UPDATE sprints SET current = FALSE WHERE project = ?", body.Project)
+	if err != nil {
+		log.Println(err)
+		transaction.Rollback()
+		return 0, ErrSprintCreate
+	}
+
 	const query = "INSERT INTO sprints (sprint_name, project, sprint_start, sprint_end) VALUES (?, ?, ?, ?)"
-	result, err := rep.db.Exec(query, body.Name, body.Project, body.Start, body.End)
+	result, err := transaction.Exec(query, body.Name, body.Project, body.Start, body.End)
+	if err != nil {
+		log.Println(err)
+		transaction.Rollback()
+		return 0, ErrSprintCreate
+	}
+
+	inserted, err := result.LastInsertId()
 	if err != nil {
 		log.Println(err)
 		return 0, ErrSprintCreate
 	}
 
-	inserted, _ := result.LastInsertId()
+	err = transaction.Commit()
+	if err != nil {
+		log.Println(err)
+		return 0, ErrSprintCreate
+	}
+
 	return int(inserted), nil
 }
 

@@ -58,5 +58,11 @@ func (api *API) CreateSprintHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, ResponseData{"data": id})
+	created, err := api.SprintRepo.GetSprint(id)
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, ResponseData{"data": created})
 }
