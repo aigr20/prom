@@ -17,7 +17,7 @@ func (api *API) GetSprintHandler(ctx *gin.Context) {
 		return
 	}
 
-	sprint, err := api.SprintRepo.GetSprint(sprintId)
+	sprint, err := api.SprintRepo.GetSprintWithIssues(sprintId)
 	if err != nil {
 		ctx.AbortWithStatus(http.StatusNotFound)
 		return

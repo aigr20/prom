@@ -11,7 +11,7 @@ type Sprint struct {
 	Name     string    `json:"name"`
 	Start    time.Time `json:"start_date"`
 	End      time.Time `json:"end_date"`
-	Issues   []Issue   `json:"issues"`
+	Issues   []Issue   `json:"issues,omitempty"`
 	Finished bool      `json:"-"`
 	Current  bool      `json:"-"`
 }
@@ -78,6 +78,22 @@ func ScanSprint(rows *sql.Rows) Sprint {
 	}
 
 	return sprint
+}
+
+func SimpleSprintScan(rows *sql.Rows) []Sprint {
+	sprints := make([]Sprint, 0)
+	for rows.Next() {
+		var sprint Sprint
+		err := rows.Scan(&sprint.ID, &sprint.Name, &sprint.Start, &sprint.End, &sprint.Finished, &sprint.Current)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+
+		sprints = append(sprints, sprint)
+	}
+
+	return sprints
 }
 
 type CreateSprintBody struct {

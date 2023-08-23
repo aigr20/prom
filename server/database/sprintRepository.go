@@ -41,6 +41,23 @@ func NewSprintRepository(db *sql.DB) *SprintRepository {
 }
 
 func (rep *SprintRepository) GetSprint(sprintId int) (models.Sprint, error) {
+	const query = "SELECT sprint_id, sprint_name, sprint_start, sprint_end, finished, current FROM sprints WHERE sprint_id = ?"
+	rows, err := rep.db.Query(query, sprintId)
+	if err != nil {
+		log.Println(err)
+		return models.Sprint{}, ErrSprintNotFound
+	}
+
+	scanResult := models.SimpleSprintScan(rows)
+	if len(scanResult) != 1 {
+		log.Println(err)
+		return models.Sprint{}, ErrSprintNotFound
+	}
+
+	return scanResult[0], nil
+}
+
+func (rep *SprintRepository) GetSprintWithIssues(sprintId int) (models.Sprint, error) {
 	query := fmt.Sprintf("%s WHERE sprint_id = ?", baseSprintQuery)
 	rows, err := rep.db.Query(query, sprintId)
 	if err != nil {
