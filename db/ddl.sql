@@ -103,6 +103,7 @@ CREATE TABLE users (
 
 DROP VIEW IF EXISTS project_tag_counts;
 DROP VIEW IF EXISTS sprint_issues_v;
+DROP VIEW IF EXISTS issues_no_sprint;
 
 CREATE VIEW project_tag_counts AS
   SELECT
@@ -146,3 +147,42 @@ CREATE VIEW sprint_issues_v AS
   LEFT JOIN tags ON tags.tag_id = issue_tags.tag_id
   ORDER BY sprints.project ASC, sprint_issues.issue_priority DESC
 ;
+
+CREATE VIEW issues_no_sprint AS
+  SELECT
+    sq.issue_id,
+    sq.issue_title,
+    sq.issue_description,
+    sq.estimate,
+    sq.creation_date,
+    sq.last_changed,
+    sq.project,
+    sq.status_text,
+    sq.tag_id,
+    sq.tag_text,
+    sq.tag_color
+  FROM (
+    SELECT
+      sprints.sprint_id,
+      issues.issue_id,
+      issues.issue_title,
+      issues.issue_description,
+      issues.estimate,
+      issues.creation_date,
+      issues.last_changed,
+      issues.project,
+      issue_statuses.status_text,
+      COALESCE(tags.tag_id, -1) AS tag_id,
+      COALESCE(tags.tag_text, "") AS tag_text,
+      COALESCE(tags.tag_color, "") AS tag_color
+    FROM sprints
+    JOIN sprint_issues ON sprint_issues.sprint_id = sprints.sprint_id
+    RIGHT JOIN issues ON issues.issue_id = sprint_issues.issue_id
+    RIGHT JOIN issue_statuses ON issue_statuses.status_id = issues.issue_status
+    LEFT JOIN issue_tags ON issue_tags.issue_id = issues.issue_id
+    LEFT JOIN tags ON tags.tag_id = issue_tags.tag_id
+    WHERE sprints.sprint_id IS NULL
+  ) AS sq
+  ORDER BY project ASC
+;
+
