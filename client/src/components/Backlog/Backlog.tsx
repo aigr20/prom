@@ -1,11 +1,22 @@
 import { useOutletContext } from "react-router-dom";
-import { type IProjectViewOutletContext } from "../../types/project";
+import {
+  type ITask,
+  type IProjectViewOutletContext,
+} from "../../types/project";
 import SpinIfNull from "../util/SpinIfNull";
 import { Icons } from "../util/icons";
+import { useEffect, useState } from "react";
+import { getProjectBacklog } from "../../services/projects";
 
 export default function Backlog() {
-  const { project, setShowCreateIssue, tasks } =
+  const { project, setShowCreateIssue } =
     useOutletContext<IProjectViewOutletContext>();
+  const [backlogTasks, setBacklogTasks] = useState<ITask[]>([]);
+  useEffect(() => {
+    getProjectBacklog({ projectId: project.id }).then(({ data }) =>
+      setBacklogTasks([...data]),
+    );
+  }, [project.id]);
 
   return (
     <>
@@ -21,18 +32,16 @@ export default function Backlog() {
         </>
       )}
       <h3>Project Backlog</h3>
-      <SpinIfNull couldBeNull={tasks}>
-        <ul>
-          {tasks?.map((task) => {
-            return <li key={task.id}>{task.title}</li>;
-          })}
-          <li>
-            <button onClick={() => setShowCreateIssue(true)}>
-              {Icons.heavyPlus} New issue
-            </button>
-          </li>
-        </ul>
-      </SpinIfNull>
+      <ul>
+        {backlogTasks.map((task) => {
+          return <li key={task.id}>{task.title}</li>;
+        })}
+        <li>
+          <button onClick={() => setShowCreateIssue(true)}>
+            {Icons.heavyPlus} New issue
+          </button>
+        </li>
+      </ul>
     </>
   );
 }
