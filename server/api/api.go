@@ -60,6 +60,7 @@ func (api *API) Routes() {
 		projectsGroup.GET("/all", api.GetProjectsHandler)
 		projectsGroup.GET("/:projectId", api.GetProjectHandler)
 		projectsGroup.GET("/:projectId/issues", api.GetProjectIssuesHandler)
+		projectsGroup.GET("/:projectId/backlog", api.GetProjectBacklogHandler)
 		projectsGroup.GET("/:projectId/tag_counts", api.GetTagCountsHandler)
 		projectsGroup.POST("/create", api.CreateProjectHandler)
 	}

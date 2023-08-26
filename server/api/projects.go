@@ -58,6 +58,22 @@ func (api *API) GetProjectIssuesHandler(ctx *gin.Context) {
 	ctx.JSON(200, ResponseData{"data": issues})
 }
 
+func (api *API) GetProjectBacklogHandler(ctx *gin.Context) {
+	projectId, err := strconv.Atoi(ctx.Param("projectId"))
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	issues, err := api.IssueRepo.GetBacklogIssuesForProject(projectId)
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+ctx.JSON(http.StatusOK, ResponseData{"data": issues})
+}
+
 func (api *API) CreateProjectHandler(ctx *gin.Context) {
 	var body models.ProjectCreateForm
 	err := ctx.ShouldBindJSON(&body)
