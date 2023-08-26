@@ -71,7 +71,7 @@ func (api *API) GetProjectBacklogHandler(ctx *gin.Context) {
 		return
 	}
 
-ctx.JSON(http.StatusOK, ResponseData{"data": issues})
+	ctx.JSON(http.StatusOK, ResponseData{"data": issues})
 }
 
 func (api *API) CreateProjectHandler(ctx *gin.Context) {
