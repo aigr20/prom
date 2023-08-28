@@ -11,7 +11,7 @@ export default function Board() {
   const headings = useMemo(() => ["TODO", "In Progress", "Finished"], []);
   const { columns, setColumns } = useColumns({
     headings,
-    tasks,
+    tasks: project.currentSprint?.issues ?? [],
   });
   const params = useParams();
   const activeIssue = Number(params["issueId"]);
