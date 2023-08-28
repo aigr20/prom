@@ -21,8 +21,7 @@ export default function Backlog() {
   return (
     <>
       <h2>{project.name} Backlog</h2>
-      {project.currentSprint && (
-<Sprint sprint={project.currentSprint} />      )}
+      {project.currentSprint && <Sprint sprint={project.currentSprint} />}
       <h3>Project Backlog</h3>
       <ul>
         {backlogTasks.map((task) => {
