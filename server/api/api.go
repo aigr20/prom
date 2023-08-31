@@ -13,6 +13,7 @@ type ResponseData = map[string]interface{}
 type API struct {
 	Router      *gin.Engine
 	ProjectRepo database.ProjectRepository
+	SprintRepo  database.SprintRepository
 	IssueRepo   database.IssueRepository
 	StatusRepo  database.StatusRepository
 	TagRepo     database.TagRepository
@@ -21,10 +22,12 @@ type API struct {
 func NewAPI(db *sql.DB) *API {
 	router := gin.New()
 	router.Use(gin.Logger(), gin.Recovery())
+	router.SetTrustedProxies(nil)
 
 	api := &API{
 		Router:      router,
 		ProjectRepo: *database.NewProjectRepository(db),
+		SprintRepo:  *database.NewSprintRepository(db),
 		IssueRepo:   *database.NewIssueRepository(db),
 		StatusRepo:  *database.NewStatusRepository(db),
 		TagRepo:     *database.NewTagRepository(db),
@@ -57,6 +60,7 @@ func (api *API) Routes() {
 		projectsGroup.GET("/all", api.GetProjectsHandler)
 		projectsGroup.GET("/:projectId", api.GetProjectHandler)
 		projectsGroup.GET("/:projectId/issues", api.GetProjectIssuesHandler)
+		projectsGroup.GET("/:projectId/backlog", api.GetProjectBacklogHandler)
 		projectsGroup.GET("/:projectId/tag_counts", api.GetTagCountsHandler)
 		projectsGroup.POST("/create", api.CreateProjectHandler)
 	}
@@ -68,6 +72,12 @@ func (api *API) Routes() {
 		issuesGroup.PATCH("/update", api.UpdateIssueHandler)
 		issuesGroup.PATCH("/tags", api.AddIssueTagsHandler)
 		issuesGroup.DELETE("/tags", api.RemoveIssueTagsHandler)
+	}
+	sprintsGroup := api.Router.Group("/sprints")
+	{
+		sprintsGroup.GET("/:sprintId", api.GetSprintHandler)
+		sprintsGroup.GET("/:sprintId/issues", api.GetSprintIssuesHandler)
+		sprintsGroup.POST("/create", api.CreateSprintHandler)
 	}
 	tagsGroup := api.Router.Group("/tags")
 	{

@@ -53,12 +53,34 @@ func (rep *IssueRepository) GetIssuesFromProject(projectId int) ([]models.Issue,
 	}
 	defer rows.Close()
 
-	issues, err := models.ScanIssues(rows)
+	issues := models.ScanIssues(rows)
+
+	return issues, nil
+}
+
+func (rep *IssueRepository) GetBacklogIssuesForProject(projectId int) ([]models.Issue, error) {
+	const query = `
+	SELECT
+		issue_id,
+		issue_title,
+		issue_description,
+		estimate,
+		creation_date,
+		last_changed,
+		project,
+		status_text,
+		tag_id,
+		tag_text,
+		tag_color
+	FROM issues_no_sprint
+	WHERE project = ?`
+	rows, err := rep.db.Query(query, projectId)
 	if err != nil {
 		log.Println(err)
-		return nil, err
+		return []models.Issue{}, ErrIssuesNotFound
 	}
 
+	issues := models.ScanIssues(rows)
 	return issues, nil
 }
 
@@ -90,11 +112,8 @@ func (rep *IssueRepository) GetOne(issueId int) (models.Issue, error) {
 		return models.Issue{}, ErrIssueNotFound
 	}
 
-	issues, err := models.ScanIssues(rows)
-	if err != nil {
-		log.Println(err)
-		return models.Issue{}, ErrIssueNotFound
-	} else if len(issues) > 1 {
+	issues := models.ScanIssues(rows)
+	if len(issues) > 1 {
 		log.Println("Received multiple issues")
 		return models.Issue{}, ErrIssueNotFound
 	} else if len(issues) < 1 {

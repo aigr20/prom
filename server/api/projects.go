@@ -1,6 +1,7 @@
 package api
 
 import (
+	"aigr20/prom/database"
 	"aigr20/prom/models"
 	"log"
 	"net/http"
@@ -31,6 +32,12 @@ func (api *API) GetProjectHandler(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusInternalServerError, ErrGetProjects)
 		return
 	}
+	currentSprint, err := api.SprintRepo.GetCurrentSprintForProject(project.ID)
+	if err == database.ErrSprintNotFound {
+		project.CurrentSprint = nil
+	} else {
+		project.CurrentSprint = &currentSprint
+	}
 
 	ctx.JSON(200, ResponseData{"data": project})
 }
@@ -49,6 +56,22 @@ func (api *API) GetProjectIssuesHandler(ctx *gin.Context) {
 	}
 
 	ctx.JSON(200, ResponseData{"data": issues})
+}
+
+func (api *API) GetProjectBacklogHandler(ctx *gin.Context) {
+	projectId, err := strconv.Atoi(ctx.Param("projectId"))
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	issues, err := api.IssueRepo.GetBacklogIssuesForProject(projectId)
+	if err != nil {
+		ctx.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	ctx.JSON(http.StatusOK, ResponseData{"data": issues})
 }
 
 func (api *API) CreateProjectHandler(ctx *gin.Context) {

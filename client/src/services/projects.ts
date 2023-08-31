@@ -94,6 +94,19 @@ export async function getProjectTasks({
     });
 }
 
+export async function getProjectBacklog({
+  projectId,
+}: ProjectIDArg): Promise<ResponseData<ITask[]>> {
+  return fetch(`${import.meta.env.VITE_API_URL}/projects/${projectId}/backlog`)
+    .then((res) => {
+      if (res.ok && res.status === 200) return res.json();
+      return { data: [] };
+    })
+    .catch(() => {
+      return { data: [] };
+    });
+}
+
 export async function getProjectTagCounts({
   projectId,
 }: ProjectIDArg): Promise<ResponseData<ITagCount[]>> {

@@ -1,4 +1,4 @@
-function padZero(value: number): string {
+export function padZero(value: number): string {
   return value <= 9 ? `0${value}` : String(value);
 }
 

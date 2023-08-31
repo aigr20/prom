@@ -18,6 +18,10 @@ type Issue struct {
 	Tags        []IssueTag `json:"tags"`
 }
 
+func (issue *Issue) Equals(other Issue) bool {
+	return issue.Updated == other.Updated && issue.LenientEquals(other)
+}
+
 // Compares issues without comparing the Updated field
 func (issue *Issue) LenientEquals(other Issue) bool {
 	tagsMatch := true
@@ -42,7 +46,7 @@ func (issue *Issue) LenientEquals(other Issue) bool {
 		tagsMatch
 }
 
-func ScanIssues(rows *sql.Rows) ([]Issue, error) {
+func ScanIssues(rows *sql.Rows) []Issue {
 	issues := make([]Issue, 0)
 	for rows.Next() {
 		var issue Issue
@@ -66,7 +70,7 @@ func ScanIssues(rows *sql.Rows) ([]Issue, error) {
 		}
 	}
 
-	return issues, nil
+	return issues
 }
 
 func issueHasBeenScanned(issues []Issue, id int) (*Issue, bool) {

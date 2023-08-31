@@ -1,9 +1,11 @@
 import { type Setter } from "./general";
+import type { ISprint } from "./sprint";
 
 export type IProject = {
   id: number;
   name: string;
   tags: ITag[];
+  currentSprint?: ISprint;
   createdAt: Date;
   updatedAt: Date;
 };
