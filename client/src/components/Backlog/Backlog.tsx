@@ -7,6 +7,7 @@ import { Icons } from "../util/icons";
 import { useEffect, useState } from "react";
 import { getProjectBacklog } from "../../services/projects";
 import Sprint from "../Sprint/Sprint";
+import CreateSprintForm from "../CreateSprintForm/CreateSprintForm";
 
 export default function Backlog() {
   const { project, setShowCreateIssue } =
@@ -21,6 +22,7 @@ export default function Backlog() {
   return (
     <>
       <h2>{project.name} Backlog</h2>
+      {!project.currentSprint && <CreateSprintForm projectId={project.id} />}
       {project.currentSprint && <Sprint sprint={project.currentSprint} />}
       <h3>Project Backlog</h3>
       <ul>
